@@ -367,7 +367,7 @@ function render(){
               <div class="name">${c.name}</div>
               <div class="meta">${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]}</div>
               <span class="bucket ${c.bucket}">${bucketLabels[c.bucket]}</span>
-              ${c.status==="sold" ? `<div class="meta">Sold: ${new Date(c.soldAt).toLocaleDateString()}</div>` : ""}
+              ${c.status==="sold" ? `<div class="meta">Sold: $${Number(c.salePrice || c.value || 0).toLocaleString()} · ${new Date(c.soldAt).toLocaleDateString()}</div>` : ""}
               ${c.status==="traded" ? `<div class="meta">Traded: ${new Date(c.tradedAt).toLocaleDateString()}</div>` : ""}
             </div>
             <div style="text-align:right">
