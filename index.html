@@ -26,221 +26,97 @@ body{
 }
 h1{margin:0;font-size:34px;font-weight:900}
 .iconBtn{
-  width:64px;
-  height:64px;
-  border-radius:18px;
-  background:#181818;
-  color:#fff;
-  border:none;
-  font-size:28px;
+  width:64px;height:64px;border-radius:18px;
+  background:#181818;color:#fff;border:none;font-size:28px;
 }
 .tabs{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-bottom:16px;
+  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;
 }
 .tab{
-  border:none;
-  padding:16px;
-  border-radius:18px;
-  font-size:18px;
-  font-weight:800;
-  background:#eee;
-  color:#777;
+  border:none;padding:16px;border-radius:18px;font-size:18px;font-weight:800;
+  background:#eee;color:#777;
 }
-.tab.active{
-  background:#181818;
-  color:#fff;
-}
+.tab.active{background:#181818;color:#fff}
 .stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:18px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;
 }
 .stat{
-  background:#eee;
-  border-radius:16px;
-  padding:14px 8px;
-  text-align:center;
+  background:#eee;border-radius:16px;padding:14px 8px;text-align:center;
 }
-.stat.dark{
-  background:#181818;
-  color:#fff;
-}
-.stat strong{
-  display:block;
-  font-size:22px;
-}
-.stat span{
-  font-size:12px;
-  color:#777;
-}
+.stat.dark{background:#181818;color:#fff}
+.stat strong{display:block;font-size:22px;color:#111}
+.stat.dark strong{color:#fff}
+.stat span{font-size:12px;color:#777}
 .stat.dark span{color:#bbb}
+.green{color:#15803d!important}
+.red{color:#dc2626!important}
+.neutral{color:#111!important}
 .search{
-  width:100%;
-  border:none;
-  background:#eee;
-  border-radius:18px;
-  padding:18px;
-  font-size:18px;
-  margin-bottom:14px;
+  width:100%;border:none;background:#eee;border-radius:18px;
+  padding:18px;font-size:18px;margin-bottom:14px;
 }
 .pills{
-  display:flex;
-  gap:10px;
-  overflow-x:auto;
-  margin-bottom:14px;
+  display:flex;gap:10px;overflow-x:auto;margin-bottom:14px;
 }
 .pill{
-  border:none;
-  border-radius:999px;
-  padding:14px 20px;
-  font-weight:800;
-  font-size:15px;
-  white-space:nowrap;
+  border:none;border-radius:999px;padding:14px 20px;font-weight:800;
+  font-size:15px;white-space:nowrap;
 }
 .H{background:#6f936a;color:#fff}
 .G{background:#6687c2;color:#fff}
 .T{background:#e28a55;color:#fff}
 .S{background:#c76565;color:#fff}
-.anchor{
-  background:#eef0ed;
-  color:#666;
-}
-.anchor.active{
-  background:#181818;
-  color:#fff;
-}
+.anchor{background:#eef0ed;color:#666}
+.anchor.active{background:#181818;color:#fff}
 .form{
-  background:#fff;
-  padding:16px;
-  border-radius:20px;
-  margin-bottom:18px;
+  background:#fff;padding:16px;border-radius:20px;margin-bottom:18px;
   box-shadow:0 4px 16px rgba(0,0,0,.05);
 }
 input,select{
-  width:100%;
-  border:none;
-  background:#f0f0f0;
-  border-radius:14px;
-  padding:14px;
-  font-size:16px;
-  margin-bottom:10px;
+  width:100%;border:none;background:#f0f0f0;border-radius:14px;
+  padding:14px;font-size:16px;margin-bottom:10px;
 }
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .addBtn{
-  width:100%;
-  background:#181818;
-  color:#fff;
-  border:none;
-  border-radius:14px;
-  padding:15px;
-  font-size:16px;
-  font-weight:900;
+  width:100%;background:#181818;color:#fff;border:none;
+  border-radius:14px;padding:15px;font-size:16px;font-weight:900;
 }
 .card{
-  background:#fff;
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:12px;
+  background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;
   box-shadow:0 4px 16px rgba(0,0,0,.06);
 }
-.cardTop{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-}
-.name{
-  font-size:17px;
-  font-weight:900;
-}
-.meta{
-  font-size:13px;
-  color:#777;
-  margin-top:5px;
-}
-.value{
-  font-size:18px;
-  font-weight:900;
-  color:#111;
-}
-.green{color:#15803d}
-.red{color:#dc2626}
+.cardTop{display:flex;justify-content:space-between;gap:12px}
+.name{font-size:17px;font-weight:900}
+.meta{font-size:13px;color:#777;margin-top:5px;line-height:1.4}
+.value{font-size:18px;font-weight:900;color:#111}
 .badge{
-  display:inline-block;
-  margin-top:10px;
-  border-radius:999px;
-  padding:6px 12px;
-  font-size:12px;
-  font-weight:900;
+  display:inline-block;margin-top:10px;border-radius:999px;padding:6px 12px;
+  font-size:12px;font-weight:900;
 }
 .manage{
-  margin-top:10px;
-  background:#181818;
-  color:#fff;
-  border:none;
-  border-radius:12px;
-  padding:10px 14px;
-  font-weight:800;
+  margin-top:10px;background:#181818;color:#fff;border:none;
+  border-radius:12px;padding:10px 14px;font-weight:800;
 }
-.empty{
-  text-align:center;
-  color:#777;
-  padding:40px;
-}
+.empty{text-align:center;color:#777;padding:40px}
 .sheetBack{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  display:flex;
-  align-items:flex-end;
-  z-index:999;
+  position:fixed;inset:0;background:rgba(0,0,0,.65);
+  display:flex;align-items:flex-end;z-index:999;
 }
 .sheet{
-  width:100%;
-  max-width:480px;
-  margin:auto;
-  background:#fff;
-  border-radius:26px 26px 0 0;
-  padding:20px;
+  width:100%;max-width:480px;margin:auto;background:#fff;
+  border-radius:26px 26px 0 0;padding:20px;
 }
 .sheet h3{margin:0 0 6px;font-size:22px}
 .sheet p{margin:0 0 16px;color:#777}
 .sheetBtn{
-  width:100%;
-  text-align:left;
-  border:none;
-  background:#f1f1f1;
-  border-radius:16px;
-  padding:15px;
-  margin-bottom:10px;
-  font-size:15px;
-  font-weight:900;
+  width:100%;text-align:left;border:none;background:#f1f1f1;
+  border-radius:16px;padding:15px;margin-bottom:10px;font-size:15px;font-weight:900;
 }
-.sheetBtn small{
-  display:block;
-  color:#777;
-  margin-top:4px;
-  font-weight:500;
-}
-.danger{
-  background:#fee2e2;
-  color:#991b1b;
-}
+.sheetBtn small{display:block;color:#777;margin-top:4px;font-weight:500}
+.danger{background:#fee2e2;color:#991b1b}
 .close{
-  width:100%;
-  border:none;
-  background:#181818;
-  color:#fff;
-  border-radius:16px;
-  padding:15px;
-  font-weight:900;
+  width:100%;border:none;background:#181818;color:#fff;
+  border-radius:16px;padding:15px;font-weight:900;
 }
 </style>
 </head>
@@ -249,7 +125,7 @@ input,select{
 <div id="app"></div>
 
 <script>
-const KEY = "pokevault_cards_v4"
+const KEY = "pokevault_cards_final"
 
 let cards = JSON.parse(localStorage.getItem(KEY) || "[]")
 let activeTab = "inventory"
@@ -313,6 +189,10 @@ function moveCard(bucket){
   if(!c) return
   c.bucket = bucket
   c.status = "active"
+  delete c.salePrice
+  delete c.soldAt
+  delete c.tradedFor
+  delete c.tradedAt
   save()
   closeManage()
 }
@@ -366,13 +246,13 @@ function render(){
   const q = document.getElementById("search")?.value.toLowerCase() || ""
 
   const inventory = cards.filter(c => !c.status || c.status === "active")
-  const history = cards.filter(c => c.status === "sold" || c.status === "traded")
   const sold = cards.filter(c => c.status === "sold")
   const traded = cards.filter(c => c.status === "traded")
+  const history = [...sold, ...traded]
 
   const inventoryValue = inventory.reduce((s,c)=>s+Number(c.value||0),0)
-  const soldValue = sold.reduce((s,c)=>s+Number(c.salePrice||0),0)
-  const profitLoss = sold.reduce((s,c)=>s+(Number(c.salePrice||0)-Number(c.value||0)),0)
+  const totalSold = sold.reduce((s,c)=>s+Number(c.salePrice||0),0)
+  const totalProfit = sold.reduce((s,c)=>s+(Number(c.salePrice||0)-Number(c.value||0)),0)
 
   let visible = activeTab === "inventory" ? inventory : history
 
@@ -398,25 +278,23 @@ function render(){
     </div>
 
     <div class="stats">
-      <div class="stat dark"><strong>$${inventoryValue.toLocaleString()}</strong><span>Total Value</span></div>
+      <div class="stat dark"><strong>$${inventoryValue.toLocaleString()}</strong><span>Inventory Value</span></div>
       <div class="stat"><strong>${inventory.length}</strong><span>Cards</span></div>
       <div class="stat"><strong>${slabs}</strong><span>Slabs</span></div>
       <div class="stat"><strong>${raw}</strong><span>Raw</span></div>
     </div>
 
-    ${activeTab === "history" ? `
-      <div class="stats">
-        <div class="stat dark"><strong>$${soldValue.toLocaleString()}</strong><span>Total Sold</span></div>
-        <div class="stat"><strong class="${profitLoss>=0?"green":"red"}">$${profitLoss.toLocaleString()}</strong><span>P/L</span></div>
-        <div class="stat"><strong>${sold.length}</strong><span>Sold</span></div>
-        <div class="stat"><strong>${traded.length}</strong><span>Traded</span></div>
-      </div>
-    ` : ""}
+    <div class="stats">
+      <div class="stat dark"><strong class="green">$${totalSold.toLocaleString()}</strong><span>Total Sold</span></div>
+      <div class="stat"><strong class="${totalProfit>0?"green":totalProfit<0?"red":"neutral"}">${totalProfit>=0?"+":""}$${totalProfit.toLocaleString()}</strong><span>Profit/Loss</span></div>
+      <div class="stat"><strong>${sold.length}</strong><span>Sold</span></div>
+      <div class="stat"><strong>${traded.length}</strong><span>Traded</span></div>
+    </div>
 
     <div class="form">
       <input id="name" placeholder="Card name" />
       <div class="row">
-        <input id="value" type="number" placeholder="Value $" />
+        <input id="value" type="number" placeholder="Original Value $" />
         <select id="type">
           <option value="Raw">Raw</option>
           <option value="Slab">Slab</option>
@@ -458,8 +336,10 @@ function render(){
 }
 
 function cardHTML(c){
-  const soldDiff = c.status === "sold" ? Number(c.salePrice||0) - Number(c.value||0) : 0
-  const soldClass = soldDiff >= 0 ? "green" : "red"
+  const original = Number(c.value || 0)
+  const sale = Number(c.salePrice || 0)
+  const diff = sale - original
+  const diffClass = diff > 0 ? "green" : diff < 0 ? "red" : "neutral"
 
   return `
     <div class="card">
@@ -471,9 +351,9 @@ function cardHTML(c){
 
           ${c.status==="sold" ? `
             <div class="meta">
-              Sold for <b class="${soldClass}">$${Number(c.salePrice||0).toLocaleString()}</b>
-              · Original $${Number(c.value||0).toLocaleString()}
-              · <b class="${soldClass}">${soldDiff>=0?"+":""}$${soldDiff.toLocaleString()}</b>
+              Sold for <b class="${diffClass}">$${sale.toLocaleString()}</b>
+              · Original $${original.toLocaleString()}
+              · <b class="${diffClass}">${diff>=0?"+":""}$${diff.toLocaleString()}</b>
             </div>
           ` : ""}
 
@@ -483,7 +363,7 @@ function cardHTML(c){
         </div>
 
         <div style="text-align:right">
-          <div class="value">$${Number(c.value||0).toLocaleString()}</div>
+          <div class="value">$${original.toLocaleString()}</div>
           <button class="manage" onclick="openManage(${c.id})">Manage</button>
         </div>
       </div>
