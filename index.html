@@ -9,51 +9,124 @@
 *{box-sizing:border-box}
 body{
   margin:0;
-  background:#0c0c0f;
-  color:#fff;
+  background:#f7f7f8;
+  color:#111;
   font-family:Arial,sans-serif;
 }
 #app{
   max-width:480px;
   margin:auto;
-  padding:18px;
+  padding:20px;
 }
-.header{
+.top{
   display:flex;
   justify-content:space-between;
   align-items:center;
+  margin-bottom:18px;
+}
+h1{margin:0;font-size:34px;font-weight:900}
+.iconBtn{
+  width:64px;
+  height:64px;
+  border-radius:18px;
+  background:#181818;
+  color:#fff;
+  border:none;
+  font-size:28px;
+}
+.tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
   margin-bottom:16px;
 }
-h1{margin:0;font-size:30px}
+.tab{
+  border:none;
+  padding:16px;
+  border-radius:18px;
+  font-size:18px;
+  font-weight:800;
+  background:#eee;
+  color:#777;
+}
+.tab.active{
+  background:#181818;
+  color:#fff;
+}
 .stats{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(4,1fr);
   gap:10px;
-  margin-bottom:14px;
+  margin-bottom:18px;
 }
 .stat{
-  background:#17171f;
-  border:1px solid #262635;
-  border-radius:14px;
-  padding:12px;
+  background:#eee;
+  border-radius:16px;
+  padding:14px 8px;
   text-align:center;
 }
-.stat strong{display:block;font-size:20px}
-.stat span{font-size:11px;color:#aaa}
-.panel{
-  background:#15151d;
-  border:1px solid #2a2a38;
-  border-radius:16px;
-  padding:14px;
+.stat.dark{
+  background:#181818;
+  color:#fff;
+}
+.stat strong{
+  display:block;
+  font-size:22px;
+}
+.stat span{
+  font-size:12px;
+  color:#777;
+}
+.stat.dark span{color:#bbb}
+.search{
+  width:100%;
+  border:none;
+  background:#eee;
+  border-radius:18px;
+  padding:18px;
+  font-size:18px;
   margin-bottom:14px;
+}
+.pills{
+  display:flex;
+  gap:10px;
+  overflow-x:auto;
+  margin-bottom:14px;
+}
+.pill{
+  border:none;
+  border-radius:999px;
+  padding:14px 20px;
+  font-weight:800;
+  font-size:15px;
+  white-space:nowrap;
+}
+.H{background:#6f936a;color:#fff}
+.G{background:#6687c2;color:#fff}
+.T{background:#e28a55;color:#fff}
+.S{background:#c76565;color:#fff}
+.anchor{
+  background:#eef0ed;
+  color:#666;
+}
+.anchor.active{
+  background:#181818;
+  color:#fff;
+}
+.form{
+  background:#fff;
+  padding:16px;
+  border-radius:20px;
+  margin-bottom:18px;
+  box-shadow:0 4px 16px rgba(0,0,0,.05);
 }
 input,select{
   width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid #333344;
-  background:#0f0f16;
-  color:#fff;
+  border:none;
+  background:#f0f0f0;
+  border-radius:14px;
+  padding:14px;
+  font-size:16px;
   margin-bottom:10px;
 }
 .row{
@@ -61,81 +134,70 @@ input,select{
   grid-template-columns:1fr 1fr;
   gap:10px;
 }
-button{
-  border:0;
-  border-radius:10px;
-  padding:12px;
-  font-weight:700;
-  cursor:pointer;
-}
-.primary{background:#7c3aed;color:white}
-.danger{background:#ef4444;color:white}
-.secondary{background:#252536;color:white}
-.tabs{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-bottom:12px;
-}
-.tab{
-  background:#17171f;
-  color:#aaa;
-  border:1px solid #292938;
-}
-.tab.active{
-  background:#7c3aed;
+.addBtn{
+  width:100%;
+  background:#181818;
   color:#fff;
-}
-.filters{
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  margin-bottom:12px;
-}
-.filter{
-  background:#17171f;
-  color:#aaa;
-  border:1px solid #292938;
-  white-space:nowrap;
-  padding:9px 12px;
-}
-.filter.active{
-  background:#252536;
-  color:#fff;
-  border-color:#7c3aed;
+  border:none;
+  border-radius:14px;
+  padding:15px;
+  font-size:16px;
+  font-weight:900;
 }
 .card{
-  background:#17171f;
-  border:1px solid #292938;
-  border-radius:14px;
-  padding:12px;
-  margin-bottom:10px;
+  background:#fff;
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:12px;
+  box-shadow:0 4px 16px rgba(0,0,0,.06);
 }
-.card-top{
+.cardTop{
   display:flex;
   justify-content:space-between;
-  gap:10px;
+  gap:12px;
 }
-.name{font-weight:800}
-.meta{font-size:12px;color:#aaa;margin-top:4px}
-.value{font-weight:900;color:#86efac}
-.bucket{
+.name{
+  font-size:17px;
+  font-weight:900;
+}
+.meta{
+  font-size:13px;
+  color:#777;
+  margin-top:5px;
+}
+.value{
+  font-size:18px;
+  font-weight:900;
+  color:#111;
+}
+.green{color:#15803d}
+.red{color:#dc2626}
+.badge{
   display:inline-block;
-  margin-top:8px;
-  padding:4px 9px;
+  margin-top:10px;
   border-radius:999px;
-  font-size:11px;
+  padding:6px 12px;
+  font-size:12px;
+  font-weight:900;
+}
+.manage{
+  margin-top:10px;
+  background:#181818;
+  color:#fff;
+  border:none;
+  border-radius:12px;
+  padding:10px 14px;
   font-weight:800;
 }
-.H{background:#14532d;color:#86efac}
-.G{background:#1e3a8a;color:#93c5fd}
-.T{background:#7c2d12;color:#fdba74}
-.S{background:#7f1d1d;color:#fca5a5}
-.empty{text-align:center;color:#777;padding:40px 0}
-.sheet-backdrop{
+.empty{
+  text-align:center;
+  color:#777;
+  padding:40px;
+}
+.sheetBack{
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,.7);
+  background:rgba(0,0,0,.65);
   display:flex;
   align-items:flex-end;
   z-index:999;
@@ -143,34 +205,42 @@ button{
 .sheet{
   width:100%;
   max-width:480px;
-  margin:0 auto;
-  background:#15151d;
-  border:1px solid #2a2a38;
-  border-radius:22px 22px 0 0;
-  padding:18px;
+  margin:auto;
+  background:#fff;
+  border-radius:26px 26px 0 0;
+  padding:20px;
 }
-.sheet h3{margin:0 0 6px;font-size:20px}
-.sheet p{margin:0 0 16px;color:#aaa;font-size:13px}
-.sheet-grid{display:grid;gap:10px}
-.sheet-btn{
+.sheet h3{margin:0 0 6px;font-size:22px}
+.sheet p{margin:0 0 16px;color:#777}
+.sheetBtn{
   width:100%;
   text-align:left;
-  background:#20202b;
-  color:white;
-  border:1px solid #333344;
-  padding:14px;
-  border-radius:12px;
+  border:none;
+  background:#f1f1f1;
+  border-radius:16px;
+  padding:15px;
+  margin-bottom:10px;
+  font-size:15px;
+  font-weight:900;
 }
-.sheet-btn small{
+.sheetBtn small{
   display:block;
-  color:#aaa;
-  margin-top:3px;
+  color:#777;
+  margin-top:4px;
+  font-weight:500;
 }
-.close-btn{
-  margin-top:12px;
+.danger{
+  background:#fee2e2;
+  color:#991b1b;
+}
+.close{
   width:100%;
-  background:#333344;
-  color:white;
+  border:none;
+  background:#181818;
+  color:#fff;
+  border-radius:16px;
+  padding:15px;
+  font-weight:900;
 }
 </style>
 </head>
@@ -179,11 +249,12 @@ button{
 <div id="app"></div>
 
 <script>
-const KEY = "pokevault_cards_v3"
+const KEY = "pokevault_cards_v4"
 
 let cards = JSON.parse(localStorage.getItem(KEY) || "[]")
 let activeTab = "inventory"
 let activeAnchor = "All"
+let activeBucket = "All"
 let selectedCardId = null
 
 const bucketLabels = {
@@ -193,16 +264,16 @@ const bucketLabels = {
   S: "SELL"
 }
 
+function save(){
+  localStorage.setItem(KEY, JSON.stringify(cards))
+}
+
 function getAnchor(name){
   const n = String(name || "").toLowerCase()
   if(n.includes("pikachu") || n.includes("pichu")) return "Pikachu"
-  if(n.includes("charizard") || n.includes("charmeleon")) return "Charizard"
   if(n.includes("umbreon")) return "Umbreon"
+  if(n.includes("charizard") || n.includes("charmeleon")) return "Charizard"
   return "Other"
-}
-
-function save(){
-  localStorage.setItem(KEY, JSON.stringify(cards))
 }
 
 function addCard(){
@@ -219,26 +290,10 @@ function addCard(){
     value,
     type,
     bucket,
-    status: "active",
-    createdAt: new Date().toISOString()
+    status:"active",
+    createdAt:new Date().toISOString()
   })
 
-  save()
-  render()
-}
-
-function resetForm(){
-  setTimeout(() => {
-    const name = document.getElementById("name")
-    const value = document.getElementById("value")
-    if(name) name.value = ""
-    if(value) value.value = ""
-  }, 0)
-}
-
-function clearAll(){
-  if(!confirm("Delete everything?")) return
-  cards = []
   save()
   render()
 }
@@ -254,34 +309,40 @@ function closeManage(){
 }
 
 function moveCard(bucket){
-  const card = cards.find(c => c.id === selectedCardId)
-  if(!card) return
-  card.bucket = bucket
-  card.status = "active"
+  const c = cards.find(x => x.id === selectedCardId)
+  if(!c) return
+  c.bucket = bucket
+  c.status = "active"
   save()
   closeManage()
 }
 
 function markSold(){
-  const card = cards.find(c => c.id === selectedCardId)
-  if(!card) return
+  const c = cards.find(x => x.id === selectedCardId)
+  if(!c) return
 
-  const price = prompt("Sale price?", card.value || 0)
-  if(price === null) return
+  const sale = prompt("Sale price?", c.value || 0)
+  if(sale === null) return
 
-  card.status = "sold"
-  card.salePrice = Number(price || 0)
-  card.soldAt = new Date().toISOString()
+  c.status = "sold"
+  c.salePrice = Number(sale || 0)
+  c.soldAt = new Date().toISOString()
 
   save()
   closeManage()
 }
 
 function markTraded(){
-  const card = cards.find(c => c.id === selectedCardId)
-  if(!card) return
-  card.status = "traded"
-  card.tradedAt = new Date().toISOString()
+  const c = cards.find(x => x.id === selectedCardId)
+  if(!c) return
+
+  const tradeFor = prompt("Traded for what?", "")
+  if(tradeFor === null) return
+
+  c.status = "traded"
+  c.tradedFor = tradeFor
+  c.tradedAt = new Date().toISOString()
+
   save()
   closeManage()
 }
@@ -293,41 +354,66 @@ function deleteCard(){
   closeManage()
 }
 
+function resetAll(){
+  if(!confirm("Delete all data?")) return
+  cards = []
+  save()
+  render()
+}
+
 function render(){
   const app = document.getElementById("app")
   const q = document.getElementById("search")?.value.toLowerCase() || ""
 
-  const inventoryCards = cards.filter(c => !c.status || c.status === "active")
-  const soldCards = cards.filter(c => c.status === "sold")
-  const tradedCards = cards.filter(c => c.status === "traded")
+  const inventory = cards.filter(c => !c.status || c.status === "active")
+  const history = cards.filter(c => c.status === "sold" || c.status === "traded")
+  const sold = cards.filter(c => c.status === "sold")
+  const traded = cards.filter(c => c.status === "traded")
 
-  let visible = []
-  if(activeTab === "inventory") visible = inventoryCards
-  if(activeTab === "sold") visible = soldCards
-  if(activeTab === "traded") visible = tradedCards
+  const inventoryValue = inventory.reduce((s,c)=>s+Number(c.value||0),0)
+  const soldValue = sold.reduce((s,c)=>s+Number(c.salePrice||0),0)
+  const profitLoss = sold.reduce((s,c)=>s+(Number(c.salePrice||0)-Number(c.value||0)),0)
+
+  let visible = activeTab === "inventory" ? inventory : history
 
   visible = visible.filter(c => {
     if(activeAnchor !== "All" && getAnchor(c.name) !== activeAnchor) return false
+    if(activeBucket !== "All" && c.bucket !== activeBucket) return false
     if(q && !c.name.toLowerCase().includes(q)) return false
     return true
   })
 
-  const total = inventoryCards.reduce((s,c)=>s+Number(c.value||0),0)
-  const slabs = inventoryCards.filter(c=>c.type==="Slab").length
+  const slabs = inventory.filter(c=>c.type==="Slab").length
+  const raw = inventory.filter(c=>c.type==="Raw").length
 
   app.innerHTML = `
-    <div class="header">
+    <div class="top">
       <h1>PokéVault</h1>
-      <button onclick="clearAll()" class="danger">Reset</button>
+      <button class="iconBtn" onclick="resetAll()">↻</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab ${activeTab==="inventory"?"active":""}" onclick="activeTab='inventory';render()">▱ Inventory (${inventory.length})</button>
+      <button class="tab ${activeTab==="history"?"active":""}" onclick="activeTab='history';render()">↺ History (${history.length})</button>
     </div>
 
     <div class="stats">
-      <div class="stat"><strong>$${total.toLocaleString()}</strong><span>Inventory</span></div>
-      <div class="stat"><strong>${inventoryCards.length}</strong><span>Active</span></div>
+      <div class="stat dark"><strong>$${inventoryValue.toLocaleString()}</strong><span>Total Value</span></div>
+      <div class="stat"><strong>${inventory.length}</strong><span>Cards</span></div>
       <div class="stat"><strong>${slabs}</strong><span>Slabs</span></div>
+      <div class="stat"><strong>${raw}</strong><span>Raw</span></div>
     </div>
 
-    <div class="panel">
+    ${activeTab === "history" ? `
+      <div class="stats">
+        <div class="stat dark"><strong>$${soldValue.toLocaleString()}</strong><span>Total Sold</span></div>
+        <div class="stat"><strong class="${profitLoss>=0?"green":"red"}">$${profitLoss.toLocaleString()}</strong><span>P/L</span></div>
+        <div class="stat"><strong>${sold.length}</strong><span>Sold</span></div>
+        <div class="stat"><strong>${traded.length}</strong><span>Traded</span></div>
+      </div>
+    ` : ""}
+
+    <div class="form">
       <input id="name" placeholder="Card name" />
       <div class="row">
         <input id="value" type="number" placeholder="Value $" />
@@ -342,95 +428,88 @@ function render(){
         <option value="T">Trade</option>
         <option value="S">Sell</option>
       </select>
-      <button class="primary" style="width:100%" onclick="addCard(); resetForm();">Add Card</button>
+      <button class="addBtn" onclick="addCard()">Add Card</button>
     </div>
 
-    <div class="tabs">
-      <button class="tab ${activeTab==="inventory"?"active":""}" onclick="activeTab='inventory'; render()">Inventory</button>
-      <button class="tab ${activeTab==="sold"?"active":""}" onclick="activeTab='sold'; render()">Sold</button>
-      <button class="tab ${activeTab==="traded"?"active":""}" onclick="activeTab='traded'; render()">Traded</button>
-    </div>
+    <input id="search" class="search" placeholder="Search cards..." oninput="render()" value="${q}" />
 
-    <div class="filters">
-      ${["All","Pikachu","Charizard","Umbreon","Other"].map(a => `
-        <button class="filter ${activeAnchor===a?"active":""}" onclick="activeAnchor='${a}'; render()">${a}</button>
+    <div class="pills">
+      ${["H","G","T","S"].map(b => `
+        <button class="pill ${b}" onclick="activeBucket=activeBucket==='${b}'?'All':'${b}';render()">
+          ${bucketLabels[b]}
+        </button>
       `).join("")}
     </div>
 
-    <input id="search" placeholder="Search cards..." oninput="render()" value="${q}" />
-
-    <div id="list">
-      ${visible.length === 0 ? `<div class="empty">No cards here</div>` : visible.map(c => `
-        <div class="card">
-          <div class="card-top">
-            <div>
-              <div class="name">${c.name}</div>
-              <div class="meta">${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]}</div>
-              <span class="bucket ${c.bucket}">${bucketLabels[c.bucket]}</span>
-              ${c.status==="sold" ? `<div class="meta">Sold: $${Number(c.salePrice || c.value || 0).toLocaleString()} · ${new Date(c.soldAt).toLocaleDateString()}</div>` : ""}
-              ${c.status==="traded" ? `<div class="meta">Traded: ${new Date(c.tradedAt).toLocaleDateString()}</div>` : ""}
-            </div>
-            <div style="text-align:right">
-              <div class="value">$${Number(c.value||0).toLocaleString()}</div>
-              <button class="primary" onclick="openManage(${c.id})">Manage</button>
-            </div>
-          </div>
-        </div>
+    <div class="pills">
+      ${["All","Pikachu","Umbreon","Charizard","Other"].map(a => `
+        <button class="pill anchor ${activeAnchor===a?"active":""}" onclick="activeAnchor='${a}';render()">
+          ${a}
+        </button>
       `).join("")}
     </div>
 
-    ${selectedCardId ? actionSheet() : ""}
+    <div>
+      ${visible.length === 0 ? `<div class="empty">No cards here</div>` : visible.map(cardHTML).join("")}
+    </div>
+
+    ${selectedCardId ? sheetHTML() : ""}
   `
 }
 
-function actionSheet(){
-  const c = cards.find(card => card.id === selectedCardId)
+function cardHTML(c){
+  const soldDiff = c.status === "sold" ? Number(c.salePrice||0) - Number(c.value||0) : 0
+  const soldClass = soldDiff >= 0 ? "green" : "red"
+
+  return `
+    <div class="card">
+      <div class="cardTop">
+        <div>
+          <div class="name">${c.name}</div>
+          <div class="meta">${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]}</div>
+          <span class="badge ${c.bucket}">${bucketLabels[c.bucket]}</span>
+
+          ${c.status==="sold" ? `
+            <div class="meta">
+              Sold for <b class="${soldClass}">$${Number(c.salePrice||0).toLocaleString()}</b>
+              · Original $${Number(c.value||0).toLocaleString()}
+              · <b class="${soldClass}">${soldDiff>=0?"+":""}$${soldDiff.toLocaleString()}</b>
+            </div>
+          ` : ""}
+
+          ${c.status==="traded" ? `
+            <div class="meta">Traded for: ${c.tradedFor || "Not specified"}</div>
+          ` : ""}
+        </div>
+
+        <div style="text-align:right">
+          <div class="value">$${Number(c.value||0).toLocaleString()}</div>
+          <button class="manage" onclick="openManage(${c.id})">Manage</button>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+function sheetHTML(){
+  const c = cards.find(x => x.id === selectedCardId)
   if(!c) return ""
 
   return `
-    <div class="sheet-backdrop" onclick="closeManage()">
+    <div class="sheetBack" onclick="closeManage()">
       <div class="sheet" onclick="event.stopPropagation()">
         <h3>${c.name}</h3>
         <p>${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]} · $${Number(c.value||0).toLocaleString()}</p>
 
-        <div class="sheet-grid">
-          <button class="sheet-btn" onclick="moveCard('H')">
-            Move to HOLD
-            <small>Keep in collection</small>
-          </button>
+        <button class="sheetBtn" onclick="moveCard('H')">Move to HOLD<small>Keep in collection</small></button>
+        <button class="sheetBtn" onclick="moveCard('G')">Move to GRADE<small>Candidate for grading</small></button>
+        <button class="sheetBtn" onclick="moveCard('T')">Move to TRADE<small>Available for trades</small></button>
+        <button class="sheetBtn" onclick="moveCard('S')">Move to SELL<small>Still active inventory, marked for sale</small></button>
+        <button class="sheetBtn" onclick="markSold()">Mark as SOLD<small>Enter final sale price</small></button>
+        <button class="sheetBtn" onclick="markTraded()">Mark as TRADED<small>Record what you got</small></button>
+        <button class="sheetBtn danger" onclick="deleteCard()">Delete Permanently<small>Only for mistakes</small></button>
 
-          <button class="sheet-btn" onclick="moveCard('G')">
-            Move to GRADE
-            <small>Candidate for grading</small>
-          </button>
-
-          <button class="sheet-btn" onclick="moveCard('T')">
-            Move to TRADE
-            <small>Available for trades</small>
-          </button>
-
-          <button class="sheet-btn" onclick="moveCard('S')">
-            Move to SELL
-            <small>Still active inventory, marked for sale</small>
-          </button>
-
-          <button class="sheet-btn" onclick="markSold()">
-            Mark as SOLD
-            <small>Moves to sales history, not deleted</small>
-          </button>
-
-          <button class="sheet-btn" onclick="markTraded()">
-            Mark as TRADED
-            <small>Moves to trade history, not deleted</small>
-          </button>
-
-          <button class="sheet-btn danger" onclick="deleteCard()">
-            Delete Permanently
-            <small>Only for mistakes</small>
-          </button>
-        </div>
-
-        <button class="close-btn" onclick="closeManage()">Cancel</button>
+        <button class="close" onclick="closeManage()">Cancel</button>
       </div>
     </div>
   `
