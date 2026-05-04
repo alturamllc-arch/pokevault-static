@@ -265,8 +265,14 @@ function moveCard(bucket){
 function markSold(){
   const card = cards.find(c => c.id === selectedCardId)
   if(!card) return
+
+  const price = prompt("Sale price?", card.value || 0)
+  if(price === null) return
+
   card.status = "sold"
+  card.salePrice = Number(price || 0)
   card.soldAt = new Date().toISOString()
+
   save()
   closeManage()
 }
