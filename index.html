@@ -176,8 +176,23 @@ function addCard(){
 }
 
 function deleteCard(id){
-  if(!confirm("Remove this card?")) return
-  cards = cards.filter(c => c.id !== id)
+  const card = cards.find(c => c.id === id)
+  if(!card) return
+
+  const action = prompt(
+    "Choose action:\n\n1 = Move to HOLD\n2 = Move to GRADE\n3 = Move to TRADE\n4 = Move to SELL\n5 = Delete card"
+  )
+
+  if(action === "1") card.bucket = "H"
+  if(action === "2") card.bucket = "G"
+  if(action === "3") card.bucket = "T"
+  if(action === "4") card.bucket = "S"
+
+  if(action === "5"){
+    if(!confirm("Remove this card permanently?")) return
+    cards = cards.filter(c => c.id !== id)
+  }
+
   save()
   render()
 }
@@ -217,7 +232,7 @@ function render(){
         </div>
         <div style="text-align:right">
           <div class="value">$${Number(c.value||0).toLocaleString()}</div>
-          <button class="danger" onclick="deleteCard(${c.id})">Delete</button>
+          <button class="danger" onclick="deleteCard(${c.id})">Manage</button>
         </div>
       </div>
     </div>
