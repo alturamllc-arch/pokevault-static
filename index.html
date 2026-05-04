@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PokeVault</title>
+
+<style>
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#0c0c0f;
+  color:white;
+}
+
+#app {
+  max-width:480px;
+  margin:auto;
+  padding:20px;
+}
+
+.header {
+  font-size:24px;
+  font-weight:bold;
+  margin-bottom:20px;
+}
+
+.card {
+  background:#1a1a22;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.btn {
+  background:#7c3aed;
+  color:white;
+  border:none;
+  padding:10px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+input {
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:8px;
+  border:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="app">
+  <div class="header">PokeVault</div>
+
+  <input id="name" placeholder="Card name"/>
+  <input id="value" placeholder="Market value"/>
+
+  <button class="btn" onclick="addCard()">Add Card</button>
+
+  <div id="list"></div>
+</div>
+
+<script>
+
+let cards = []
+
+function render() {
+  const list = document.getElementById("list")
+  list.innerHTML = ""
+
+  cards.forEach((c, i) => {
+    list.innerHTML += `
+      <div class="card">
+        <div>
+          <div>${c.name}</div>
+          <small>$${c.value}</small>
+        </div>
+        <button onclick="removeCard(${i})">❌</button>
+      </div>
+    `
+  })
+}
+
+function addCard() {
+  const name = document.getElementById("name").value
+  const value = document.getElementById("value").value
+
+  if (!name) return
+
+  cards.push({ name, value })
+  render()
+
+  document.getElementById("name").value = ""
+  document.getElementById("value").value = ""
+}
+
+function removeCard(i) {
+  cards.splice(i,1)
+  render()
+}
+
+render()
+
+</script>
+
+</body>
+</html>
