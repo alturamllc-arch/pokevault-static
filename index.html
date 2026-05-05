@@ -27,6 +27,7 @@ input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;paddin
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .addBtn{width:100%;border:none;background:#181818;color:white;border-radius:14px;padding:15px;font-size:16px;font-weight:900}
 .undoBtn{width:100%;border:none;background:#fff;border-radius:14px;padding:13px;font-size:15px;font-weight:900;margin-bottom:14px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+.warning{background:#fff7ed;color:#9a3412;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:800;margin:-2px 0 10px}
 .search{width:100%;border:none;background:#eee;border-radius:18px;padding:18px;font-size:18px;margin-bottom:14px}
 .pills{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
 .pill{flex:0 0 auto;border:none;border-radius:999px;padding:14px 20px;font-size:15px;font-weight:900}
@@ -68,7 +69,7 @@ input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;paddin
 <div id="app"></div>
 
 <script>
-const KEY = "pokevault_final_local_v1"
+const KEY = "pokevault_final_local_v2"
 
 let cards = JSON.parse(localStorage.getItem(KEY) || "[]")
 let activeTab = "inventory"
@@ -107,6 +108,7 @@ function undoLast(){
   lastSnapshot = null
   lastAction = ""
   save(false)
+  render()
 }
 
 function save(makeRender=true){
@@ -147,6 +149,9 @@ function analyzeCard(c){
       signal = "BREAK EVEN"
       signalClass = "neutral"
     }
+  }else if(c.status === "traded"){
+    signal = "TRADED"
+    signalClass = "blue"
   }else{
     if(psa > 0 && cost > 0 && psa >= cost * 2){
       signal = "GRADE"
@@ -176,6 +181,20 @@ function getRisk(c){
   return {label:"HOLD / MONITOR", color:"neutral"}
 }
 
+function getDuplicateCount(name){
+  const n = String(name || "").trim().toLowerCase()
+  if(!n) return 0
+  return cards.filter(c => String(c.name || "").trim().toLowerCase() === n).length
+}
+
+function clearAddForm(){
+  document.getElementById("name").value = ""
+  document.getElementById("value").value = ""
+  document.getElementById("psa").value = ""
+  document.getElementById("type").value = "Raw"
+  document.getElementById("bucket").value = "H"
+}
+
 function addCard(){
   const name = document.getElementById("name").value.trim()
   const value = Number(document.getElementById("value").value || 0)
@@ -184,9 +203,6 @@ function addCard(){
   const bucket = document.getElementById("bucket").value
 
   if(!name) return alert("Enter card name")
-
-  const duplicate = cards.some(c => c.name.toLowerCase() === name.toLowerCase())
-  if(duplicate && !confirm("Duplicate detected. Add anyway?")) return
 
   snapshot("Add Card")
 
@@ -207,7 +223,8 @@ function addCard(){
     tradedAt:""
   })
 
-  save()
+  save(false)
+  render()
 }
 
 function openManage(id){
@@ -258,6 +275,24 @@ function moveCard(bucket){
   snapshot("Move Card")
 
   c.bucket = bucket
+  c.status = "active"
+  c.salePrice = 0
+  c.tradedFor = ""
+  c.reasonSold = ""
+  c.gradeOutcome = ""
+  c.soldAt = ""
+  c.tradedAt = ""
+
+  save()
+  closeManage()
+}
+
+function restoreCard(){
+  const c = cards.find(x => x.id === selectedCardId)
+  if(!c) return
+
+  snapshot("Restore to Inventory")
+
   c.status = "active"
   c.salePrice = 0
   c.tradedFor = ""
@@ -361,6 +396,8 @@ function getData(){
 function render(){
   const app = document.getElementById("app")
   const q = document.getElementById("search")?.value.toLowerCase() || ""
+  const liveName = document.getElementById("name")?.value || ""
+  const duplicateCount = getDuplicateCount(liveName)
   const d = getData()
 
   let visible = activeTab === "inventory" ? d.inventory : d.history
@@ -406,34 +443,37 @@ function render(){
       <div class="stat"><strong>${d.winRate}%</strong><span>Win Rate</span></div>
     </div>
 
-    ${activeTab === "analytics" ? analyticsHTML(d) : mainHTML(visible, groups, q)}
+    ${activeTab === "analytics" ? analyticsHTML(d) : mainHTML(visible, groups, q, duplicateCount)}
 
     ${selectedCardId ? sheetHTML() : ""}
   `
 }
 
-function mainHTML(visible, groups, q){
+function mainHTML(visible, groups, q, duplicateCount){
   return `
-    <div class="form">
-      <input id="name" placeholder="Card name" />
-      <div class="row">
-        <input id="value" type="number" placeholder="Original Value $" />
-        <input id="psa" type="number" placeholder="PSA10 Estimate $" />
+    ${activeTab === "inventory" ? `
+      <div class="form">
+        <input id="name" placeholder="Card name" oninput="render()" />
+        ${duplicateCount ? `<div class="warning">⚠ Duplicate detected: ${duplicateCount} existing</div>` : ""}
+        <div class="row">
+          <input id="value" type="number" placeholder="Original Value $" />
+          <input id="psa" type="number" placeholder="PSA10 Estimate $" />
+        </div>
+        <div class="row">
+          <select id="type">
+            <option value="Raw">Raw</option>
+            <option value="Slab">Slab</option>
+          </select>
+          <select id="bucket">
+            <option value="H">Hold</option>
+            <option value="G">Grade</option>
+            <option value="T">Trade</option>
+            <option value="S">Sell</option>
+          </select>
+        </div>
+        <button class="addBtn" onclick="addCard()">Add Card</button>
       </div>
-      <div class="row">
-        <select id="type">
-          <option value="Raw">Raw</option>
-          <option value="Slab">Slab</option>
-        </select>
-        <select id="bucket">
-          <option value="H">Hold</option>
-          <option value="G">Grade</option>
-          <option value="T">Trade</option>
-          <option value="S">Sell</option>
-        </select>
-      </div>
-      <button class="addBtn" onclick="addCard()">Add Card</button>
-    </div>
+    ` : ""}
 
     <input id="search" class="search" placeholder="Search cards..." value="${q}" oninput="render()" />
 
@@ -467,7 +507,7 @@ function cardHTML(c){
       <div class="cardTop">
         <div>
           <div class="name">${c.name}</div>
-          <div class="meta">${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]}</div>
+          <div class="meta">${c.type} · ${getAnchor(c.name)}</div>
 
           <span class="badge ${c.bucket}">${bucketLabels[c.bucket]}</span>
           <span class="signal ${a.signalClass}">${a.signal}</span>
@@ -481,11 +521,11 @@ function cardHTML(c){
             </div>
             ${c.reasonSold ? `<div class="meta">Reason: ${reasonLabels[c.reasonSold] || c.reasonSold}</div>` : ""}
             ${c.gradeOutcome ? `<div class="meta">Grade Outcome: ${gradeLabels[c.gradeOutcome] || c.gradeOutcome}</div>` : ""}
+          ` : c.status === "traded" ? `
+            <div class="meta">Traded for: ${c.tradedFor}</div>
           ` : `
             <div class="meta">Cost ${money(a.cost)} · PSA10 Est ${money(a.psa)}</div>
           `}
-
-          ${c.status === "traded" ? `<div class="meta">Traded for: ${c.tradedFor}</div>` : ""}
         </div>
 
         <div class="valueBox">
@@ -518,6 +558,15 @@ function analyticsHTML(d){
     `)
     .join("")
 
+  const soldSorted = [...d.sold].sort((a,b)=>{
+    const pa = Number(a.salePrice || 0) - Number(a.value || 0)
+    const pb = Number(b.salePrice || 0) - Number(b.value || 0)
+    return pb - pa
+  })
+
+  const best = soldSorted[0]
+  const worst = soldSorted[soldSorted.length - 1]
+
   return `
     <div class="analyticsCard">
       <div class="name">Capital Snapshot</div>
@@ -536,8 +585,29 @@ function analyticsHTML(d){
     </div>
 
     <div class="analyticsCard">
+      <div class="name">Best Sale</div>
+      ${best ? saleMini(best) : `<div class="meta">No sold cards yet</div>`}
+    </div>
+
+    <div class="analyticsCard">
+      <div class="name">Worst Sale</div>
+      ${worst ? saleMini(worst) : `<div class="meta">No sold cards yet</div>`}
+    </div>
+
+    <div class="analyticsCard">
       <div class="name">Why Cards Were Sold</div>
       ${reasons || `<div class="meta">No sold reasons yet</div>`}
+    </div>
+  `
+}
+
+function saleMini(c){
+  const profit = Number(c.salePrice || 0) - Number(c.value || 0)
+  return `
+    <div class="meta"><b>${c.name}</b></div>
+    <div class="meta">
+      Sold ${money(c.salePrice)} · Cost ${money(c.value)} · 
+      <b class="${profit>=0?"green":"red"}">${profit>=0?"+":""}${money(profit)}</b>
     </div>
   `
 }
@@ -578,6 +648,10 @@ function sheetHTML(){
 
         <div class="sectionTitle">Card Actions</div>
         <button class="sheetBtn" onclick="openEdit()">Edit Card<small>Fix name, value, PSA, type, bucket</small></button>
+
+        ${(c.status === "sold" || c.status === "traded") ? `
+          <button class="sheetBtn" onclick="restoreCard()">Restore to Inventory<small>Moves this card back to active inventory</small></button>
+        ` : ""}
 
         <div class="sectionTitle">Move</div>
         <button class="sheetBtn" onclick="moveCard('H')">Move to HOLD</button>
