@@ -89,8 +89,16 @@ function analyzeCard(c){
   let signalClass = "neutral"
 
   if(c.status === "sold"){
-    signal = profit > 0 ? "GOOD SELL" : profit < 0 ? "BAD SELL" : "BREAK EVEN"
-    signalClass = profit > 0 ? "green" : profit < 0 ? "red" : "neutral"
+    if(profit > 0){
+      signal = "PROFIT"
+      signalClass = "green"
+    } else if(profit < 0){
+      signal = "LOSS"
+      signalClass = "red"
+    } else {
+      signal = "BREAK EVEN"
+      signalClass = "neutral"
+    }
   } else {
     if(psa > 0 && cost > 0 && psa >= cost * 2){
       signal = "GRADE"
@@ -103,6 +111,9 @@ function analyzeCard(c){
       signalClass = "green"
     }
   }
+
+  return { cost, sale, psa, profit, roi, signal, signalClass }
+}
 
   return { profit, roi, signal, signalClass }
 }
@@ -471,13 +482,21 @@ function analyticsUI(d){
 
 function saleLine(c){
   const analysis = analyzeCard(c)
-  return `<div class="meta"><b>${c.name}</b></div><div class="meta">Sold ${money(c.salePrice)} · Cost ${money(c.value)} · <b class="${analysis.signalClass}">${analysis.profit>=0?"+":""}${money(analysis.profit)} (${analysis.roi}%)</b></div>`
+
+  return `
+    <div class="meta"><b>${c.name}</b></div>
+    <div class="meta">
+      Sale ${money(analysis.sale)} · Cost ${money(analysis.cost)} ·
+      <b class="${analysis.signalClass}">
+        ${analysis.profit >= 0 ? "+" : ""}${money(analysis.profit)}
+        (${analysis.roi}%)
+      </b>
+    </div>
+  `
 }
 
 function cardHTML(c){
   const analysis = analyzeCard(c)
-  const original = Number(c.value || 0)
-  const sale = Number(c.salePrice || 0)
 
   return `
     <div class="card">
@@ -485,27 +504,35 @@ function cardHTML(c){
         <div>
           <div class="name">${c.name}</div>
           <div class="meta">${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]}</div>
+
           <span class="badge ${c.bucket}">${bucketLabels[c.bucket]}</span>
           <span class="signal ${analysis.signalClass}">${analysis.signal}</span>
 
           ${c.status==="active" ? `
             <div class="meta">
-              Cost ${money(original)} · PSA10 Est ${money(c.psa10_est || 0)}
+              Cost ${money(analysis.cost)} · PSA10 Est ${money(analysis.psa)}
             </div>
           ` : ""}
 
           ${c.status==="sold" ? `
             <div class="meta">
-              Sold <b class="${analysis.signalClass}">${money(sale)}</b>
-              · Cost ${money(original)}
-              · <b class="${analysis.signalClass}">${analysis.profit>=0?"+":""}${money(analysis.profit)} (${analysis.roi}%)</b>
+              Sale: <b class="${analysis.signalClass}">${money(analysis.sale)}</b><br>
+              Cost: ${money(analysis.cost)}<br>
+              Result:
+              <b class="${analysis.signalClass}">
+                ${analysis.profit >= 0 ? "+" : ""}${money(analysis.profit)}
+                (${analysis.roi}%)
+              </b>
             </div>
           ` : ""}
 
-          ${c.status==="traded" ? `<div class="meta">Traded for: ${c.tradedFor || "Not specified"}</div>` : ""}
+          ${c.status==="traded" ? `
+            <div class="meta">Traded for: ${c.tradedFor || "Not specified"}</div>
+          ` : ""}
         </div>
+
         <div style="text-align:right">
-          <div class="value">${money(original)}</div>
+          <div class="value">${money(analysis.cost)}</div>
           <button class="manage" onclick="openManage(${c.id})">Manage</button>
         </div>
       </div>
