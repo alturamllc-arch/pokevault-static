@@ -157,8 +157,8 @@ function render(){
   app.innerHTML = `
     <div class="top">
       <h1>PokéVault</h1>
-      <button class="iconBtn" onclick="resetAll()">↻</button>
-    </div>
+      <button class="iconBtn" <button onclick="exportData()">⬇️</button>
+<button onclick="resetAll()">🗑️</button>
 
     <div class="tabs">
       <button class="tab ${activeTab==="inventory"?"active":""}" onclick="activeTab='inventory';render()">Inventory</button>
@@ -265,6 +265,21 @@ function analyticsUI(d){
       `).join("")}
     </div>
   `
+}
+function exportData(){
+  const data = {
+    cards: cards,
+    history: history
+  };
+
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json"
+  });
+
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "pokevault-backup.json";
+  a.click();
 }
 
 function saleLine(c){
