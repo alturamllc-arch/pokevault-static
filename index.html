@@ -1,61 +1,47 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>PokéVault</title>
 
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#f7f7f8;color:#111;font-family:Arial,sans-serif}
-#app{max-width:480px;margin:auto;padding:20px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-h1{margin:0;font-size:34px;font-weight:900}
-.reset{width:54px;height:54px;border-radius:16px;border:none;background:#181818;color:white;font-size:22px}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
-.tab{border:none;border-radius:16px;padding:14px 8px;font-weight:900;font-size:15px;background:#eee;color:#777}
-.tab.active{background:#181818;color:white}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
-.stat{background:#eee;border-radius:16px;padding:14px 6px;text-align:center}
-.stat.dark{background:#181818;color:white}
-.stat strong{display:block;font-size:20px}
-.stat span{color:#777;font-size:11px}
-.stat.dark span{color:#aaa}
-.form{background:white;padding:16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
-input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;padding:14px;font-size:16px;margin-bottom:10px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.addBtn{width:100%;border:none;background:#181818;color:white;border-radius:14px;padding:15px;font-size:16px;font-weight:900}
-.search{width:100%;border:none;background:#eee;border-radius:18px;padding:18px;font-size:18px;margin-bottom:14px}
-.pills{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
-.pill{flex:0 0 auto;border:none;border-radius:999px;padding:14px 20px;font-size:15px;font-weight:900}
-.H{background:#6f936a;color:white}
-.G{background:#6687c2;color:white}
-.T{background:#e28a55;color:white}
-.S{background:#c76565;color:white}
-.anchor{background:#eef0ed;color:#666}
-.anchor.active{background:#181818;color:white}
-.groupTitle{font-size:19px;font-weight:900;margin:20px 0 10px}
-.card,.analyticsCard{background:white;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
-.cardTop{display:flex;justify-content:space-between;gap:12px}
-.name{font-weight:900;font-size:17px}
-.meta{color:#777;font-size:13px;line-height:1.45;margin-top:5px}
-.value{font-size:18px;font-weight:900;color:#111}
-.badge,.signal{display:inline-block;margin-top:10px;margin-right:5px;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:900}
-.signal{background:#f1f1f1}
-.green{color:#15803d!important}
-.red{color:#dc2626!important}
-.blue{color:#2563eb!important}
-.neutral{color:#111!important}
-.manage{margin-top:10px;background:#181818;color:white;border:none;border-radius:12px;padding:10px 14px;font-weight:900}
-.empty{text-align:center;color:#777;padding:40px}
-.sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;z-index:99}
-.sheet{width:100%;max-width:480px;margin:auto;background:white;border-radius:26px 26px 0 0;padding:20px;max-height:90vh;overflow-y:auto}
-.sheet h3{margin:0 0 6px;font-size:22px}
-.sheet p{margin:0 0 16px;color:#777}
-.sheetBtn{width:100%;text-align:left;border:none;background:#f1f1f1;border-radius:16px;padding:15px;margin-bottom:10px;font-size:15px;font-weight:900}
-.sheetBtn small{display:block;color:#777;margin-top:4px;font-weight:500}
-.close{width:100%;border:none;background:#181818;color:white;border-radius:16px;padding:15px;font-weight:900}
-.danger{background:#fee2e2!important;color:#991b1b!important}
+body{font-family:Arial;margin:0;background:#f5f5f5;color:#111}
+#app{max-width:480px;margin:auto;padding:16px}
+
+h1{font-size:28px;font-weight:900}
+
+.card{
+  background:white;
+  padding:14px;
+  border-radius:16px;
+  margin-bottom:12px;
+}
+
+.name{font-weight:900}
+.meta{color:#777;font-size:13px}
+
+.green{color:#15803d}
+.red{color:#dc2626}
+.blue{color:#2563eb}
+
+button{padding:10px;border:none;border-radius:10px;margin-top:6px}
+.manage{background:#111;color:white}
+
+.sheet{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:white;
+  padding:20px;
+  border-radius:20px 20px 0 0;
+}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.5);
+}
 </style>
 </head>
 
@@ -63,470 +49,161 @@ input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;paddin
 <div id="app"></div>
 
 <script>
-const KEY = "pokevault_rebuild_phaseA2"
 
-let cards = JSON.parse(localStorage.getItem(KEY) || "[]")
-let activeTab = "inventory"
-let activeBucket = "All"
-let activeAnchor = "All"
-let selectedCardId = null
-let editing = false
+const API = "PASTE_YOUR_SCRIPT_URL_HERE"
 
-const bucketLabels = {
-  H:"HOLD",
-  G:"GRADE",
-  T:"TRADE",
-  S:"SELL"
-}
+let cards = []
+let selected = null
 
-const reasonLabels = {
-  flip:"Quick Flip",
-  cash:"Need Cash",
-  drop:"Market Drop",
-  overpay:"Overpaid",
-  upgrade:"Upgrade Capital"
-}
-
-const gradeLabels = {
-  psa10:"PSA 10",
-  psa9:"PSA 9",
-  psa8:"PSA 8",
-  none:"Not Graded"
-}
-
-function save(){
-  localStorage.setItem(KEY, JSON.stringify(cards))
+async function load(){
+  const res = await fetch(API)
+  cards = await res.json()
   render()
 }
 
-function money(n){
-  return "$" + Number(n || 0).toLocaleString()
-}
-
-function getAnchor(name){
-  const n = String(name || "").toLowerCase()
-  if(n.includes("pikachu") || n.includes("pichu")) return "Pikachu"
-  if(n.includes("charizard") || n.includes("charmeleon")) return "Charizard"
-  if(n.includes("umbreon")) return "Umbreon"
-  return "Other"
-}
-
-function analyzeCard(c){
-  const cost = Number(c.value || 0)
-  const psa = Number(c.psa || 0)
-  const sale = Number(c.salePrice || 0)
-  const profit = sale - cost
-  const roi = cost ? Math.round((profit / cost) * 100) : 0
-
-  let signal = "HOLD"
-  let signalClass = "green"
-
-  if(c.status === "sold"){
-    if(profit > 0){
-      signal = "PROFIT"
-      signalClass = "green"
-    }else if(profit < 0){
-      signal = "LOSS"
-      signalClass = "red"
-    }else{
-      signal = "BREAK EVEN"
-      signalClass = "neutral"
-    }
-  }else{
-    if(psa > 0 && cost > 0 && psa >= cost * 2){
-      signal = "GRADE"
-      signalClass = "blue"
-    }else if(psa > 0 && cost > 0 && psa <= cost * 1.3){
-      signal = "SELL"
-      signalClass = "red"
-    }
-  }
-
-  return {cost,psa,sale,profit,roi,signal,signalClass}
-}
-
-function addCard(){
-  const name = document.getElementById("name").value.trim()
-  const value = Number(document.getElementById("value").value || 0)
-  const psa = Number(document.getElementById("psa").value || 0)
-  const type = document.getElementById("type").value
-  const bucket = document.getElementById("bucket").value
-
-  if(!name) return alert("Enter card name")
-
-  cards.push({
-    id:Date.now(),
-    name,
-    value,
-    psa,
-    type,
-    bucket,
-    status:"active",
-    salePrice:0,
-    tradedFor:"",
-    reasonSold:"",
-    gradeOutcome:"",
-    createdAt:new Date().toISOString(),
-    soldAt:"",
-    tradedAt:""
-  })
-
-  save()
-}
-
-function openManage(id){
-  selectedCardId = id
-  editing = false
-  render()
-}
-
-function closeManage(){
-  selectedCardId = null
-  editing = false
-  render()
-}
-
-function openEdit(){
-  editing = true
-  render()
-}
-
-function closeEdit(){
-  editing = false
-  render()
-}
-
-function saveEdit(){
-  const c = cards.find(x => x.id === selectedCardId)
-  if(!c) return
-
-  const name = document.getElementById("editName").value.trim()
-  if(!name) return alert("Card name required")
-
-  c.name = name
-  c.value = Number(document.getElementById("editValue").value || 0)
-  c.psa = Number(document.getElementById("editPSA").value || 0)
-  c.type = document.getElementById("editType").value
-  c.bucket = document.getElementById("editBucket").value
-
-  save()
-  closeManage()
-}
-
-function moveCard(bucket){
-  const c = cards.find(x => x.id === selectedCardId)
-  if(!c) return
-
-  c.bucket = bucket
-  c.status = "active"
-  c.salePrice = 0
-  c.tradedFor = ""
-  c.reasonSold = ""
-  c.gradeOutcome = ""
-  c.soldAt = ""
-  c.tradedAt = ""
-
-  save()
-  closeManage()
-}
-
-function markSold(){
-  const c = cards.find(x => x.id === selectedCardId)
-  if(!c) return
-
-  const sale = Number(document.getElementById("saleInput").value || 0)
-  if(!sale) return alert("Enter sale price")
-
-  c.status = "sold"
-  c.salePrice = sale
-  c.reasonSold = document.getElementById("reasonInput").value
-  c.gradeOutcome = document.getElementById("gradeInput").value
-  c.soldAt = new Date().toISOString()
-
-  save()
-  closeManage()
-}
-
-function markTraded(){
-  const c = cards.find(x => x.id === selectedCardId)
-  if(!c) return
-
-  const tradedFor = document.getElementById("tradeInput").value.trim()
-  if(!tradedFor) return alert("Enter trade details")
-
-  c.status = "traded"
-  c.tradedFor = tradedFor
-  c.tradedAt = new Date().toISOString()
-
-  save()
-  closeManage()
-}
-
-function deleteCard(){
-  const confirmDelete = prompt("Type DELETE to confirm")
-  if(confirmDelete !== "DELETE") return
-
-  cards = cards.filter(c => c.id !== selectedCardId)
-  save()
-  closeManage()
-}
-
-function resetAll(){
-  const confirmReset = prompt("Type DELETE to wipe all data")
-  if(confirmReset !== "DELETE") return
-
-  cards = []
-  save()
-}
-
-function getData(){
-  const inventory = cards.filter(c => !c.status || c.status === "active")
-  const sold = cards.filter(c => c.status === "sold")
-  const traded = cards.filter(c => c.status === "traded")
-  const history = [...sold, ...traded]
-
-  const inventoryValue = inventory.reduce((s,c)=>s+Number(c.value||0),0)
-  const totalSold = sold.reduce((s,c)=>s+Number(c.salePrice||0),0)
-  const totalProfit = sold.reduce((s,c)=>s+(Number(c.salePrice||0)-Number(c.value||0)),0)
-  const costSold = sold.reduce((s,c)=>s+Number(c.value||0),0)
-  const roi = costSold ? Math.round((totalProfit / costSold) * 100) : 0
-  const winRate = sold.length ? Math.round((sold.filter(c => Number(c.salePrice||0) > Number(c.value||0)).length / sold.length) * 100) : 0
-  const slabs = inventory.filter(c => c.type === "Slab").length
-  const raw = inventory.filter(c => c.type === "Raw").length
-
-  return {inventory,sold,traded,history,inventoryValue,totalSold,totalProfit,roi,winRate,slabs,raw}
+function risk(c){
+  const ratio = c.psa / c.value
+  if(ratio >= 2) return ["GRADE","blue"]
+  if(ratio <= 1.2) return ["LOW UPSIDE","red"]
+  return ["HOLD","green"]
 }
 
 function render(){
+
   const app = document.getElementById("app")
-  const q = document.getElementById("search")?.value.toLowerCase() || ""
-  const d = getData()
-
-  let visible = activeTab === "inventory" ? d.inventory : d.history
-
-  visible = visible.filter(c => {
-    if(activeBucket !== "All" && c.bucket !== activeBucket) return false
-    if(activeAnchor !== "All" && getAnchor(c.name) !== activeAnchor) return false
-    if(q && !c.name.toLowerCase().includes(q)) return false
-    return true
-  })
-
-  const groups = {Pikachu:[],Charizard:[],Umbreon:[],Other:[]}
-  visible.forEach(c => groups[getAnchor(c.name)].push(c))
 
   app.innerHTML = `
-    <div class="top">
-      <h1>PokéVault</h1>
-      <button class="reset" onclick="resetAll()">🗑</button>
-    </div>
+    <h1>PokéVault</h1>
 
-    <div class="tabs">
-      <button class="tab ${activeTab==="inventory"?"active":""}" onclick="activeTab='inventory';render()">Inventory</button>
-      <button class="tab ${activeTab==="history"?"active":""}" onclick="activeTab='history';render()">History</button>
-      <button class="tab ${activeTab==="analytics"?"active":""}" onclick="activeTab='analytics';render()">Analytics</button>
-    </div>
+    <button onclick="add()">Add Test Card</button>
 
-    <div class="stats">
-      <div class="stat dark"><strong>${money(d.inventoryValue)}</strong><span>Inventory</span></div>
-      <div class="stat"><strong>${d.inventory.length}</strong><span>Cards</span></div>
-      <div class="stat"><strong>${d.slabs}</strong><span>Slabs</span></div>
-      <div class="stat"><strong>${d.raw}</strong><span>Raw</span></div>
-    </div>
+    ${cards.map(c=>{
+      const r = risk(c)
 
-    <div class="stats">
-      <div class="stat dark"><strong class="green">${money(d.totalSold)}</strong><span>Total Sold</span></div>
-      <div class="stat"><strong class="${d.totalProfit>0?"green":d.totalProfit<0?"red":"neutral"}">${d.totalProfit>=0?"+":""}${money(d.totalProfit)}</strong><span>P/L</span></div>
-      <div class="stat"><strong>${d.winRate}%</strong><span>Win Rate</span></div>
-      <div class="stat"><strong>${d.traded.length}</strong><span>Traded</span></div>
-    </div>
-
-    ${activeTab === "analytics" ? analyticsHTML(d) : mainHTML(visible, groups, q)}
-
-    ${selectedCardId ? sheetHTML() : ""}
-  `
-}
-
-function mainHTML(visible, groups, q){
-  return `
-    <div class="form">
-      <input id="name" placeholder="Card name" />
-      <div class="row">
-        <input id="value" type="number" placeholder="Original Value $" />
-        <input id="psa" type="number" placeholder="PSA10 Estimate $" />
-      </div>
-      <div class="row">
-        <select id="type">
-          <option value="Raw">Raw</option>
-          <option value="Slab">Slab</option>
-        </select>
-        <select id="bucket">
-          <option value="H">Hold</option>
-          <option value="G">Grade</option>
-          <option value="T">Trade</option>
-          <option value="S">Sell</option>
-        </select>
-      </div>
-      <button class="addBtn" onclick="addCard()">Add Card</button>
-    </div>
-
-    <input id="search" class="search" placeholder="Search cards..." value="${q}" oninput="render()" />
-
-    <div class="pills">
-      ${["H","G","T","S"].map(b => `
-        <button class="pill ${b}" onclick="activeBucket=activeBucket==='${b}'?'All':'${b}';render()">${bucketLabels[b]}</button>
-      `).join("")}
-    </div>
-
-    <div class="pills">
-      ${["All","Pikachu","Charizard","Umbreon","Other"].map(a => `
-        <button class="pill anchor ${activeAnchor===a?"active":""}" onclick="activeAnchor='${a}';render()">${a}</button>
-      `).join("")}
-    </div>
-
-    <div>
-      ${visible.length === 0 ? `<div class="empty">No cards here</div>` : Object.entries(groups).map(([anchor,list])=>{
-        if(!list.length) return ""
-        return `<div class="groupTitle">${anchor}</div>${list.map(cardHTML).join("")}`
-      }).join("")}
-    </div>
-  `
-}
-
-function cardHTML(c){
-  const a = analyzeCard(c)
-
-  return `
-    <div class="card">
-      <div class="cardTop">
-        <div>
+      return `
+        <div class="card">
           <div class="name">${c.name}</div>
-          <div class="meta">${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]}</div>
-          <span class="badge ${c.bucket}">${bucketLabels[c.bucket]}</span>
-          <span class="signal ${a.signalClass}">${a.signal}</span>
+          <div class="meta">${c.type} · ${c.bucket}</div>
+
+          <div>${c.value}$</div>
+          <div class="${r[1]}">${r[0]}</div>
 
           ${c.status === "sold" ? `
-            <div class="meta">
-              Sale: <b class="${a.signalClass}">${money(a.sale)}</b><br>
-              Cost: ${money(a.cost)}<br>
-              Result: <b class="${a.signalClass}">${a.profit>=0?"+":""}${money(a.profit)} (${a.roi}%)</b>
-            </div>
-            ${c.reasonSold ? `<div class="meta">Reason: ${reasonLabels[c.reasonSold] || c.reasonSold}</div>` : ""}
-            ${c.gradeOutcome ? `<div class="meta">Grade Outcome: ${gradeLabels[c.gradeOutcome] || c.gradeOutcome}</div>` : ""}
-          ` : `
-            <div class="meta">Cost ${money(a.cost)} · PSA10 Est ${money(a.psa)}</div>
-          `}
+            <div class="red">Sold: ${c.salePrice}$</div>
+            <div>Reason: ${c.reasonSold}</div>
+          ` : ""}
 
-          ${c.status === "traded" ? `<div class="meta">Traded for: ${c.tradedFor}</div>` : ""}
+          <button class="manage" onclick="open('${c.id}')">Manage</button>
         </div>
+      `
+    }).join("")}
 
-        <div style="text-align:right">
-          <div class="value">${money(a.cost)}</div>
-          <button class="manage" onclick="openManage(${c.id})">Manage</button>
-        </div>
-      </div>
-    </div>
+    ${selected ? sheet() : ""}
   `
 }
 
-function analyticsHTML(d){
-  const reasonCounts = {}
-  d.sold.forEach(c => {
-    const key = c.reasonSold || "unknown"
-    reasonCounts[key] = (reasonCounts[key] || 0) + 1
+function open(id){
+  selected = cards.find(c=>c.id==id)
+  render()
+}
+
+function close(){
+  selected = null
+  render()
+}
+
+async function update(updates){
+  await fetch(API,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"update",
+      id:selected.id,
+      updates
+    })
   })
+  await load()
+  close()
+}
 
-  const reasons = Object.entries(reasonCounts)
-    .map(([key,count]) => `<div class="meta">${reasonLabels[key] || key}: <b>${count}</b></div>`)
-    .join("")
-
+function sheet(){
   return `
-    <div class="analyticsCard">
-      <div class="name">Performance Summary</div>
-      <div class="meta">ROI: <b class="${d.roi>=0?"green":"red"}">${d.roi}%</b></div>
-      <div class="meta">Win Rate: <b>${d.winRate}%</b></div>
-      <div class="meta">Total Sold: <b class="green">${money(d.totalSold)}</b></div>
-      <div class="meta">Total P/L: <b class="${d.totalProfit>=0?"green":"red"}">${d.totalProfit>=0?"+":""}${money(d.totalProfit)}</b></div>
-    </div>
+  <div class="overlay" onclick="close()">
+    <div class="sheet" onclick="event.stopPropagation()">
 
-    <div class="analyticsCard">
-      <div class="name">Why Cards Were Sold</div>
-      ${reasons || `<div class="meta">No sold reasons yet</div>`}
+      <h3>${selected.name}</h3>
+
+      <button onclick="update({bucket:'H'})">HOLD</button>
+      <button onclick="update({bucket:'G'})">GRADE</button>
+      <button onclick="update({bucket:'T'})">TRADE</button>
+      <button onclick="update({bucket:'S'})">SELL</button>
+
+      <hr>
+
+      <input id="sale" placeholder="Sale price" />
+
+      <select id="reason">
+        <option value="">Reason</option>
+        <option value="flip">Flip</option>
+        <option value="drop">Market Drop</option>
+      </select>
+
+      <button onclick="sell()">Mark SOLD</button>
+
+      <hr>
+
+      <button onclick="remove()">Delete</button>
+
     </div>
+  </div>
   `
 }
 
-function sheetHTML(){
-  const c = cards.find(x => x.id === selectedCardId)
-  if(!c) return ""
+async function sell(){
+  const price = document.getElementById("sale").value
+  const reason = document.getElementById("reason").value
 
-  if(editing){
-    return `
-      <div class="sheetBack" onclick="closeEdit()">
-        <div class="sheet" onclick="event.stopPropagation()">
-          <h3>Edit Card</h3>
-          <input id="editName" value="${c.name}" />
-          <input id="editValue" type="number" value="${c.value}" />
-          <input id="editPSA" type="number" value="${c.psa}" />
-          <select id="editType">
-            <option value="Raw" ${c.type==="Raw"?"selected":""}>Raw</option>
-            <option value="Slab" ${c.type==="Slab"?"selected":""}>Slab</option>
-          </select>
-          <select id="editBucket">
-            ${["H","G","T","S"].map(b=>`
-              <option value="${b}" ${c.bucket===b?"selected":""}>${bucketLabels[b]}</option>
-            `).join("")}
-          </select>
-          <button class="sheetBtn" onclick="saveEdit()">Save Changes</button>
-          <button class="close" onclick="closeEdit()">Cancel</button>
-        </div>
-      </div>
-    `
-  }
-
-  return `
-    <div class="sheetBack" onclick="closeManage()">
-      <div class="sheet" onclick="event.stopPropagation()">
-        <h3>${c.name}</h3>
-        <p>${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]}</p>
-
-        <button class="sheetBtn" onclick="openEdit()">Edit Card<small>Fix name, value, PSA, type, bucket</small></button>
-
-        <input id="saleInput" type="number" placeholder="Sale price $" />
-
-        <select id="reasonInput">
-          <option value="">Reason Sold</option>
-          <option value="flip">Quick Flip</option>
-          <option value="cash">Need Cash</option>
-          <option value="drop">Market Drop</option>
-          <option value="overpay">Overpaid</option>
-          <option value="upgrade">Upgrade Capital</option>
-        </select>
-
-        <select id="gradeInput">
-          <option value="">Grade Outcome</option>
-          <option value="psa10">PSA 10</option>
-          <option value="psa9">PSA 9</option>
-          <option value="psa8">PSA 8</option>
-          <option value="none">Not Graded</option>
-        </select>
-
-        <input id="tradeInput" placeholder="Traded for what?" />
-
-        <button class="sheetBtn" onclick="moveCard('H')">Move to HOLD</button>
-        <button class="sheetBtn" onclick="moveCard('G')">Move to GRADE</button>
-        <button class="sheetBtn" onclick="moveCard('T')">Move to TRADE</button>
-        <button class="sheetBtn" onclick="moveCard('S')">Move to SELL</button>
-        <button class="sheetBtn" onclick="markSold()">Mark SOLD</button>
-        <button class="sheetBtn" onclick="markTraded()">Mark TRADED</button>
-        <button class="sheetBtn danger" onclick="deleteCard()">Delete Permanently</button>
-
-        <button class="close" onclick="closeManage()">Cancel</button>
-      </div>
-    </div>
-  `
+  await update({
+    status:"sold",
+    salePrice:price,
+    reasonSold:reason,
+    soldAt:new Date().toISOString()
+  })
 }
 
-render()
+async function remove(){
+  await fetch(API,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"delete",
+      id:selected.id
+    })
+  })
+  await load()
+  close()
+}
+
+async function add(){
+  await fetch(API,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"add",
+      card:{
+        id:Date.now(),
+        name:"Test Card",
+        value:100,
+        psa:200,
+        type:"Raw",
+        bucket:"H",
+        status:"active",
+        createdAt:new Date().toISOString()
+      }
+    })
+  })
+  await load()
+}
+
+load()
+
 </script>
 </body>
 </html>
