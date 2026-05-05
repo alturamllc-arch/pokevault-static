@@ -3,207 +3,318 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>PokéVault</title>
-
 <style>
-body{font-family:Arial;margin:0;background:#f5f5f5;color:#111}
-#app{max-width:480px;margin:auto;padding:16px}
-
-h1{font-size:28px;font-weight:900}
-
-.card{
-  background:white;
-  padding:14px;
-  border-radius:16px;
-  margin-bottom:12px;
-}
-
-.name{font-weight:900}
-.meta{color:#777;font-size:13px}
-
-.green{color:#15803d}
-.red{color:#dc2626}
-.blue{color:#2563eb}
-
-button{padding:10px;border:none;border-radius:10px;margin-top:6px}
-.manage{background:#111;color:white}
-
-.sheet{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:white;
-  padding:20px;
-  border-radius:20px 20px 0 0;
-}
-
-.overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.5);
-}
+*{box-sizing:border-box}
+body{margin:0;background:#f7f7f8;font-family:Arial,sans-serif;color:#111}
+#app{max-width:480px;margin:auto;padding:18px}
+.top{display:flex;justify-content:space-between;align-items:center}
+h1{font-size:34px;margin:0;font-weight:900}
+button{border:none;border-radius:14px;padding:12px;font-weight:900}
+.black{background:#111;color:#fff}
+.tabs,.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.stats{grid-template-columns:repeat(4,1fr)}
+.tab,.stat{background:#eee;border-radius:16px;padding:14px 8px;text-align:center}
+.tab.active,.stat.dark{background:#111;color:white}
+.stat strong{font-size:20px;display:block}
+.stat span{font-size:11px;color:#777}
+.stat.dark span{color:#aaa}
+.form,.card,.panel{background:#fff;border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+input,select{width:100%;border:none;background:#eee;border-radius:14px;padding:14px;margin-bottom:10px;font-size:16px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.add{width:100%;background:#111;color:white}
+.pills{display:flex;gap:10px;overflow-x:auto;margin-bottom:14px}
+.pill{flex:0 0 auto;padding:12px 18px;border-radius:999px;color:white}
+.H{background:#6f936a}.G{background:#6687c2}.T{background:#e28a55}.S{background:#c76565}
+.anchor{background:#e9e9e9;color:#555}
+.anchor.active{background:#111;color:#fff}
+.group{font-weight:900;font-size:20px;margin:18px 0 10px}
+.cardTop{display:flex;justify-content:space-between;gap:12px}
+.name{font-size:17px;font-weight:900}
+.meta{font-size:13px;color:#777;margin-top:5px;line-height:1.4}
+.value{font-size:20px;font-weight:900}
+.badge,.signal{display:inline-block;margin-top:10px;margin-right:5px;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:900}
+.signal{background:#eee}
+.green{color:#15803d!important}.red{color:#dc2626!important}.blue{color:#2563eb!important}.neutral{color:#111!important}
+.sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end}
+.sheet{background:white;width:100%;max-width:480px;margin:auto;border-radius:24px 24px 0 0;padding:20px;max-height:90vh;overflow-y:auto}
+.sheetBtn{width:100%;text-align:left;margin-bottom:8px;background:#eee}
+.close{width:100%;background:#111;color:white;margin-top:10px}
+.empty{text-align:center;color:#777;padding:40px}
+.sync{font-size:12px;color:#666;margin-top:6px}
 </style>
 </head>
-
 <body>
 <div id="app"></div>
 
 <script>
+const API = "https://script.google.com/macros/s/AKfycbxZsuTh8zUQMAVJhlP0IQLybosA2eWsfCVuWEYLTMTtHDv02dA1aioXpyxklIPNbncAmA/exec"
 
-const API = "PASTE_YOUR_SCRIPT_URL_HERE"
-
-let cards = []
+let cards = JSON.parse(localStorage.getItem("pokevault_cards") || "[]")
+let tab = "inventory"
+let bucketFilter = "All"
+let anchorFilter = "All"
 let selected = null
+let editing = false
+let syncStatus = "Local loaded"
 
-async function load(){
-  const res = await fetch(API)
-  cards = await res.json()
+const bucketLabels = {H:"HOLD",G:"GRADE",T:"TRADE",S:"SELL"}
+
+function money(n){return "$"+Number(n||0).toLocaleString()}
+function saveLocal(){localStorage.setItem("pokevault_cards",JSON.stringify(cards))}
+function getAnchor(name){
+  const n=String(name||"").toLowerCase()
+  if(n.includes("pikachu")||n.includes("pichu")) return "Pikachu"
+  if(n.includes("charizard")||n.includes("charmeleon")) return "Charizard"
+  if(n.includes("umbreon")) return "Umbreon"
+  return "Other"
+}
+function normalize(c){
+  return {
+    id:String(c.id||Date.now()+Math.random()),
+    name:c.name||"",
+    value:Number(c.value||0),
+    psa:Number(c.psa||0),
+    type:c.type||"Raw",
+    bucket:c.bucket||"H",
+    status:c.status||"active",
+    salePrice:Number(c.salePrice||0),
+    tradedFor:c.tradedFor||"",
+    reasonSold:c.reasonSold||"",
+    gradeOutcome:c.gradeOutcome||"",
+    createdAt:c.createdAt||"",
+    soldAt:c.soldAt||"",
+    tradedAt:c.tradedAt||""
+  }
+}
+async function loadCloud(){
+  try{
+    syncStatus="Loading cloud..."
+    render()
+    const r=await fetch(API,{cache:"no-store"})
+    const data=await r.json()
+    if(Array.isArray(data) && data.length){
+      cards=data.map(normalize)
+      saveLocal()
+      syncStatus="Cloud loaded"
+    }else{
+      syncStatus="Cloud empty"
+    }
+  }catch(e){syncStatus="Cloud unavailable"}
   render()
 }
-
-function risk(c){
-  const ratio = c.psa / c.value
-  if(ratio >= 2) return ["GRADE","blue"]
-  if(ratio <= 1.2) return ["LOW UPSIDE","red"]
-  return ["HOLD","green"]
-}
-
-function render(){
-
-  const app = document.getElementById("app")
-
-  app.innerHTML = `
-    <h1>PokéVault</h1>
-
-    <button onclick="add()">Add Test Card</button>
-
-    ${cards.map(c=>{
-      const r = risk(c)
-
-      return `
-        <div class="card">
-          <div class="name">${c.name}</div>
-          <div class="meta">${c.type} · ${c.bucket}</div>
-
-          <div>${c.value}$</div>
-          <div class="${r[1]}">${r[0]}</div>
-
-          ${c.status === "sold" ? `
-            <div class="red">Sold: ${c.salePrice}$</div>
-            <div>Reason: ${c.reasonSold}</div>
-          ` : ""}
-
-          <button class="manage" onclick="open('${c.id}')">Manage</button>
-        </div>
-      `
-    }).join("")}
-
-    ${selected ? sheet() : ""}
-  `
-}
-
-function open(id){
-  selected = cards.find(c=>c.id==id)
-  render()
-}
-
-function close(){
-  selected = null
-  render()
-}
-
-async function update(updates){
-  await fetch(API,{
-    method:"POST",
-    body:JSON.stringify({
-      action:"update",
-      id:selected.id,
-      updates
+async function syncCloud(){
+  try{
+    syncStatus="Syncing..."
+    render()
+    await fetch(API,{
+      method:"POST",
+      headers:{"Content-Type":"text/plain"},
+      body:JSON.stringify({action:"replace",cards})
     })
-  })
-  await load()
-  close()
+    syncStatus="Cloud synced"
+  }catch(e){syncStatus="Sync failed, saved local"}
+  render()
 }
+function analyze(c){
+  const cost=Number(c.value||0), sale=Number(c.salePrice||0), psa=Number(c.psa||0)
+  const profit=sale-cost
+  const roi=cost?Math.round((profit/cost)*100):0
+  let signal="HOLD", cls="green", risk="MONITOR", riskCls="neutral"
 
-function sheet(){
-  return `
-  <div class="overlay" onclick="close()">
-    <div class="sheet" onclick="event.stopPropagation()">
+  if(c.status==="sold"){
+    if(profit>0){signal="PROFIT";cls="green"}
+    else if(profit<0){signal="LOSS";cls="red"}
+    else{signal="BREAK EVEN";cls="neutral"}
+  }else{
+    const ratio=cost?psa/cost:0
+    if(psa>0 && ratio>=2){signal="GRADE";cls="blue"}
+    else if(psa>0 && ratio<=1.3){signal="SELL";cls="red"}
+    if(psa>0 && ratio>=2.5){risk="STRONG GRADE";riskCls="green"}
+    else if(psa>0 && ratio>=1.5){risk="GOOD UPSIDE";riskCls="blue"}
+    else if(psa>0 && ratio<=1.2){risk="LOW UPSIDE";riskCls="red"}
+  }
+  return {cost,sale,psa,profit,roi,signal,cls,risk,riskCls}
+}
+function addCard(){
+  const name=document.getElementById("name").value.trim()
+  if(!name)return alert("Enter card name")
+  cards.push(normalize({
+    id:Date.now(),
+    name,
+    value:document.getElementById("value").value,
+    psa:document.getElementById("psa").value,
+    type:document.getElementById("type").value,
+    bucket:document.getElementById("bucket").value,
+    status:"active",
+    createdAt:new Date().toISOString()
+  }))
+  saveLocal();syncCloud()
+}
+function updateSelected(updates){
+  cards=cards.map(c=>c.id===selected.id?normalize({...c,...updates}):c)
+  saveLocal()
+  selected=null
+  editing=false
+  syncCloud()
+}
+function deleteSelected(){
+  if(prompt("Type DELETE to confirm")!=="DELETE")return
+  cards=cards.filter(c=>c.id!==selected.id)
+  selected=null
+  saveLocal();syncCloud()
+}
+function resetAll(){
+  if(prompt("Type DELETE to wipe all data")!=="DELETE")return
+  cards=[];saveLocal();syncCloud()
+}
+function getData(){
+  const inventory=cards.filter(c=>c.status==="active")
+  const sold=cards.filter(c=>c.status==="sold")
+  const traded=cards.filter(c=>c.status==="traded")
+  const history=[...sold,...traded]
+  const inventoryValue=inventory.reduce((s,c)=>s+c.value,0)
+  const totalSold=sold.reduce((s,c)=>s+c.salePrice,0)
+  const totalProfit=sold.reduce((s,c)=>s+(c.salePrice-c.value),0)
+  const costSold=sold.reduce((s,c)=>s+c.value,0)
+  const roi=costSold?Math.round((totalProfit/costSold)*100):0
+  const winRate=sold.length?Math.round(sold.filter(c=>c.salePrice>c.value).length/sold.length*100):0
+  const slabs=inventory.filter(c=>c.type==="Slab").length
+  const raw=inventory.filter(c=>c.type==="Raw").length
+  return{inventory,sold,traded,history,inventoryValue,totalSold,totalProfit,roi,winRate,slabs,raw}
+}
+function render(){
+  const d=getData()
+  let visible=tab==="inventory"?d.inventory:d.history
+  visible=visible.filter(c=>{
+    if(bucketFilter!=="All"&&c.bucket!==bucketFilter)return false
+    if(anchorFilter!=="All"&&getAnchor(c.name)!==anchorFilter)return false
+    return true
+  })
+  const groups={Pikachu:[],Charizard:[],Umbreon:[],Other:[]}
+  visible.forEach(c=>groups[getAnchor(c.name)].push(c))
 
-      <h3>${selected.name}</h3>
-
-      <button onclick="update({bucket:'H'})">HOLD</button>
-      <button onclick="update({bucket:'G'})">GRADE</button>
-      <button onclick="update({bucket:'T'})">TRADE</button>
-      <button onclick="update({bucket:'S'})">SELL</button>
-
-      <hr>
-
-      <input id="sale" placeholder="Sale price" />
-
-      <select id="reason">
-        <option value="">Reason</option>
-        <option value="flip">Flip</option>
-        <option value="drop">Market Drop</option>
-      </select>
-
-      <button onclick="sell()">Mark SOLD</button>
-
-      <hr>
-
-      <button onclick="remove()">Delete</button>
-
+  app.innerHTML=`
+  <div class="top">
+    <div>
+      <h1>PokéVault</h1>
+      <div class="sync">${syncStatus}</div>
+    </div>
+    <div>
+      <button class="black" onclick="loadCloud()">⟳</button>
+      <button class="black" onclick="syncCloud()">☁</button>
+      <button onclick="resetAll()">🗑</button>
     </div>
   </div>
-  `
+
+  <div class="tabs">
+    <button class="tab ${tab==="inventory"?"active":""}" onclick="tab='inventory';render()">Inventory</button>
+    <button class="tab ${tab==="history"?"active":""}" onclick="tab='history';render()">History</button>
+    <button class="tab ${tab==="analytics"?"active":""}" onclick="tab='analytics';render()">Analytics</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat dark"><strong>${money(d.inventoryValue)}</strong><span>Inventory</span></div>
+    <div class="stat"><strong>${d.inventory.length}</strong><span>Cards</span></div>
+    <div class="stat"><strong>${d.slabs}</strong><span>Slabs</span></div>
+    <div class="stat"><strong>${d.raw}</strong><span>Raw</span></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat dark"><strong class="green">${money(d.totalSold)}</strong><span>Total Sold</span></div>
+    <div class="stat"><strong class="${d.totalProfit>=0?'green':'red'}">${d.totalProfit>=0?'+':''}${money(d.totalProfit)}</strong><span>P/L</span></div>
+    <div class="stat"><strong>${d.winRate}%</strong><span>Win Rate</span></div>
+    <div class="stat"><strong>${d.traded.length}</strong><span>Traded</span></div>
+  </div>
+
+  ${tab==="analytics"?analytics(d):main(groups,visible)}
+  ${selected?sheet():""}`
 }
+function main(groups,visible){
+  return`
+  <div class="form">
+    <input id="name" placeholder="Card name">
+    <div class="row">
+      <input id="value" type="number" placeholder="Original Value $">
+      <input id="psa" type="number" placeholder="PSA10 Estimate $">
+    </div>
+    <div class="row">
+      <select id="type"><option>Raw</option><option>Slab</option></select>
+      <select id="bucket">
+        <option value="H">Hold</option><option value="G">Grade</option>
+        <option value="T">Trade</option><option value="S">Sell</option>
+      </select>
+    </div>
+    <button class="add" onclick="addCard()">Add Card</button>
+  </div>
 
-async function sell(){
-  const price = document.getElementById("sale").value
-  const reason = document.getElementById("reason").value
+  <div class="pills">${["H","G","T","S"].map(b=>`<button class="pill ${b}" onclick="bucketFilter=bucketFilter==='${b}'?'All':'${b}';render()">${bucketLabels[b]}</button>`).join("")}</div>
+  <div class="pills">${["All","Pikachu","Charizard","Umbreon","Other"].map(a=>`<button class="pill anchor ${anchorFilter===a?'active':''}" onclick="anchorFilter='${a}';render()">${a}</button>`).join("")}</div>
 
-  await update({
-    status:"sold",
-    salePrice:price,
-    reasonSold:reason,
-    soldAt:new Date().toISOString()
-  })
+  ${visible.length?Object.entries(groups).map(([g,list])=>list.length?`<div class="group">${g}</div>${list.map(card).join("")}`:"").join(""):`<div class="empty">No cards here</div>`}`
 }
-
-async function remove(){
-  await fetch(API,{
-    method:"POST",
-    body:JSON.stringify({
-      action:"delete",
-      id:selected.id
-    })
-  })
-  await load()
-  close()
+function card(c){
+  const a=analyze(c)
+  return`
+  <div class="card">
+    <div class="cardTop">
+      <div>
+        <div class="name">${c.name}</div>
+        <div class="meta">${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]}</div>
+        <span class="badge ${c.bucket}">${bucketLabels[c.bucket]}</span>
+        <span class="signal ${a.cls}">${a.signal}</span>
+        ${c.status==="active"?`<span class="signal ${a.riskCls}">${a.risk}</span>`:""}
+        ${c.status==="sold"?`
+          <div class="meta">Sale: <b class="${a.cls}">${money(a.sale)}</b><br>Cost: ${money(a.cost)}<br>Result: <b class="${a.cls}">${a.profit>=0?'+':''}${money(a.profit)} (${a.roi}%)</b></div>
+          ${c.reasonSold?`<div class="meta">Reason: ${c.reasonSold}</div>`:""}
+        `:`<div class="meta">Cost ${money(a.cost)} · PSA10 Est ${money(a.psa)}</div>`}
+        ${c.status==="traded"?`<div class="meta">Traded for: ${c.tradedFor}</div>`:""}
+      </div>
+      <div style="text-align:right">
+        <div class="value">${money(a.cost)}</div>
+        <button class="manage" onclick="selected=cards.find(x=>x.id==='${c.id}');editing=false;render()">Manage</button>
+      </div>
+    </div>
+  </div>`
 }
-
-async function add(){
-  await fetch(API,{
-    method:"POST",
-    body:JSON.stringify({
-      action:"add",
-      card:{
-        id:Date.now(),
-        name:"Test Card",
-        value:100,
-        psa:200,
-        type:"Raw",
-        bucket:"H",
-        status:"active",
-        createdAt:new Date().toISOString()
-      }
-    })
-  })
-  await load()
+function analytics(d){
+  return`
+  <div class="panel">
+    <div class="name">Performance Summary</div>
+    <div class="meta">ROI: <b class="${d.roi>=0?'green':'red'}">${d.roi}%</b></div>
+    <div class="meta">Win Rate: <b>${d.winRate}%</b></div>
+    <div class="meta">Total Sold: <b class="green">${money(d.totalSold)}</b></div>
+    <div class="meta">Total P/L: <b class="${d.totalProfit>=0?'green':'red'}">${d.totalProfit>=0?'+':''}${money(d.totalProfit)}</b></div>
+  </div>`
 }
-
-load()
-
+function sheet(){
+  if(editing){
+    return`<div class="sheetBack"><div class="sheet">
+      <h3>Edit Card</h3>
+      <input id="eName" value="${selected.name}">
+      <input id="eValue" type="number" value="${selected.value}">
+      <input id="ePsa" type="number" value="${selected.psa}">
+      <button class="sheetBtn" onclick="updateSelected({name:eName.value,value:eValue.value,psa:ePsa.value})">Save Edit</button>
+      <button class="close" onclick="editing=false;render()">Cancel</button>
+    </div></div>`
+  }
+  return`<div class="sheetBack"><div class="sheet">
+    <h3>${selected.name}</h3>
+    <button class="sheetBtn" onclick="editing=true;render()">Edit Card</button>
+    <button class="sheetBtn" onclick="updateSelected({bucket:'H',status:'active'})">Move HOLD</button>
+    <button class="sheetBtn" onclick="updateSelected({bucket:'G',status:'active'})">Move GRADE</button>
+    <button class="sheetBtn" onclick="updateSelected({bucket:'T',status:'active'})">Move TRADE</button>
+    <button class="sheetBtn" onclick="updateSelected({bucket:'S',status:'active'})">Move SELL</button>
+    <input id="sale" type="number" placeholder="Sale price">
+    <select id="reason"><option value="">Reason Sold</option><option>Market Drop</option><option>Quick Flip</option><option>Need Cash</option><option>Overpaid</option></select>
+    <button class="sheetBtn" onclick="updateSelected({status:'sold',salePrice:sale.value,reasonSold:reason.value,soldAt:new Date().toISOString()})">Mark SOLD</button>
+    <input id="trade" placeholder="Traded for what?">
+    <button class="sheetBtn" onclick="updateSelected({status:'traded',tradedFor:trade.value,tradedAt:new Date().toISOString()})">Mark TRADED</button>
+    <button class="sheetBtn" onclick="deleteSelected()">Delete</button>
+    <button class="close" onclick="selected=null;render()">Close</button>
+  </div></div>`
+}
+render()
+loadCloud()
 </script>
 </body>
 </html>
