@@ -2,24 +2,73 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>PokéVault</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f7f7f8;color:#111;font-family:Arial,sans-serif}#app{max-width:480px;margin:auto;padding:20px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}h1{margin:0;font-size:34px;font-weight:900}.iconBtn{width:64px;height:64px;border-radius:18px;background:#181818;color:#fff;border:none;font-size:28px}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}.tab{border:none;padding:14px;border-radius:16px;font-size:15px;font-weight:800;background:#eee;color:#777}.tab.active{background:#181818;color:#fff}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}.stat{background:#eee;border-radius:16px;padding:14px 8px;text-align:center}.stat.dark{background:#181818;color:#fff}.stat strong{display:block;font-size:20px;color:#111}.stat.dark strong{color:#fff}.stat span{font-size:11px;color:#777}
-.green{color:#15803d!important}.red{color:#dc2626!important}.neutral{color:#111!important}
-.search{width:100%;border:none;background:#eee;border-radius:18px;padding:18px;font-size:18px;margin-bottom:14px}.pills{display:flex;gap:10px;overflow-x:auto;margin-bottom:14px}.pill{border:none;border-radius:999px;padding:14px 20px;font-weight:800;font-size:15px;white-space:nowrap}
-.H{background:#6f936a;color:#fff}.G{background:#6687c2;color:#fff}.T{background:#e28a55;color:#fff}.S{background:#c76565;color:#fff}.anchor{background:#eef0ed;color:#666}.anchor.active{background:#181818;color:#fff}
-.form{background:#fff;padding:16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;padding:14px;font-size:16px;margin-bottom:10px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.addBtn{width:100%;background:#181818;color:#fff;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:900}
-.groupTitle{margin:18px 0 10px;font-size:18px;font-weight:900}.card,.analyticsCard{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
-.cardTop{display:flex;justify-content:space-between;gap:12px}.name{font-size:17px;font-weight:900}.meta{font-size:13px;color:#777;margin-top:5px;line-height:1.4}.value{font-size:18px;font-weight:900;color:#111}.badge{display:inline-block;margin-top:10px;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:900}.manage{margin-top:10px;background:#181818;color:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:800}
-.empty{text-align:center;color:#777;padding:40px}.sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;z-index:999}.sheet{width:100%;max-width:480px;margin:auto;background:#fff;border-radius:26px 26px 0 0;padding:20px}.sheet h3{margin:0 0 6px;font-size:22px}.sheet p{margin:0 0 16px;color:#777}.sheetBtn{width:100%;text-align:left;border:none;background:#f1f1f1;border-radius:16px;padding:15px;margin-bottom:10px;font-size:15px;font-weight:900}.sheetBtn small{display:block;color:#777;margin-top:4px;font-weight:500}.danger{background:#fee2e2;color:#991b1b}.close{width:100%;border:none;background:#181818;color:#fff;border-radius:16px;padding:15px;font-weight:900}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;overflow-x:hidden;background:#f7f7f8;color:#111;font-family:Arial,sans-serif}
+#app{width:100%;max-width:480px;margin:0 auto;padding:20px}
+
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px}
+h1{margin:0;font-size:34px;font-weight:900;line-height:1}
+.topActions{display:flex;gap:8px}
+.iconBtn{width:50px;height:50px;border-radius:16px;background:#181818;color:#fff;border:none;font-size:20px;font-weight:900}
+
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.tab{border:none;padding:14px 8px;border-radius:16px;font-size:15px;font-weight:800;background:#eee;color:#777}
+.tab.active{background:#181818;color:#fff}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#eee;border-radius:16px;padding:14px 6px;text-align:center;min-width:0}
+.stat.dark{background:#181818;color:#fff}
+.stat strong{display:block;font-size:20px;color:#111;word-break:break-word}
+.stat.dark strong{color:#fff}
+.stat span{font-size:11px;color:#777}
+.green{color:#15803d!important}
+.red{color:#dc2626!important}
+.neutral{color:#111!important}
+
+.form{background:#fff;padding:16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;padding:14px;font-size:16px;margin-bottom:10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.addBtn{width:100%;background:#181818;color:#fff;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:900}
+
+.search{width:100%;border:none;background:#eee;border-radius:18px;padding:18px;font-size:18px;margin-bottom:14px}
+.pills{display:flex;gap:10px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px}
+.pill{border:none;border-radius:999px;padding:14px 20px;font-weight:800;font-size:15px;white-space:nowrap;flex:0 0 auto}
+.H{background:#6f936a;color:#fff}
+.G{background:#6687c2;color:#fff}
+.T{background:#e28a55;color:#fff}
+.S{background:#c76565;color:#fff}
+.anchor{background:#eef0ed;color:#666}
+.anchor.active{background:#181818;color:#fff}
+
+.groupTitle{margin:18px 0 10px;font-size:18px;font-weight:900}
+.card,.analyticsCard{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.cardTop{display:flex;justify-content:space-between;gap:12px}
+.name{font-size:17px;font-weight:900}
+.meta{font-size:13px;color:#777;margin-top:5px;line-height:1.4}
+.value{font-size:18px;font-weight:900;color:#111}
+.badge{display:inline-block;margin-top:10px;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:900}
+.manage{margin-top:10px;background:#181818;color:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:800}
+.empty{text-align:center;color:#777;padding:40px}
+
+.sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;z-index:999}
+.sheet{width:100%;max-width:480px;margin:0 auto;background:#fff;border-radius:26px 26px 0 0;padding:20px;max-height:90vh;overflow-y:auto}
+.sheet h3{margin:0 0 6px;font-size:22px}
+.sheet p{margin:0 0 16px;color:#777}
+.sheetBtn{width:100%;text-align:left;border:none;background:#f1f1f1;border-radius:16px;padding:15px;margin-bottom:10px;font-size:15px;font-weight:900}
+.sheetBtn small{display:block;color:#777;margin-top:4px;font-weight:500}
+.danger{background:#fee2e2!important;color:#991b1b!important}
+.close{width:100%;border:none;background:#181818;color:#fff;border-radius:16px;padding:15px;font-weight:900}
+.hiddenFile{display:none}
 </style>
 </head>
+
 <body>
 <div id="app"></div>
+<input id="importFile" class="hiddenFile" type="file" accept="application/json" onchange="importData(event)" />
 
 <script>
 const KEY = "pokevault_cards_phase3"
@@ -34,6 +83,39 @@ let editing = false
 const bucketLabels = { H:"HOLD", G:"GRADE", T:"TRADE", S:"SELL" }
 
 function save(){ localStorage.setItem(KEY, JSON.stringify(cards)) }
+function money(n){ return "$" + Number(n || 0).toLocaleString() }
+
+function exportData(){
+  const blob = new Blob([JSON.stringify(cards, null, 2)], {type:"application/json"})
+  const a = document.createElement("a")
+  a.href = URL.createObjectURL(blob)
+  a.download = "pokevault-backup.json"
+  a.click()
+}
+
+function triggerImport(){
+  document.getElementById("importFile").click()
+}
+
+function importData(event){
+  const file = event.target.files[0]
+  if(!file) return
+
+  const reader = new FileReader()
+  reader.onload = function(e){
+    try{
+      const data = JSON.parse(e.target.result)
+      if(!Array.isArray(data)) return alert("Invalid backup file")
+      cards = data
+      save()
+      render()
+      alert("Backup imported")
+    }catch(err){
+      alert("Could not import file")
+    }
+  }
+  reader.readAsText(file)
+}
 
 function getAnchor(name){
   const n = String(name || "").toLowerCase()
@@ -42,8 +124,6 @@ function getAnchor(name){
   if(n.includes("charizard") || n.includes("charmeleon")) return "Charizard"
   return "Other"
 }
-
-function money(n){ return "$" + Number(n || 0).toLocaleString() }
 
 function addCard(){
   const name = document.getElementById("name").value.trim()
@@ -62,7 +142,8 @@ function addCard(){
     soldAt:"",
     tradedAt:""
   })
-  save(); render()
+  save()
+  render()
 }
 
 function openManage(id){ selectedCardId=id; editing=false; render() }
@@ -79,14 +160,21 @@ function saveEdit(){
   c.value = Number(document.getElementById("editValue").value || 0)
   c.type = document.getElementById("editType").value
   c.bucket = document.getElementById("editBucket").value
-  save(); editing=false; closeManage()
+  save()
+  closeManage()
 }
 
 function moveCard(bucket){
   const c = cards.find(x => x.id === selectedCardId)
   if(!c) return
-  c.bucket=bucket; c.status="active"; c.salePrice=0; c.tradedFor=""; c.soldAt=""; c.tradedAt=""
-  save(); closeManage()
+  c.bucket=bucket
+  c.status="active"
+  c.salePrice=0
+  c.tradedFor=""
+  c.soldAt=""
+  c.tradedAt=""
+  save()
+  closeManage()
 }
 
 function markSold(){
@@ -94,8 +182,11 @@ function markSold(){
   if(!c) return
   const sale = Number(document.getElementById("saleInput").value || 0)
   if(!sale) return alert("Enter a sale price")
-  c.status="sold"; c.salePrice=sale; c.soldAt=new Date().toISOString()
-  save(); closeManage()
+  c.status="sold"
+  c.salePrice=sale
+  c.soldAt=new Date().toISOString()
+  save()
+  closeManage()
 }
 
 function markTraded(){
@@ -103,20 +194,26 @@ function markTraded(){
   if(!c) return
   const tradedFor = document.getElementById("tradeInput").value.trim()
   if(!tradedFor) return alert("Enter what you traded for")
-  c.status="traded"; c.tradedFor=tradedFor; c.tradedAt=new Date().toISOString()
-  save(); closeManage()
+  c.status="traded"
+  c.tradedFor=tradedFor
+  c.tradedAt=new Date().toISOString()
+  save()
+  closeManage()
 }
 
 function deleteCard(){
   const confirmDelete = prompt("Type DELETE to confirm permanent deletion")
   if(confirmDelete !== "DELETE") return
   cards = cards.filter(c => c.id !== selectedCardId)
-  save(); closeManage()
+  save()
+  closeManage()
 }
 
 function resetAll(){
-  if(!confirm("Delete all data?")) return
-  cards=[]; save(); render()
+  if(!confirm("Delete all data? Export backup first if needed.")) return
+  cards=[]
+  save()
+  render()
 }
 
 function getData(){
@@ -134,7 +231,7 @@ function getData(){
   const slabs = inventory.filter(c=>c.type==="Slab").length
   const raw = inventory.filter(c=>c.type==="Raw").length
 
-  return { inventory, sold, traded, history, inventoryValue, totalSold, totalProfit, roi, winRate, slabs, raw }
+  return {inventory,sold,traded,history,inventoryValue,totalSold,totalProfit,roi,winRate,slabs,raw}
 }
 
 function render(){
@@ -151,14 +248,18 @@ function render(){
     return true
   })
 
-  const groups = { Pikachu:[], Umbreon:[], Charizard:[], Other:[] }
+  const groups = {Pikachu:[],Umbreon:[],Charizard:[],Other:[]}
   visible.forEach(c => groups[getAnchor(c.name)].push(c))
 
   app.innerHTML = `
     <div class="top">
       <h1>PokéVault</h1>
-      <button class="iconBtn" <button onclick="exportData()">⬇️</button>
-<button onclick="resetAll()">🗑️</button>
+      <div class="topActions">
+        <button class="iconBtn" onclick="exportData()">⬇</button>
+        <button class="iconBtn" onclick="triggerImport()">⬆</button>
+        <button class="iconBtn danger" onclick="resetAll()">🗑</button>
+      </div>
+    </div>
 
     <div class="tabs">
       <button class="tab ${activeTab==="inventory"?"active":""}" onclick="activeTab='inventory';render()">Inventory</button>
@@ -181,7 +282,6 @@ function render(){
     </div>
 
     ${activeTab !== "analytics" ? mainUI(visible, groups, q) : analyticsUI(d)}
-
     ${selectedCardId ? sheetHTML() : ""}
   `
 }
@@ -223,9 +323,7 @@ function mainUI(visible, groups, q){
 }
 
 function analyticsUI(d){
-  const soldSorted = [...d.sold].sort((a,b)=>
-    (Number(b.salePrice||0)-Number(b.value||0)) - (Number(a.salePrice||0)-Number(a.value||0))
-  )
+  const soldSorted = [...d.sold].sort((a,b)=>(Number(b.salePrice||0)-Number(b.value||0))-(Number(a.salePrice||0)-Number(a.value||0)))
   const best = soldSorted[0]
   const worst = soldSorted[soldSorted.length-1]
 
@@ -233,7 +331,7 @@ function analyticsUI(d){
     const soldInBucket = d.sold.filter(c=>c.bucket===b)
     const profit = soldInBucket.reduce((s,c)=>s+(Number(c.salePrice||0)-Number(c.value||0)),0)
     const revenue = soldInBucket.reduce((s,c)=>s+Number(c.salePrice||0),0)
-    return { b, count:soldInBucket.length, profit, revenue }
+    return {b,count:soldInBucket.length,profit,revenue}
   })
 
   return `
@@ -245,49 +343,21 @@ function analyticsUI(d){
       <div class="meta">Total Profit/Loss: <b class="${d.totalProfit>=0?"green":"red"}">${d.totalProfit>=0?"+":""}${money(d.totalProfit)}</b></div>
     </div>
 
-    <div class="analyticsCard">
-      <div class="name">Best Sale</div>
-      ${best ? saleLine(best) : `<div class="meta">No sold cards yet</div>`}
-    </div>
-
-    <div class="analyticsCard">
-      <div class="name">Worst Sale</div>
-      ${worst ? saleLine(worst) : `<div class="meta">No sold cards yet</div>`}
-    </div>
+    <div class="analyticsCard"><div class="name">Best Sale</div>${best ? saleLine(best) : `<div class="meta">No sold cards yet</div>`}</div>
+    <div class="analyticsCard"><div class="name">Worst Sale</div>${worst ? saleLine(worst) : `<div class="meta">No sold cards yet</div>`}</div>
 
     <div class="analyticsCard">
       <div class="name">Bucket Performance</div>
       ${buckets.map(x=>`
-        <div class="meta">
-          <b>${bucketLabels[x.b]}</b> · ${x.count} sold · Revenue ${money(x.revenue)} · 
-          <b class="${x.profit>=0?"green":"red"}">${x.profit>=0?"+":""}${money(x.profit)}</b>
-        </div>
+        <div class="meta"><b>${bucketLabels[x.b]}</b> · ${x.count} sold · Revenue ${money(x.revenue)} · <b class="${x.profit>=0?"green":"red"}">${x.profit>=0?"+":""}${money(x.profit)}</b></div>
       `).join("")}
     </div>
   `
 }
-function exportData(){
-  const data = {
-    cards: cards,
-    history: history
-  };
-
-  const blob = new Blob([JSON.stringify(data, null, 2)], {
-    type: "application/json"
-  });
-
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "pokevault-backup.json";
-  a.click();
-}
 
 function saleLine(c){
   const diff = Number(c.salePrice||0)-Number(c.value||0)
-  return `
-    <div class="meta"><b>${c.name}</b></div>
-    <div class="meta">Sold ${money(c.salePrice)} · Cost ${money(c.value)} · <b class="${diff>=0?"green":"red"}">${diff>=0?"+":""}${money(diff)}</b></div>
-  `
+  return `<div class="meta"><b>${c.name}</b></div><div class="meta">Sold ${money(c.salePrice)} · Cost ${money(c.value)} · <b class="${diff>=0?"green":"red"}">${diff>=0?"+":""}${money(diff)}</b></div>`
 }
 
 function cardHTML(c){
