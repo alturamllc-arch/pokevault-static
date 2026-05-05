@@ -21,7 +21,7 @@ h1{margin:0;font-size:34px;font-weight:900;line-height:1}
 .stat strong{display:block;font-size:20px;color:#111;word-break:break-word}
 .stat.dark strong{color:#fff}
 .stat span{font-size:11px;color:#777}
-.green{color:#15803d!important}.red{color:#dc2626!important}.neutral{color:#111!important}
+.green{color:#15803d!important}.red{color:#dc2626!important}.neutral{color:#111!important}.blue{color:#2563eb!important}
 .syncStatus{font-size:12px;color:#666;margin:-8px 0 14px;line-height:1.4}
 .form{background:#fff;padding:16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
 input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;padding:14px;font-size:16px;margin-bottom:10px}
@@ -39,6 +39,7 @@ input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;paddin
 .meta{font-size:13px;color:#777;margin-top:5px;line-height:1.4}
 .value{font-size:18px;font-weight:900;color:#111}
 .badge{display:inline-block;margin-top:10px;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:900}
+.signal{display:inline-block;margin-top:8px;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:900;background:#f1f1f1}
 .manage{margin-top:10px;background:#181818;color:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:800}
 .empty{text-align:center;color:#777;padding:40px}
 .sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;z-index:999}
@@ -75,6 +76,36 @@ let isSyncing = false
 const bucketLabels = { H:"HOLD", G:"GRADE", T:"TRADE", S:"SELL" }
 
 function money(n){ return "$" + Number(n || 0).toLocaleString() }
+
+function analyzeCard(c){
+  const cost = Number(c.value || 0)
+  const sale = Number(c.salePrice || 0)
+  const psa = Number(c.psa10_est || 0)
+
+  const profit = sale - cost
+  const roi = cost ? Math.round((profit / cost) * 100) : 0
+
+  let signal = "HOLD"
+  let signalClass = "neutral"
+
+  if(c.status === "sold"){
+    signal = profit > 0 ? "GOOD SELL" : profit < 0 ? "BAD SELL" : "BREAK EVEN"
+    signalClass = profit > 0 ? "green" : profit < 0 ? "red" : "neutral"
+  } else {
+    if(psa > 0 && cost > 0 && psa >= cost * 2){
+      signal = "GRADE"
+      signalClass = "blue"
+    } else if(cost > 0 && psa > 0 && psa <= cost * 1.3){
+      signal = "SELL"
+      signalClass = "red"
+    } else {
+      signal = "HOLD"
+      signalClass = "green"
+    }
+  }
+
+  return { profit, roi, signal, signalClass }
+}
 
 function save(){
   localStorage.setItem(KEY, JSON.stringify(cards))
@@ -114,6 +145,7 @@ function normalizeCard(c){
     id: Number(c.id || Date.now() + Math.random()),
     name: c.name || "",
     value: Number(c.value || 0),
+    psa10_est: Number(c.psa10_est || 0),
     type: c.type || "Raw",
     bucket: c.bucket || "H",
     status: c.status || "active",
@@ -193,13 +225,18 @@ function getAnchor(name){
 function addCard(){
   const name = document.getElementById("name").value.trim()
   const value = Number(document.getElementById("value").value || 0)
+  const psa = Number(document.getElementById("psa").value || 0)
   const type = document.getElementById("type").value
   const bucket = document.getElementById("bucket").value
   if(!name) return alert("Enter card name")
 
   cards.push({
     id: Date.now(),
-    name,value,type,bucket,
+    name,
+    value,
+    psa10_est: psa,
+    type,
+    bucket,
     status:"active",
     salePrice:0,
     tradedFor:"",
@@ -224,6 +261,7 @@ function saveEdit(){
   if(!newName) return alert("Card name required")
   c.name = newName
   c.value = Number(document.getElementById("editValue").value || 0)
+  c.psa10_est = Number(document.getElementById("editPSA").value || 0)
   c.type = document.getElementById("editType").value
   c.bucket = document.getElementById("editBucket").value
   save()
@@ -365,14 +403,17 @@ function mainUI(visible, groups, q){
       <input id="name" placeholder="Card name" />
       <div class="row">
         <input id="value" type="number" placeholder="Original Value $" />
-        <select id="type"><option value="Raw">Raw</option><option value="Slab">Slab</option></select>
+        <input id="psa" type="number" placeholder="PSA 10 Estimate $" />
       </div>
-      <select id="bucket">
-        <option value="H">Hold</option>
-        <option value="G">Grade</option>
-        <option value="T">Trade</option>
-        <option value="S">Sell</option>
-      </select>
+      <div class="row">
+        <select id="type"><option value="Raw">Raw</option><option value="Slab">Slab</option></select>
+        <select id="bucket">
+          <option value="H">Hold</option>
+          <option value="G">Grade</option>
+          <option value="T">Trade</option>
+          <option value="S">Sell</option>
+        </select>
+      </div>
       <button class="addBtn" onclick="addCard()">Add Card</button>
     </div>
 
@@ -429,15 +470,14 @@ function analyticsUI(d){
 }
 
 function saleLine(c){
-  const diff = Number(c.salePrice||0)-Number(c.value||0)
-  return `<div class="meta"><b>${c.name}</b></div><div class="meta">Sold ${money(c.salePrice)} · Cost ${money(c.value)} · <b class="${diff>=0?"green":"red"}">${diff>=0?"+":""}${money(diff)}</b></div>`
+  const analysis = analyzeCard(c)
+  return `<div class="meta"><b>${c.name}</b></div><div class="meta">Sold ${money(c.salePrice)} · Cost ${money(c.value)} · <b class="${analysis.signalClass}">${analysis.profit>=0?"+":""}${money(analysis.profit)} (${analysis.roi}%)</b></div>`
 }
 
 function cardHTML(c){
+  const analysis = analyzeCard(c)
   const original = Number(c.value || 0)
   const sale = Number(c.salePrice || 0)
-  const diff = sale - original
-  const diffClass = diff > 0 ? "green" : diff < 0 ? "red" : "neutral"
 
   return `
     <div class="card">
@@ -446,7 +486,22 @@ function cardHTML(c){
           <div class="name">${c.name}</div>
           <div class="meta">${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]}</div>
           <span class="badge ${c.bucket}">${bucketLabels[c.bucket]}</span>
-          ${c.status==="sold" ? `<div class="meta">Sold for <b class="${diffClass}">${money(sale)}</b> · Original ${money(original)} · <b class="${diffClass}">${diff>=0?"+":""}${money(diff)}</b></div>` : ""}
+          <span class="signal ${analysis.signalClass}">${analysis.signal}</span>
+
+          ${c.status==="active" ? `
+            <div class="meta">
+              Cost ${money(original)} · PSA10 Est ${money(c.psa10_est || 0)}
+            </div>
+          ` : ""}
+
+          ${c.status==="sold" ? `
+            <div class="meta">
+              Sold <b class="${analysis.signalClass}">${money(sale)}</b>
+              · Cost ${money(original)}
+              · <b class="${analysis.signalClass}">${analysis.profit>=0?"+":""}${money(analysis.profit)} (${analysis.roi}%)</b>
+            </div>
+          ` : ""}
+
           ${c.status==="traded" ? `<div class="meta">Traded for: ${c.tradedFor || "Not specified"}</div>` : ""}
         </div>
         <div style="text-align:right">
@@ -467,9 +522,10 @@ function sheetHTML(){
       <div class="sheetBack" onclick="closeEdit()">
         <div class="sheet" onclick="event.stopPropagation()">
           <h3>Edit Card</h3>
-          <p>Fix name, value, type, or bucket</p>
+          <p>Fix name, value, PSA estimate, type, or bucket</p>
           <input id="editName" value="${c.name}" placeholder="Card name" />
           <input id="editValue" type="number" value="${c.value}" placeholder="Original value $" />
+          <input id="editPSA" type="number" value="${c.psa10_est || 0}" placeholder="PSA 10 Estimate $" />
           <select id="editType">
             <option value="Raw" ${c.type==="Raw"?"selected":""}>Raw</option>
             <option value="Slab" ${c.type==="Slab"?"selected":""}>Slab</option>
@@ -489,7 +545,7 @@ function sheetHTML(){
       <div class="sheet" onclick="event.stopPropagation()">
         <h3>${c.name}</h3>
         <p>${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]} · ${money(c.value)}</p>
-        <button class="sheetBtn" onclick="openEdit()">Edit Card<small>Fix name, value, type, bucket</small></button>
+        <button class="sheetBtn" onclick="openEdit()">Edit Card<small>Fix name, value, PSA estimate, type, bucket</small></button>
         <input id="saleInput" type="number" placeholder="Sale price $" />
         <input id="tradeInput" type="text" placeholder="Traded for what?" />
         <button class="sheetBtn" onclick="moveCard('H')">Move to HOLD<small>Keep in collection</small></button>
