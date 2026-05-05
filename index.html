@@ -7,122 +7,53 @@
 
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  background:#f7f7f8;
-  color:#111;
-  font-family:Arial,sans-serif;
-}
-#app{
-  max-width:480px;
-  margin:auto;
-  padding:20px;
-}
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:18px;
-}
+body{margin:0;background:#f7f7f8;color:#111;font-family:Arial,sans-serif}
+#app{max-width:480px;margin:auto;padding:20px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
 h1{margin:0;font-size:34px;font-weight:900}
-.iconBtn{
-  width:64px;height:64px;border-radius:18px;
-  background:#181818;color:#fff;border:none;font-size:28px;
-}
-.tabs{
-  display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;
-}
-.tab{
-  border:none;padding:16px;border-radius:18px;font-size:18px;font-weight:800;
-  background:#eee;color:#777;
-}
+.iconBtn{width:64px;height:64px;border-radius:18px;background:#181818;color:#fff;border:none;font-size:28px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.tab{border:none;padding:16px;border-radius:18px;font-size:18px;font-weight:800;background:#eee;color:#777}
 .tab.active{background:#181818;color:#fff}
-.stats{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;
-}
-.stat{
-  background:#eee;border-radius:16px;padding:14px 8px;text-align:center;
-}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.stat{background:#eee;border-radius:16px;padding:14px 8px;text-align:center}
 .stat.dark{background:#181818;color:#fff}
 .stat strong{display:block;font-size:22px;color:#111}
 .stat.dark strong{color:#fff}
 .stat span{font-size:12px;color:#777}
-.stat.dark span{color:#bbb}
 .green{color:#15803d!important}
 .red{color:#dc2626!important}
 .neutral{color:#111!important}
-.search{
-  width:100%;border:none;background:#eee;border-radius:18px;
-  padding:18px;font-size:18px;margin-bottom:14px;
-}
-.pills{
-  display:flex;gap:10px;overflow-x:auto;margin-bottom:14px;
-}
-.pill{
-  border:none;border-radius:999px;padding:14px 20px;font-weight:800;
-  font-size:15px;white-space:nowrap;
-}
+.search{width:100%;border:none;background:#eee;border-radius:18px;padding:18px;font-size:18px;margin-bottom:14px}
+.pills{display:flex;gap:10px;overflow-x:auto;margin-bottom:14px}
+.pill{border:none;border-radius:999px;padding:14px 20px;font-weight:800;font-size:15px;white-space:nowrap}
 .H{background:#6f936a;color:#fff}
 .G{background:#6687c2;color:#fff}
 .T{background:#e28a55;color:#fff}
 .S{background:#c76565;color:#fff}
 .anchor{background:#eef0ed;color:#666}
 .anchor.active{background:#181818;color:#fff}
-.form{
-  background:#fff;padding:16px;border-radius:20px;margin-bottom:18px;
-  box-shadow:0 4px 16px rgba(0,0,0,.05);
-}
-input,select{
-  width:100%;border:none;background:#f0f0f0;border-radius:14px;
-  padding:14px;font-size:16px;margin-bottom:10px;
-}
+.form{background:#fff;padding:16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;padding:14px;font-size:16px;margin-bottom:10px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.addBtn{
-  width:100%;background:#181818;color:#fff;border:none;
-  border-radius:14px;padding:15px;font-size:16px;font-weight:900;
-}
-.groupTitle{
-  margin:18px 0 10px;
-  font-size:18px;
-  font-weight:900;
-}
-.card{
-  background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;
-  box-shadow:0 4px 16px rgba(0,0,0,.06);
-}
+.addBtn{width:100%;background:#181818;color:#fff;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:900}
+.groupTitle{margin:18px 0 10px;font-size:18px;font-weight:900}
+.card{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
 .cardTop{display:flex;justify-content:space-between;gap:12px}
 .name{font-size:17px;font-weight:900}
 .meta{font-size:13px;color:#777;margin-top:5px;line-height:1.4}
 .value{font-size:18px;font-weight:900;color:#111}
-.badge{
-  display:inline-block;margin-top:10px;border-radius:999px;padding:6px 12px;
-  font-size:12px;font-weight:900;
-}
-.manage{
-  margin-top:10px;background:#181818;color:#fff;border:none;
-  border-radius:12px;padding:10px 14px;font-weight:800;
-}
+.badge{display:inline-block;margin-top:10px;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:900}
+.manage{margin-top:10px;background:#181818;color:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:800}
 .empty{text-align:center;color:#777;padding:40px}
-.sheetBack{
-  position:fixed;inset:0;background:rgba(0,0,0,.65);
-  display:flex;align-items:flex-end;z-index:999;
-}
-.sheet{
-  width:100%;max-width:480px;margin:auto;background:#fff;
-  border-radius:26px 26px 0 0;padding:20px;
-}
+.sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;z-index:999}
+.sheet{width:100%;max-width:480px;margin:auto;background:#fff;border-radius:26px 26px 0 0;padding:20px}
 .sheet h3{margin:0 0 6px;font-size:22px}
 .sheet p{margin:0 0 16px;color:#777}
-.sheetBtn{
-  width:100%;text-align:left;border:none;background:#f1f1f1;
-  border-radius:16px;padding:15px;margin-bottom:10px;font-size:15px;font-weight:900;
-}
+.sheetBtn{width:100%;text-align:left;border:none;background:#f1f1f1;border-radius:16px;padding:15px;margin-bottom:10px;font-size:15px;font-weight:900}
 .sheetBtn small{display:block;color:#777;margin-top:4px;font-weight:500}
 .danger{background:#fee2e2;color:#991b1b}
-.close{
-  width:100%;border:none;background:#181818;color:#fff;
-  border-radius:16px;padding:15px;font-weight:900;
-}
+.close{width:100%;border:none;background:#181818;color:#fff;border-radius:16px;padding:15px;font-weight:900}
 </style>
 </head>
 
@@ -130,13 +61,14 @@ input,select{
 <div id="app"></div>
 
 <script>
-const KEY = "pokevault_cards_phase2"
+const KEY = "pokevault_cards_phase3"
 
 let cards = JSON.parse(localStorage.getItem(KEY) || "[]")
 let activeTab = "inventory"
 let activeAnchor = "All"
 let activeBucket = "All"
 let selectedCardId = null
+let editing = false
 
 const bucketLabels = {
   H: "HOLD",
@@ -185,12 +117,41 @@ function addCard(){
 
 function openManage(id){
   selectedCardId = id
+  editing = false
   render()
 }
 
 function closeManage(){
   selectedCardId = null
+  editing = false
   render()
+}
+
+function openEdit(){
+  editing = true
+  render()
+}
+
+function closeEdit(){
+  editing = false
+  render()
+}
+
+function saveEdit(){
+  const c = cards.find(x => x.id === selectedCardId)
+  if(!c) return
+
+  const newName = document.getElementById("editName").value.trim()
+  if(!newName) return alert("Card name required")
+
+  c.name = newName
+  c.value = Number(document.getElementById("editValue").value || 0)
+  c.type = document.getElementById("editType").value
+  c.bucket = document.getElementById("editBucket").value
+
+  save()
+  editing = false
+  closeManage()
 }
 
 function moveCard(bucket){
@@ -418,11 +379,41 @@ function sheetHTML(){
   const c = cards.find(x => x.id === selectedCardId)
   if(!c) return ""
 
+  if(editing){
+    return `
+      <div class="sheetBack" onclick="closeEdit()">
+        <div class="sheet" onclick="event.stopPropagation()">
+          <h3>Edit Card</h3>
+          <p>Fix name, value, type, or bucket</p>
+
+          <input id="editName" value="${c.name}" placeholder="Card name" />
+          <input id="editValue" type="number" value="${c.value}" placeholder="Original value $" />
+
+          <select id="editType">
+            <option value="Raw" ${c.type==="Raw"?"selected":""}>Raw</option>
+            <option value="Slab" ${c.type==="Slab"?"selected":""}>Slab</option>
+          </select>
+
+          <select id="editBucket">
+            ${["H","G","T","S"].map(b=>`
+              <option value="${b}" ${c.bucket===b?"selected":""}>${bucketLabels[b]}</option>
+            `).join("")}
+          </select>
+
+          <button class="sheetBtn" onclick="saveEdit()">Save Changes</button>
+          <button class="close" onclick="closeEdit()">Cancel</button>
+        </div>
+      </div>
+    `
+  }
+
   return `
     <div class="sheetBack" onclick="closeManage()">
       <div class="sheet" onclick="event.stopPropagation()">
         <h3>${c.name}</h3>
         <p>${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]} · $${Number(c.value||0).toLocaleString()}</p>
+
+        <button class="sheetBtn" onclick="openEdit()">Edit Card<small>Fix name, value, type, bucket</small></button>
 
         <input id="saleInput" type="number" placeholder="Sale price $" />
         <input id="tradeInput" type="text" placeholder="Traded for what?" />
