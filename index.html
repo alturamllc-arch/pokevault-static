@@ -9,41 +9,30 @@
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;overflow-x:hidden;background:#f7f7f8;color:#111;font-family:Arial,sans-serif}
 #app{width:100%;max-width:480px;margin:0 auto;padding:20px}
-
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px}
 h1{margin:0;font-size:34px;font-weight:900;line-height:1}
 .topActions{display:flex;gap:8px}
-.iconBtn{width:50px;height:50px;border-radius:16px;background:#181818;color:#fff;border:none;font-size:20px;font-weight:900}
-
+.iconBtn{width:46px;height:46px;border-radius:14px;background:#181818;color:#fff;border:none;font-size:18px;font-weight:900}
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
 .tab{border:none;padding:14px 8px;border-radius:16px;font-size:15px;font-weight:800;background:#eee;color:#777}
 .tab.active{background:#181818;color:#fff}
-
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
 .stat{background:#eee;border-radius:16px;padding:14px 6px;text-align:center;min-width:0}
 .stat.dark{background:#181818;color:#fff}
 .stat strong{display:block;font-size:20px;color:#111;word-break:break-word}
 .stat.dark strong{color:#fff}
 .stat span{font-size:11px;color:#777}
-.green{color:#15803d!important}
-.red{color:#dc2626!important}
-.neutral{color:#111!important}
-
+.green{color:#15803d!important}.red{color:#dc2626!important}.neutral{color:#111!important}
+.syncStatus{font-size:12px;color:#666;margin:-8px 0 14px}
 .form{background:#fff;padding:16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
 input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;padding:14px;font-size:16px;margin-bottom:10px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .addBtn{width:100%;background:#181818;color:#fff;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:900}
-
 .search{width:100%;border:none;background:#eee;border-radius:18px;padding:18px;font-size:18px;margin-bottom:14px}
 .pills{display:flex;gap:10px;overflow-x:auto;margin-bottom:14px;padding-bottom:2px}
 .pill{border:none;border-radius:999px;padding:14px 20px;font-weight:800;font-size:15px;white-space:nowrap;flex:0 0 auto}
-.H{background:#6f936a;color:#fff}
-.G{background:#6687c2;color:#fff}
-.T{background:#e28a55;color:#fff}
-.S{background:#c76565;color:#fff}
-.anchor{background:#eef0ed;color:#666}
-.anchor.active{background:#181818;color:#fff}
-
+.H{background:#6f936a;color:#fff}.G{background:#6687c2;color:#fff}.T{background:#e28a55;color:#fff}.S{background:#c76565;color:#fff}
+.anchor{background:#eef0ed;color:#666}.anchor.active{background:#181818;color:#fff}
 .groupTitle{margin:18px 0 10px;font-size:18px;font-weight:900}
 .card,.analyticsCard{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
 .cardTop{display:flex;justify-content:space-between;gap:12px}
@@ -53,7 +42,6 @@ input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;paddin
 .badge{display:inline-block;margin-top:10px;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:900}
 .manage{margin-top:10px;background:#181818;color:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:800}
 .empty{text-align:center;color:#777;padding:40px}
-
 .sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;z-index:999}
 .sheet{width:100%;max-width:480px;margin:0 auto;background:#fff;border-radius:26px 26px 0 0;padding:20px;max-height:90vh;overflow-y:auto}
 .sheet h3{margin:0 0 6px;font-size:22px}
@@ -71,7 +59,8 @@ input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;paddin
 <input id="importFile" class="hiddenFile" type="file" accept="application/json" onchange="importData(event)" />
 
 <script>
-const KEY = "pokevault_cards_phase3"
+const SHEETS_URL = "https://script.google.com/macros/s/AKfycbxZsuTh8zUQMAVJhlP0IQLybosA2eWsfCVuWEYLTMTtHDv02dA1aioXpyxklIPNbncAmA/exec"
+const KEY = "pokevault_cards_cloud"
 
 let cards = JSON.parse(localStorage.getItem(KEY) || "[]")
 let activeTab = "inventory"
@@ -79,11 +68,78 @@ let activeAnchor = "All"
 let activeBucket = "All"
 let selectedCardId = null
 let editing = false
+let loading = true
+let syncStatus = "Loading cloud data..."
 
 const bucketLabels = { H:"HOLD", G:"GRADE", T:"TRADE", S:"SELL" }
 
-function save(){ localStorage.setItem(KEY, JSON.stringify(cards)) }
 function money(n){ return "$" + Number(n || 0).toLocaleString() }
+
+function save(){
+  localStorage.setItem(KEY, JSON.stringify(cards))
+  syncCloud()
+}
+
+async function loadCloud(){
+  try{
+    syncStatus = "Loading cloud data..."
+    render()
+
+    const res = await fetch(SHEETS_URL, { method:"GET", cache:"no-store" })
+    const data = await res.json()
+
+    if(Array.isArray(data) && data.length > 0){
+      cards = data.map(normalizeCard)
+      localStorage.setItem(KEY, JSON.stringify(cards))
+      syncStatus = "Cloud synced"
+    } else {
+      syncStatus = "Cloud empty — using local data"
+      if(cards.length > 0) syncCloud()
+    }
+  } catch(e){
+    console.error(e)
+    syncStatus = "Cloud unavailable — using local data"
+  } finally {
+    loading = false
+    render()
+  }
+}
+
+function normalizeCard(c){
+  return {
+    id: Number(c.id || Date.now() + Math.random()),
+    name: c.name || "",
+    value: Number(c.value || 0),
+    type: c.type || "Raw",
+    bucket: c.bucket || "H",
+    status: c.status || "active",
+    salePrice: Number(c.salePrice || 0),
+    tradedFor: c.tradedFor || "",
+    createdAt: c.createdAt || "",
+    soldAt: c.soldAt || "",
+    tradedAt: c.tradedAt || ""
+  }
+}
+
+async function syncCloud(){
+  try{
+    syncStatus = "Syncing..."
+    render()
+
+    await fetch(SHEETS_URL, {
+      method:"POST",
+      headers:{ "Content-Type":"text/plain" },
+      body: JSON.stringify({ cards })
+    })
+
+    syncStatus = "Cloud synced"
+    render()
+  } catch(e){
+    console.error(e)
+    syncStatus = "Cloud sync failed — saved locally"
+    render()
+  }
+}
 
 function exportData(){
   const blob = new Blob([JSON.stringify(cards, null, 2)], {type:"application/json"})
@@ -106,10 +162,10 @@ function importData(event){
     try{
       const data = JSON.parse(e.target.result)
       if(!Array.isArray(data)) return alert("Invalid backup file")
-      cards = data
+      cards = data.map(normalizeCard)
       save()
       render()
-      alert("Backup imported")
+      alert("Backup imported and synced")
     }catch(err){
       alert("Could not import file")
     }
@@ -210,10 +266,9 @@ function deleteCard(){
 }
 
 function resetAll(){
-  const confirmText = prompt("Type DELETE to confirm wiping ALL data")
-  if(confirmText !== "DELETE") return
-
-  cards = []
+  const confirmReset = prompt("Type DELETE to wipe ALL data")
+  if(confirmReset !== "DELETE") return
+  cards=[]
   save()
   render()
 }
@@ -257,11 +312,14 @@ function render(){
     <div class="top">
       <h1>PokéVault</h1>
       <div class="topActions">
+        <button class="iconBtn" onclick="syncCloud()">☁</button>
         <button class="iconBtn" onclick="exportData()">⬇</button>
         <button class="iconBtn" onclick="triggerImport()">⬆</button>
         <button class="iconBtn danger" onclick="resetAll()">🗑</button>
       </div>
     </div>
+
+    <div class="syncStatus">${syncStatus}</div>
 
     <div class="tabs">
       <button class="tab ${activeTab==="inventory"?"active":""}" onclick="activeTab='inventory';render()">Inventory</button>
@@ -283,7 +341,7 @@ function render(){
       <div class="stat"><strong>${d.traded.length}</strong><span>Traded</span></div>
     </div>
 
-    ${activeTab !== "analytics" ? mainUI(visible, groups, q) : analyticsUI(d)}
+    ${loading ? `<div class="empty">Loading cloud data...</div>` : activeTab !== "analytics" ? mainUI(visible, groups, q) : analyticsUI(d)}
     ${selectedCardId ? sheetHTML() : ""}
   `
 }
@@ -435,6 +493,7 @@ function sheetHTML(){
 }
 
 render()
+loadCloud()
 </script>
 </body>
 </html>
