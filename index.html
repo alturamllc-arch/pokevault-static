@@ -217,6 +217,7 @@ function resetAll(){
   save()
   render()
 }
+
 function getData(){
   const inventory = cards.filter(c => !c.status || c.status === "active")
   const sold = cards.filter(c => c.status === "sold")
