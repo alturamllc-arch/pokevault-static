@@ -210,12 +210,13 @@ function deleteCard(){
 }
 
 function resetAll(){
-  if(!confirm("Delete all data? Export backup first if needed.")) return
-  cards=[]
+  const confirmText = prompt("Type DELETE to confirm wiping ALL data")
+  if(confirmText !== "DELETE") return
+
+  cards = []
   save()
   render()
 }
-
 function getData(){
   const inventory = cards.filter(c => !c.status || c.status === "active")
   const sold = cards.filter(c => c.status === "sold")
