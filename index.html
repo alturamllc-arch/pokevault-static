@@ -4,59 +4,20 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>PokéVault</title>
-
 <style>
-*{box-sizing:border-box}
-body{margin:0;background:#f7f7f8;color:#111;font-family:Arial,sans-serif}
-#app{max-width:480px;margin:auto;padding:20px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
-h1{margin:0;font-size:34px;font-weight:900}
-.iconBtn{width:64px;height:64px;border-radius:18px;background:#181818;color:#fff;border:none;font-size:28px}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.tab{border:none;padding:16px;border-radius:18px;font-size:18px;font-weight:800;background:#eee;color:#777}
-.tab.active{background:#181818;color:#fff}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
-.stat{background:#eee;border-radius:16px;padding:14px 8px;text-align:center}
-.stat.dark{background:#181818;color:#fff}
-.stat strong{display:block;font-size:22px;color:#111}
-.stat.dark strong{color:#fff}
-.stat span{font-size:12px;color:#777}
-.green{color:#15803d!important}
-.red{color:#dc2626!important}
-.neutral{color:#111!important}
-.search{width:100%;border:none;background:#eee;border-radius:18px;padding:18px;font-size:18px;margin-bottom:14px}
-.pills{display:flex;gap:10px;overflow-x:auto;margin-bottom:14px}
-.pill{border:none;border-radius:999px;padding:14px 20px;font-weight:800;font-size:15px;white-space:nowrap}
-.H{background:#6f936a;color:#fff}
-.G{background:#6687c2;color:#fff}
-.T{background:#e28a55;color:#fff}
-.S{background:#c76565;color:#fff}
-.anchor{background:#eef0ed;color:#666}
-.anchor.active{background:#181818;color:#fff}
-.form{background:#fff;padding:16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
-input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;padding:14px;font-size:16px;margin-bottom:10px}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.addBtn{width:100%;background:#181818;color:#fff;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:900}
-.groupTitle{margin:18px 0 10px;font-size:18px;font-weight:900}
-.card{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
-.cardTop{display:flex;justify-content:space-between;gap:12px}
-.name{font-size:17px;font-weight:900}
-.meta{font-size:13px;color:#777;margin-top:5px;line-height:1.4}
-.value{font-size:18px;font-weight:900;color:#111}
-.badge{display:inline-block;margin-top:10px;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:900}
-.manage{margin-top:10px;background:#181818;color:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:800}
-.empty{text-align:center;color:#777;padding:40px}
-.sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;z-index:999}
-.sheet{width:100%;max-width:480px;margin:auto;background:#fff;border-radius:26px 26px 0 0;padding:20px}
-.sheet h3{margin:0 0 6px;font-size:22px}
-.sheet p{margin:0 0 16px;color:#777}
-.sheetBtn{width:100%;text-align:left;border:none;background:#f1f1f1;border-radius:16px;padding:15px;margin-bottom:10px;font-size:15px;font-weight:900}
-.sheetBtn small{display:block;color:#777;margin-top:4px;font-weight:500}
-.danger{background:#fee2e2;color:#991b1b}
-.close{width:100%;border:none;background:#181818;color:#fff;border-radius:16px;padding:15px;font-weight:900}
+*{box-sizing:border-box}body{margin:0;background:#f7f7f8;color:#111;font-family:Arial,sans-serif}#app{max-width:480px;margin:auto;padding:20px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}h1{margin:0;font-size:34px;font-weight:900}.iconBtn{width:64px;height:64px;border-radius:18px;background:#181818;color:#fff;border:none;font-size:28px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}.tab{border:none;padding:14px;border-radius:16px;font-size:15px;font-weight:800;background:#eee;color:#777}.tab.active{background:#181818;color:#fff}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}.stat{background:#eee;border-radius:16px;padding:14px 8px;text-align:center}.stat.dark{background:#181818;color:#fff}.stat strong{display:block;font-size:20px;color:#111}.stat.dark strong{color:#fff}.stat span{font-size:11px;color:#777}
+.green{color:#15803d!important}.red{color:#dc2626!important}.neutral{color:#111!important}
+.search{width:100%;border:none;background:#eee;border-radius:18px;padding:18px;font-size:18px;margin-bottom:14px}.pills{display:flex;gap:10px;overflow-x:auto;margin-bottom:14px}.pill{border:none;border-radius:999px;padding:14px 20px;font-weight:800;font-size:15px;white-space:nowrap}
+.H{background:#6f936a;color:#fff}.G{background:#6687c2;color:#fff}.T{background:#e28a55;color:#fff}.S{background:#c76565;color:#fff}.anchor{background:#eef0ed;color:#666}.anchor.active{background:#181818;color:#fff}
+.form{background:#fff;padding:16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;padding:14px;font-size:16px;margin-bottom:10px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.addBtn{width:100%;background:#181818;color:#fff;border:none;border-radius:14px;padding:15px;font-size:16px;font-weight:900}
+.groupTitle{margin:18px 0 10px;font-size:18px;font-weight:900}.card,.analyticsCard{background:#fff;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.cardTop{display:flex;justify-content:space-between;gap:12px}.name{font-size:17px;font-weight:900}.meta{font-size:13px;color:#777;margin-top:5px;line-height:1.4}.value{font-size:18px;font-weight:900;color:#111}.badge{display:inline-block;margin-top:10px;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:900}.manage{margin-top:10px;background:#181818;color:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:800}
+.empty{text-align:center;color:#777;padding:40px}.sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;z-index:999}.sheet{width:100%;max-width:480px;margin:auto;background:#fff;border-radius:26px 26px 0 0;padding:20px}.sheet h3{margin:0 0 6px;font-size:22px}.sheet p{margin:0 0 16px;color:#777}.sheetBtn{width:100%;text-align:left;border:none;background:#f1f1f1;border-radius:16px;padding:15px;margin-bottom:10px;font-size:15px;font-weight:900}.sheetBtn small{display:block;color:#777;margin-top:4px;font-weight:500}.danger{background:#fee2e2;color:#991b1b}.close{width:100%;border:none;background:#181818;color:#fff;border-radius:16px;padding:15px;font-weight:900}
 </style>
 </head>
-
 <body>
 <div id="app"></div>
 
@@ -70,16 +31,9 @@ let activeBucket = "All"
 let selectedCardId = null
 let editing = false
 
-const bucketLabels = {
-  H: "HOLD",
-  G: "GRADE",
-  T: "TRADE",
-  S: "SELL"
-}
+const bucketLabels = { H:"HOLD", G:"GRADE", T:"TRADE", S:"SELL" }
 
-function save(){
-  localStorage.setItem(KEY, JSON.stringify(cards))
-}
+function save(){ localStorage.setItem(KEY, JSON.stringify(cards)) }
 
 function getAnchor(name){
   const n = String(name || "").toLowerCase()
@@ -89,20 +43,18 @@ function getAnchor(name){
   return "Other"
 }
 
+function money(n){ return "$" + Number(n || 0).toLocaleString() }
+
 function addCard(){
   const name = document.getElementById("name").value.trim()
   const value = Number(document.getElementById("value").value || 0)
   const type = document.getElementById("type").value
   const bucket = document.getElementById("bucket").value
-
   if(!name) return alert("Enter card name")
 
   cards.push({
     id: Date.now(),
-    name,
-    value,
-    type,
-    bucket,
+    name,value,type,bucket,
     status:"active",
     salePrice:0,
     tradedFor:"",
@@ -110,125 +62,64 @@ function addCard(){
     soldAt:"",
     tradedAt:""
   })
-
-  save()
-  render()
+  save(); render()
 }
 
-function openManage(id){
-  selectedCardId = id
-  editing = false
-  render()
-}
-
-function closeManage(){
-  selectedCardId = null
-  editing = false
-  render()
-}
-
-function openEdit(){
-  editing = true
-  render()
-}
-
-function closeEdit(){
-  editing = false
-  render()
-}
+function openManage(id){ selectedCardId=id; editing=false; render() }
+function closeManage(){ selectedCardId=null; editing=false; render() }
+function openEdit(){ editing=true; render() }
+function closeEdit(){ editing=false; render() }
 
 function saveEdit(){
   const c = cards.find(x => x.id === selectedCardId)
   if(!c) return
-
   const newName = document.getElementById("editName").value.trim()
   if(!newName) return alert("Card name required")
-
   c.name = newName
   c.value = Number(document.getElementById("editValue").value || 0)
   c.type = document.getElementById("editType").value
   c.bucket = document.getElementById("editBucket").value
-
-  save()
-  editing = false
-  closeManage()
+  save(); editing=false; closeManage()
 }
 
 function moveCard(bucket){
   const c = cards.find(x => x.id === selectedCardId)
   if(!c) return
-
-  c.bucket = bucket
-  c.status = "active"
-  c.salePrice = 0
-  c.tradedFor = ""
-  c.soldAt = ""
-  c.tradedAt = ""
-
-  save()
-  closeManage()
+  c.bucket=bucket; c.status="active"; c.salePrice=0; c.tradedFor=""; c.soldAt=""; c.tradedAt=""
+  save(); closeManage()
 }
 
 function markSold(){
   const c = cards.find(x => x.id === selectedCardId)
   if(!c) return
-
-  const input = document.getElementById("saleInput")
-  const sale = Number(input.value || 0)
-
-  if(!sale){
-    alert("Enter a sale price")
-    return
-  }
-
-  c.status = "sold"
-  c.salePrice = sale
-  c.soldAt = new Date().toISOString()
-
-  save()
-  closeManage()
+  const sale = Number(document.getElementById("saleInput").value || 0)
+  if(!sale) return alert("Enter a sale price")
+  c.status="sold"; c.salePrice=sale; c.soldAt=new Date().toISOString()
+  save(); closeManage()
 }
 
 function markTraded(){
   const c = cards.find(x => x.id === selectedCardId)
   if(!c) return
-
-  const input = document.getElementById("tradeInput")
-  const tradedFor = input.value.trim()
-
-  if(!tradedFor){
-    alert("Enter what you traded for")
-    return
-  }
-
-  c.status = "traded"
-  c.tradedFor = tradedFor
-  c.tradedAt = new Date().toISOString()
-
-  save()
-  closeManage()
+  const tradedFor = document.getElementById("tradeInput").value.trim()
+  if(!tradedFor) return alert("Enter what you traded for")
+  c.status="traded"; c.tradedFor=tradedFor; c.tradedAt=new Date().toISOString()
+  save(); closeManage()
 }
 
 function deleteCard(){
   const confirmDelete = prompt("Type DELETE to confirm permanent deletion")
   if(confirmDelete !== "DELETE") return
-
   cards = cards.filter(c => c.id !== selectedCardId)
-  save()
-  closeManage()
+  save(); closeManage()
 }
 
 function resetAll(){
   if(!confirm("Delete all data?")) return
-  cards = []
-  save()
-  render()
+  cards=[]; save(); render()
 }
 
-function render(){
-  const app = document.getElementById("app")
-  const q = document.getElementById("search")?.value.toLowerCase() || ""
-
+function getData(){
   const inventory = cards.filter(c => !c.status || c.status === "active")
   const sold = cards.filter(c => c.status === "sold")
   const traded = cards.filter(c => c.status === "traded")
@@ -237,11 +128,21 @@ function render(){
   const inventoryValue = inventory.reduce((s,c)=>s+Number(c.value||0),0)
   const totalSold = sold.reduce((s,c)=>s+Number(c.salePrice||0),0)
   const totalProfit = sold.reduce((s,c)=>s+(Number(c.salePrice||0)-Number(c.value||0)),0)
-  const winRate = sold.length
-    ? Math.round((sold.filter(c => Number(c.salePrice||0) > Number(c.value||0)).length / sold.length) * 100)
-    : 0
+  const totalCostSold = sold.reduce((s,c)=>s+Number(c.value||0),0)
+  const roi = totalCostSold ? Math.round((totalProfit / totalCostSold) * 100) : 0
+  const winRate = sold.length ? Math.round((sold.filter(c => Number(c.salePrice||0) > Number(c.value||0)).length / sold.length) * 100) : 0
+  const slabs = inventory.filter(c=>c.type==="Slab").length
+  const raw = inventory.filter(c=>c.type==="Raw").length
 
-  let visible = activeTab === "inventory" ? inventory : history
+  return { inventory, sold, traded, history, inventoryValue, totalSold, totalProfit, roi, winRate, slabs, raw }
+}
+
+function render(){
+  const app = document.getElementById("app")
+  const q = document.getElementById("search")?.value.toLowerCase() || ""
+  const d = getData()
+
+  let visible = activeTab === "inventory" ? d.inventory : d.history
 
   visible = visible.filter(c => {
     if(activeAnchor !== "All" && getAnchor(c.name) !== activeAnchor) return false
@@ -250,19 +151,8 @@ function render(){
     return true
   })
 
-  const slabs = inventory.filter(c=>c.type==="Slab").length
-  const raw = inventory.filter(c=>c.type==="Raw").length
-
-  const groups = {
-    Pikachu: [],
-    Umbreon: [],
-    Charizard: [],
-    Other: []
-  }
-
-  visible.forEach(c => {
-    groups[getAnchor(c.name)].push(c)
-  })
+  const groups = { Pikachu:[], Umbreon:[], Charizard:[], Other:[] }
+  visible.forEach(c => groups[getAnchor(c.name)].push(c))
 
   app.innerHTML = `
     <div class="top">
@@ -271,32 +161,38 @@ function render(){
     </div>
 
     <div class="tabs">
-      <button class="tab ${activeTab==="inventory"?"active":""}" onclick="activeTab='inventory';render()">▱ Inventory (${inventory.length})</button>
-      <button class="tab ${activeTab==="history"?"active":""}" onclick="activeTab='history';render()">↺ History (${history.length})</button>
+      <button class="tab ${activeTab==="inventory"?"active":""}" onclick="activeTab='inventory';render()">Inventory</button>
+      <button class="tab ${activeTab==="history"?"active":""}" onclick="activeTab='history';render()">History</button>
+      <button class="tab ${activeTab==="analytics"?"active":""}" onclick="activeTab='analytics';render()">Analytics</button>
     </div>
 
     <div class="stats">
-      <div class="stat dark"><strong>$${inventoryValue.toLocaleString()}</strong><span>Inventory</span></div>
-      <div class="stat"><strong>${inventory.length}</strong><span>Cards</span></div>
-      <div class="stat"><strong>${slabs}</strong><span>Slabs</span></div>
-      <div class="stat"><strong>${raw}</strong><span>Raw</span></div>
+      <div class="stat dark"><strong>${money(d.inventoryValue)}</strong><span>Inventory</span></div>
+      <div class="stat"><strong>${d.inventory.length}</strong><span>Cards</span></div>
+      <div class="stat"><strong>${d.slabs}</strong><span>Slabs</span></div>
+      <div class="stat"><strong>${d.raw}</strong><span>Raw</span></div>
     </div>
 
     <div class="stats">
-      <div class="stat dark"><strong class="green">$${totalSold.toLocaleString()}</strong><span>Total Sold</span></div>
-      <div class="stat"><strong class="${totalProfit>0?"green":totalProfit<0?"red":"neutral"}">${totalProfit>=0?"+":""}$${totalProfit.toLocaleString()}</strong><span>P/L</span></div>
-      <div class="stat"><strong>${winRate}%</strong><span>Win Rate</span></div>
-      <div class="stat"><strong>${traded.length}</strong><span>Traded</span></div>
+      <div class="stat dark"><strong class="green">${money(d.totalSold)}</strong><span>Total Sold</span></div>
+      <div class="stat"><strong class="${d.totalProfit>0?"green":d.totalProfit<0?"red":"neutral"}">${d.totalProfit>=0?"+":""}${money(d.totalProfit)}</strong><span>P/L</span></div>
+      <div class="stat"><strong>${d.winRate}%</strong><span>Win Rate</span></div>
+      <div class="stat"><strong>${d.traded.length}</strong><span>Traded</span></div>
     </div>
 
+    ${activeTab !== "analytics" ? mainUI(visible, groups, q) : analyticsUI(d)}
+
+    ${selectedCardId ? sheetHTML() : ""}
+  `
+}
+
+function mainUI(visible, groups, q){
+  return `
     <div class="form">
       <input id="name" placeholder="Card name" />
       <div class="row">
         <input id="value" type="number" placeholder="Original Value $" />
-        <select id="type">
-          <option value="Raw">Raw</option>
-          <option value="Slab">Slab</option>
-        </select>
+        <select id="type"><option value="Raw">Raw</option><option value="Slab">Slab</option></select>
       </div>
       <select id="bucket">
         <option value="H">Hold</option>
@@ -310,32 +206,72 @@ function render(){
     <input id="search" class="search" placeholder="Search cards..." oninput="render()" value="${q}" />
 
     <div class="pills">
-      ${["H","G","T","S"].map(b => `
-        <button class="pill ${b}" onclick="activeBucket=activeBucket==='${b}'?'All':'${b}';render()">
-          ${bucketLabels[b]}
-        </button>
-      `).join("")}
+      ${["H","G","T","S"].map(b => `<button class="pill ${b}" onclick="activeBucket=activeBucket==='${b}'?'All':'${b}';render()">${bucketLabels[b]}</button>`).join("")}
     </div>
 
     <div class="pills">
-      ${["All","Pikachu","Umbreon","Charizard","Other"].map(a => `
-        <button class="pill anchor ${activeAnchor===a?"active":""}" onclick="activeAnchor='${a}';render()">
-          ${a}
-        </button>
-      `).join("")}
+      ${["All","Pikachu","Umbreon","Charizard","Other"].map(a => `<button class="pill anchor ${activeAnchor===a?"active":""}" onclick="activeAnchor='${a}';render()">${a}</button>`).join("")}
     </div>
 
     <div>
       ${visible.length === 0 ? `<div class="empty">No cards here</div>` : Object.entries(groups).map(([anchor,list]) => {
         if(!list.length) return ""
-        return `
-          <div class="groupTitle">${anchor}</div>
-          ${list.map(cardHTML).join("")}
-        `
+        return `<div class="groupTitle">${anchor}</div>${list.map(cardHTML).join("")}`
       }).join("")}
     </div>
+  `
+}
 
-    ${selectedCardId ? sheetHTML() : ""}
+function analyticsUI(d){
+  const soldSorted = [...d.sold].sort((a,b)=>
+    (Number(b.salePrice||0)-Number(b.value||0)) - (Number(a.salePrice||0)-Number(a.value||0))
+  )
+  const best = soldSorted[0]
+  const worst = soldSorted[soldSorted.length-1]
+
+  const buckets = ["H","G","T","S"].map(b=>{
+    const soldInBucket = d.sold.filter(c=>c.bucket===b)
+    const profit = soldInBucket.reduce((s,c)=>s+(Number(c.salePrice||0)-Number(c.value||0)),0)
+    const revenue = soldInBucket.reduce((s,c)=>s+Number(c.salePrice||0),0)
+    return { b, count:soldInBucket.length, profit, revenue }
+  })
+
+  return `
+    <div class="analyticsCard">
+      <div class="name">Performance Summary</div>
+      <div class="meta">ROI: <b class="${d.roi>=0?"green":"red"}">${d.roi}%</b></div>
+      <div class="meta">Win Rate: <b>${d.winRate}%</b></div>
+      <div class="meta">Total Sold: <b class="green">${money(d.totalSold)}</b></div>
+      <div class="meta">Total Profit/Loss: <b class="${d.totalProfit>=0?"green":"red"}">${d.totalProfit>=0?"+":""}${money(d.totalProfit)}</b></div>
+    </div>
+
+    <div class="analyticsCard">
+      <div class="name">Best Sale</div>
+      ${best ? saleLine(best) : `<div class="meta">No sold cards yet</div>`}
+    </div>
+
+    <div class="analyticsCard">
+      <div class="name">Worst Sale</div>
+      ${worst ? saleLine(worst) : `<div class="meta">No sold cards yet</div>`}
+    </div>
+
+    <div class="analyticsCard">
+      <div class="name">Bucket Performance</div>
+      ${buckets.map(x=>`
+        <div class="meta">
+          <b>${bucketLabels[x.b]}</b> · ${x.count} sold · Revenue ${money(x.revenue)} · 
+          <b class="${x.profit>=0?"green":"red"}">${x.profit>=0?"+":""}${money(x.profit)}</b>
+        </div>
+      `).join("")}
+    </div>
+  `
+}
+
+function saleLine(c){
+  const diff = Number(c.salePrice||0)-Number(c.value||0)
+  return `
+    <div class="meta"><b>${c.name}</b></div>
+    <div class="meta">Sold ${money(c.salePrice)} · Cost ${money(c.value)} · <b class="${diff>=0?"green":"red"}">${diff>=0?"+":""}${money(diff)}</b></div>
   `
 }
 
@@ -352,22 +288,11 @@ function cardHTML(c){
           <div class="name">${c.name}</div>
           <div class="meta">${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]}</div>
           <span class="badge ${c.bucket}">${bucketLabels[c.bucket]}</span>
-
-          ${c.status==="sold" ? `
-            <div class="meta">
-              Sold for <b class="${diffClass}">$${sale.toLocaleString()}</b>
-              · Original $${original.toLocaleString()}
-              · <b class="${diffClass}">${diff>=0?"+":""}$${diff.toLocaleString()}</b>
-            </div>
-          ` : ""}
-
-          ${c.status==="traded" ? `
-            <div class="meta">Traded for: ${c.tradedFor || "Not specified"}</div>
-          ` : ""}
+          ${c.status==="sold" ? `<div class="meta">Sold for <b class="${diffClass}">${money(sale)}</b> · Original ${money(original)} · <b class="${diffClass}">${diff>=0?"+":""}${money(diff)}</b></div>` : ""}
+          ${c.status==="traded" ? `<div class="meta">Traded for: ${c.tradedFor || "Not specified"}</div>` : ""}
         </div>
-
         <div style="text-align:right">
-          <div class="value">$${original.toLocaleString()}</div>
+          <div class="value">${money(original)}</div>
           <button class="manage" onclick="openManage(${c.id})">Manage</button>
         </div>
       </div>
@@ -385,21 +310,15 @@ function sheetHTML(){
         <div class="sheet" onclick="event.stopPropagation()">
           <h3>Edit Card</h3>
           <p>Fix name, value, type, or bucket</p>
-
           <input id="editName" value="${c.name}" placeholder="Card name" />
           <input id="editValue" type="number" value="${c.value}" placeholder="Original value $" />
-
           <select id="editType">
             <option value="Raw" ${c.type==="Raw"?"selected":""}>Raw</option>
             <option value="Slab" ${c.type==="Slab"?"selected":""}>Slab</option>
           </select>
-
           <select id="editBucket">
-            ${["H","G","T","S"].map(b=>`
-              <option value="${b}" ${c.bucket===b?"selected":""}>${bucketLabels[b]}</option>
-            `).join("")}
+            ${["H","G","T","S"].map(b=>`<option value="${b}" ${c.bucket===b?"selected":""}>${bucketLabels[b]}</option>`).join("")}
           </select>
-
           <button class="sheetBtn" onclick="saveEdit()">Save Changes</button>
           <button class="close" onclick="closeEdit()">Cancel</button>
         </div>
@@ -411,13 +330,10 @@ function sheetHTML(){
     <div class="sheetBack" onclick="closeManage()">
       <div class="sheet" onclick="event.stopPropagation()">
         <h3>${c.name}</h3>
-        <p>${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]} · $${Number(c.value||0).toLocaleString()}</p>
-
+        <p>${c.type} · ${getAnchor(c.name)} · ${bucketLabels[c.bucket]} · ${money(c.value)}</p>
         <button class="sheetBtn" onclick="openEdit()">Edit Card<small>Fix name, value, type, bucket</small></button>
-
         <input id="saleInput" type="number" placeholder="Sale price $" />
         <input id="tradeInput" type="text" placeholder="Traded for what?" />
-
         <button class="sheetBtn" onclick="moveCard('H')">Move to HOLD<small>Keep in collection</small></button>
         <button class="sheetBtn" onclick="moveCard('G')">Move to GRADE<small>Candidate for grading</small></button>
         <button class="sheetBtn" onclick="moveCard('T')">Move to TRADE<small>Available for trades</small></button>
@@ -425,7 +341,6 @@ function sheetHTML(){
         <button class="sheetBtn" onclick="markSold()">Mark as SOLD<small>Uses the sale price above</small></button>
         <button class="sheetBtn" onclick="markTraded()">Mark as TRADED<small>Uses the trade field above</small></button>
         <button class="sheetBtn danger" onclick="deleteCard()">Delete Permanently<small>Requires typing DELETE</small></button>
-
         <button class="close" onclick="closeManage()">Cancel</button>
       </div>
     </div>
