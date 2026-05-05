@@ -7,260 +7,55 @@
 
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  background:#f7f7f8;
-  color:#111;
-  font-family:Arial,sans-serif;
-}
-#app{
-  max-width:480px;
-  margin:auto;
-  padding:20px;
-}
-.top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:18px;
-}
-h1{
-  margin:0;
-  font-size:34px;
-  font-weight:900;
-}
-.reset{
-  width:54px;
-  height:54px;
-  border-radius:16px;
-  border:none;
-  background:#181818;
-  color:white;
-  font-size:22px;
-}
-.tabs{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-bottom:16px;
-}
-.tab{
-  border:none;
-  border-radius:16px;
-  padding:14px 8px;
-  font-weight:900;
-  font-size:15px;
-  background:#eee;
-  color:#777;
-}
-.tab.active{
-  background:#181818;
-  color:white;
-}
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:14px;
-}
-.stat{
-  background:#eee;
-  border-radius:16px;
-  padding:14px 6px;
-  text-align:center;
-}
-.stat.dark{
-  background:#181818;
-  color:white;
-}
-.stat strong{
-  display:block;
-  font-size:20px;
-}
-.stat span{
-  color:#777;
-  font-size:11px;
-}
+body{margin:0;background:#f7f7f8;color:#111;font-family:Arial,sans-serif}
+#app{max-width:480px;margin:auto;padding:20px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+h1{margin:0;font-size:34px;font-weight:900}
+.reset{width:54px;height:54px;border-radius:16px;border:none;background:#181818;color:white;font-size:22px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.tab{border:none;border-radius:16px;padding:14px 8px;font-weight:900;font-size:15px;background:#eee;color:#777}
+.tab.active{background:#181818;color:white}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.stat{background:#eee;border-radius:16px;padding:14px 6px;text-align:center}
+.stat.dark{background:#181818;color:white}
+.stat strong{display:block;font-size:20px}
+.stat span{color:#777;font-size:11px}
 .stat.dark span{color:#aaa}
-.form{
-  background:white;
-  padding:16px;
-  border-radius:20px;
-  margin-bottom:18px;
-  box-shadow:0 4px 16px rgba(0,0,0,.05);
-}
-input,select{
-  width:100%;
-  border:none;
-  background:#f0f0f0;
-  border-radius:14px;
-  padding:14px;
-  font-size:16px;
-  margin-bottom:10px;
-}
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-.addBtn{
-  width:100%;
-  border:none;
-  background:#181818;
-  color:white;
-  border-radius:14px;
-  padding:15px;
-  font-size:16px;
-  font-weight:900;
-}
-.search{
-  width:100%;
-  border:none;
-  background:#eee;
-  border-radius:18px;
-  padding:18px;
-  font-size:18px;
-  margin-bottom:14px;
-}
-.pills{
-  display:flex;
-  gap:10px;
-  overflow-x:auto;
-  padding-bottom:4px;
-  margin-bottom:14px;
-}
-.pill{
-  flex:0 0 auto;
-  border:none;
-  border-radius:999px;
-  padding:14px 20px;
-  font-size:15px;
-  font-weight:900;
-}
+.form{background:white;padding:16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;padding:14px;font-size:16px;margin-bottom:10px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.addBtn{width:100%;border:none;background:#181818;color:white;border-radius:14px;padding:15px;font-size:16px;font-weight:900}
+.search{width:100%;border:none;background:#eee;border-radius:18px;padding:18px;font-size:18px;margin-bottom:14px}
+.pills{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
+.pill{flex:0 0 auto;border:none;border-radius:999px;padding:14px 20px;font-size:15px;font-weight:900}
 .H{background:#6f936a;color:white}
 .G{background:#6687c2;color:white}
 .T{background:#e28a55;color:white}
 .S{background:#c76565;color:white}
-.anchor{
-  background:#eef0ed;
-  color:#666;
-}
-.anchor.active{
-  background:#181818;
-  color:white;
-}
-.groupTitle{
-  font-size:19px;
-  font-weight:900;
-  margin:20px 0 10px;
-}
-.card,.analyticsCard{
-  background:white;
-  border-radius:18px;
-  padding:16px;
-  margin-bottom:12px;
-  box-shadow:0 4px 16px rgba(0,0,0,.06);
-}
-.cardTop{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-}
-.name{
-  font-weight:900;
-  font-size:17px;
-}
-.meta{
-  color:#777;
-  font-size:13px;
-  line-height:1.45;
-  margin-top:5px;
-}
-.value{
-  font-size:18px;
-  font-weight:900;
-  color:#111;
-}
-.badge,.signal{
-  display:inline-block;
-  margin-top:10px;
-  margin-right:5px;
-  border-radius:999px;
-  padding:6px 12px;
-  font-size:12px;
-  font-weight:900;
-}
-.signal{
-  background:#f1f1f1;
-}
+.anchor{background:#eef0ed;color:#666}
+.anchor.active{background:#181818;color:white}
+.groupTitle{font-size:19px;font-weight:900;margin:20px 0 10px}
+.card,.analyticsCard{background:white;border-radius:18px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.cardTop{display:flex;justify-content:space-between;gap:12px}
+.name{font-weight:900;font-size:17px}
+.meta{color:#777;font-size:13px;line-height:1.45;margin-top:5px}
+.value{font-size:18px;font-weight:900;color:#111}
+.badge,.signal{display:inline-block;margin-top:10px;margin-right:5px;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:900}
+.signal{background:#f1f1f1}
 .green{color:#15803d!important}
 .red{color:#dc2626!important}
 .blue{color:#2563eb!important}
 .neutral{color:#111!important}
-.manage{
-  margin-top:10px;
-  background:#181818;
-  color:white;
-  border:none;
-  border-radius:12px;
-  padding:10px 14px;
-  font-weight:900;
-}
-.empty{
-  text-align:center;
-  color:#777;
-  padding:40px;
-}
-.sheetBack{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.65);
-  display:flex;
-  align-items:flex-end;
-  z-index:99;
-}
-.sheet{
-  width:100%;
-  max-width:480px;
-  margin:auto;
-  background:white;
-  border-radius:26px 26px 0 0;
-  padding:20px;
-  max-height:90vh;
-  overflow-y:auto;
-}
+.manage{margin-top:10px;background:#181818;color:white;border:none;border-radius:12px;padding:10px 14px;font-weight:900}
+.empty{text-align:center;color:#777;padding:40px}
+.sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;z-index:99}
+.sheet{width:100%;max-width:480px;margin:auto;background:white;border-radius:26px 26px 0 0;padding:20px;max-height:90vh;overflow-y:auto}
 .sheet h3{margin:0 0 6px;font-size:22px}
 .sheet p{margin:0 0 16px;color:#777}
-.sheetBtn{
-  width:100%;
-  text-align:left;
-  border:none;
-  background:#f1f1f1;
-  border-radius:16px;
-  padding:15px;
-  margin-bottom:10px;
-  font-size:15px;
-  font-weight:900;
-}
-.sheetBtn small{
-  display:block;
-  color:#777;
-  margin-top:4px;
-  font-weight:500;
-}
-.close{
-  width:100%;
-  border:none;
-  background:#181818;
-  color:white;
-  border-radius:16px;
-  padding:15px;
-  font-weight:900;
-}
-.danger{
-  background:#fee2e2!important;
-  color:#991b1b!important;
-}
+.sheetBtn{width:100%;text-align:left;border:none;background:#f1f1f1;border-radius:16px;padding:15px;margin-bottom:10px;font-size:15px;font-weight:900}
+.sheetBtn small{display:block;color:#777;margin-top:4px;font-weight:500}
+.close{width:100%;border:none;background:#181818;color:white;border-radius:16px;padding:15px;font-weight:900}
+.danger{background:#fee2e2!important;color:#991b1b!important}
 </style>
 </head>
 
@@ -268,7 +63,7 @@ input,select{
 <div id="app"></div>
 
 <script>
-const KEY = "pokevault_rebuild_phase1"
+const KEY = "pokevault_rebuild_phaseA2"
 
 let cards = JSON.parse(localStorage.getItem(KEY) || "[]")
 let activeTab = "inventory"
@@ -282,6 +77,21 @@ const bucketLabels = {
   G:"GRADE",
   T:"TRADE",
   S:"SELL"
+}
+
+const reasonLabels = {
+  flip:"Quick Flip",
+  cash:"Need Cash",
+  drop:"Market Drop",
+  overpay:"Overpaid",
+  upgrade:"Upgrade Capital"
+}
+
+const gradeLabels = {
+  psa10:"PSA 10",
+  psa9:"PSA 9",
+  psa8:"PSA 8",
+  none:"Not Graded"
 }
 
 function save(){
@@ -354,6 +164,8 @@ function addCard(){
     status:"active",
     salePrice:0,
     tradedFor:"",
+    reasonSold:"",
+    gradeOutcome:"",
     createdAt:new Date().toISOString(),
     soldAt:"",
     tradedAt:""
@@ -409,6 +221,8 @@ function moveCard(bucket){
   c.status = "active"
   c.salePrice = 0
   c.tradedFor = ""
+  c.reasonSold = ""
+  c.gradeOutcome = ""
   c.soldAt = ""
   c.tradedAt = ""
 
@@ -425,6 +239,8 @@ function markSold(){
 
   c.status = "sold"
   c.salePrice = sale
+  c.reasonSold = document.getElementById("reasonInput").value
+  c.gradeOutcome = document.getElementById("gradeInput").value
   c.soldAt = new Date().toISOString()
 
   save()
@@ -594,6 +410,8 @@ function cardHTML(c){
               Cost: ${money(a.cost)}<br>
               Result: <b class="${a.signalClass}">${a.profit>=0?"+":""}${money(a.profit)} (${a.roi}%)</b>
             </div>
+            ${c.reasonSold ? `<div class="meta">Reason: ${reasonLabels[c.reasonSold] || c.reasonSold}</div>` : ""}
+            ${c.gradeOutcome ? `<div class="meta">Grade Outcome: ${gradeLabels[c.gradeOutcome] || c.gradeOutcome}</div>` : ""}
           ` : `
             <div class="meta">Cost ${money(a.cost)} · PSA10 Est ${money(a.psa)}</div>
           `}
@@ -611,6 +429,16 @@ function cardHTML(c){
 }
 
 function analyticsHTML(d){
+  const reasonCounts = {}
+  d.sold.forEach(c => {
+    const key = c.reasonSold || "unknown"
+    reasonCounts[key] = (reasonCounts[key] || 0) + 1
+  })
+
+  const reasons = Object.entries(reasonCounts)
+    .map(([key,count]) => `<div class="meta">${reasonLabels[key] || key}: <b>${count}</b></div>`)
+    .join("")
+
   return `
     <div class="analyticsCard">
       <div class="name">Performance Summary</div>
@@ -618,6 +446,11 @@ function analyticsHTML(d){
       <div class="meta">Win Rate: <b>${d.winRate}%</b></div>
       <div class="meta">Total Sold: <b class="green">${money(d.totalSold)}</b></div>
       <div class="meta">Total P/L: <b class="${d.totalProfit>=0?"green":"red"}">${d.totalProfit>=0?"+":""}${money(d.totalProfit)}</b></div>
+    </div>
+
+    <div class="analyticsCard">
+      <div class="name">Why Cards Were Sold</div>
+      ${reasons || `<div class="meta">No sold reasons yet</div>`}
     </div>
   `
 }
@@ -659,6 +492,24 @@ function sheetHTML(){
         <button class="sheetBtn" onclick="openEdit()">Edit Card<small>Fix name, value, PSA, type, bucket</small></button>
 
         <input id="saleInput" type="number" placeholder="Sale price $" />
+
+        <select id="reasonInput">
+          <option value="">Reason Sold</option>
+          <option value="flip">Quick Flip</option>
+          <option value="cash">Need Cash</option>
+          <option value="drop">Market Drop</option>
+          <option value="overpay">Overpaid</option>
+          <option value="upgrade">Upgrade Capital</option>
+        </select>
+
+        <select id="gradeInput">
+          <option value="">Grade Outcome</option>
+          <option value="psa10">PSA 10</option>
+          <option value="psa9">PSA 9</option>
+          <option value="psa8">PSA 8</option>
+          <option value="none">Not Graded</option>
+        </select>
+
         <input id="tradeInput" placeholder="Traded for what?" />
 
         <button class="sheetBtn" onclick="moveCard('H')">Move to HOLD</button>
