@@ -4,15 +4,14 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>PokéVault</title>
-
 <style>
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;overflow-x:hidden;background:#f7f7f8;color:#111;font-family:Arial,sans-serif}
 #app{width:100%;max-width:480px;margin:0 auto;padding:20px}
 .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px}
 h1{margin:0;font-size:34px;font-weight:900;line-height:1}
-.topActions{display:flex;gap:8px}
-.iconBtn{width:46px;height:46px;border-radius:14px;background:#181818;color:#fff;border:none;font-size:18px;font-weight:900}
+.topActions{display:flex;gap:6px}
+.iconBtn{width:42px;height:42px;border-radius:13px;background:#181818;color:#fff;border:none;font-size:16px;font-weight:900}
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
 .tab{border:none;padding:14px 8px;border-radius:16px;font-size:15px;font-weight:800;background:#eee;color:#777}
 .tab.active{background:#181818;color:#fff}
@@ -23,7 +22,7 @@ h1{margin:0;font-size:34px;font-weight:900;line-height:1}
 .stat.dark strong{color:#fff}
 .stat span{font-size:11px;color:#777}
 .green{color:#15803d!important}.red{color:#dc2626!important}.neutral{color:#111!important}
-.syncStatus{font-size:12px;color:#666;margin:-8px 0 14px}
+.syncStatus{font-size:12px;color:#666;margin:-8px 0 14px;line-height:1.4}
 .form{background:#fff;padding:16px;border-radius:20px;margin-bottom:18px;box-shadow:0 4px 16px rgba(0,0,0,.05)}
 input,select{width:100%;border:none;background:#f0f0f0;border-radius:14px;padding:14px;font-size:16px;margin-bottom:10px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -70,6 +69,8 @@ let selectedCardId = null
 let editing = false
 let loading = true
 let syncStatus = "Loading cloud data..."
+let lastSynced = ""
+let isSyncing = false
 
 const bucketLabels = { H:"HOLD", G:"GRADE", T:"TRADE", S:"SELL" }
 
@@ -91,10 +92,13 @@ async function loadCloud(){
     if(Array.isArray(data) && data.length > 0){
       cards = data.map(normalizeCard)
       localStorage.setItem(KEY, JSON.stringify(cards))
-      syncStatus = "Cloud synced"
+      lastSynced = new Date().toLocaleTimeString()
+      syncStatus = "Cloud loaded"
+    } else if(cards.length > 0){
+      syncStatus = "Cloud empty — pushing local backup"
+      await syncCloud()
     } else {
-      syncStatus = "Cloud empty — using local data"
-      if(cards.length > 0) syncCloud()
+      syncStatus = "Cloud empty"
     }
   } catch(e){
     console.error(e)
@@ -122,6 +126,9 @@ function normalizeCard(c){
 }
 
 async function syncCloud(){
+  if(isSyncing) return
+  isSyncing = true
+
   try{
     syncStatus = "Syncing..."
     render()
@@ -132,11 +139,13 @@ async function syncCloud(){
       body: JSON.stringify({ cards })
     })
 
+    lastSynced = new Date().toLocaleTimeString()
     syncStatus = "Cloud synced"
-    render()
   } catch(e){
     console.error(e)
     syncStatus = "Cloud sync failed — saved locally"
+  } finally {
+    isSyncing = false
     render()
   }
 }
@@ -198,6 +207,7 @@ function addCard(){
     soldAt:"",
     tradedAt:""
   })
+
   save()
   render()
 }
@@ -313,13 +323,16 @@ function render(){
       <h1>PokéVault</h1>
       <div class="topActions">
         <button class="iconBtn" onclick="syncCloud()">☁</button>
+        <button class="iconBtn" onclick="loadCloud()">⟳</button>
         <button class="iconBtn" onclick="exportData()">⬇</button>
         <button class="iconBtn" onclick="triggerImport()">⬆</button>
         <button class="iconBtn danger" onclick="resetAll()">🗑</button>
       </div>
     </div>
 
-    <div class="syncStatus">${syncStatus}</div>
+    <div class="syncStatus">
+      ${syncStatus}${lastSynced ? " • Last sync: " + lastSynced : ""}
+    </div>
 
     <div class="tabs">
       <button class="tab ${activeTab==="inventory"?"active":""}" onclick="activeTab='inventory';render()">Inventory</button>
