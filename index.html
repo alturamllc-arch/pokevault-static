@@ -1,1082 +1,324 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>PokéVault v1</title>
+<!-- SAFE BATCH 4 PATCH -->
+<!-- ADD these sections carefully to your CURRENT Batch 3 code -->
 
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#f4f4f6;color:#111;font-family:Arial,sans-serif}
-#app{max-width:480px;margin:auto;min-height:100vh;padding:18px 16px 96px}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-h1{margin:0;font-size:32px;font-weight:900;letter-spacing:-.5px}
-.roundBtn{width:48px;height:48px;border-radius:16px;border:none;background:white;font-size:22px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
-.searchRow{display:flex;gap:10px;margin-bottom:12px}
-.search{flex:1;border:none;background:white;border-radius:18px;padding:16px;font-size:17px;box-shadow:0 6px 18px rgba(0,0,0,.05)}
-.filterBtn{width:52px;border:none;background:#111;color:white;border-radius:18px;font-size:20px;font-weight:900}
-.filterPanel{background:white;border-radius:22px;padding:14px;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,.07);animation:fadeIn .18s ease}
-.chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:10px;padding-bottom:3px}
-.chips:last-child{margin-bottom:0}
-.chip{border:1px solid #ddd;background:#f7f7f8;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:900;white-space:nowrap}
-.chip.active{background:#108cf5;color:white;border-color:#108cf5}
-.chip.bucket{color:white;border:none}
-.H{background:#6f936a!important}
-.G{background:#6687c2!important}
-.T{background:#e28a55!important}
-.S{background:#c76565!important}
-.W{background:#8b5cf6!important}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
-.stat{background:white;border-radius:16px;padding:11px 7px;box-shadow:0 4px 14px rgba(0,0,0,.045);text-align:center}
-.stat strong{display:block;font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stat span{font-size:10px;color:#777;text-transform:uppercase;font-weight:800}
-.grid{display:grid;grid-template-columns:1fr;gap:10px}
-.bucketHeader{display:flex;align-items:center;justify-content:space-between;margin:16px 2px 8px}
-.bucketTitle{font-size:16px;font-weight:900}
-.bucketCount{font-size:12px;font-weight:900;color:#777;background:white;border-radius:999px;padding:5px 10px}
-.card{background:white;border-radius:20px;padding:14px;box-shadow:0 5px 16px rgba(0,0,0,.065);animation:fadeUp .2s ease}
-.cardTop{display:flex;justify-content:space-between;gap:10px}
-.name{font-size:18px;font-weight:900;line-height:1.15}
-.meta{font-size:12.5px;color:#777;margin-top:5px;line-height:1.38}
-.badge{display:inline-block;margin-top:9px;margin-right:5px;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900}
-.signal{display:inline-block;margin-top:9px;margin-right:5px;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900;background:#eee}
-.green{color:#15803d!important}.red{color:#dc2626!important}.blue{color:#2563eb!important}.purple{color:#7c3aed!important}.neutral{color:#111!important}
-.value{text-align:right;font-size:18px;font-weight:900}
-.small{font-size:11px;color:#777;text-align:right}
-.empty{background:white;border-radius:24px;text-align:center;color:#777;padding:34px 20px;margin-top:14px;box-shadow:0 6px 20px rgba(0,0,0,.05)}
-.emptyIcon{font-size:40px;margin-bottom:10px}
-.emptyTitle{font-size:20px;font-weight:900;color:#111;margin-bottom:6px}
-.emptyText{font-size:14px;line-height:1.4}
-.fab{position:fixed;right:max(20px,calc(50vw - 220px));bottom:98px;width:60px;height:60px;border:none;border-radius:22px;background:#111;color:white;font-size:34px;font-weight:300;box-shadow:0 12px 28px rgba(0,0,0,.24);z-index:30}
-.bottomNav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);width:calc(100% - 32px);max-width:450px;background:white;border-radius:28px;display:grid;grid-template-columns:repeat(5,1fr);padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.16);z-index:25}
-.navBtn{border:none;background:transparent;border-radius:22px;padding:10px 4px;font-size:12px;font-weight:900;color:#333}
-.navBtn.active{background:#e9e9ee;color:#111}
-.navIcon{display:block;font-size:22px;margin-bottom:3px}
-.sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;z-index:99;animation:fadeIn .15s ease}
-.sheet{width:100%;max-width:480px;margin:auto;background:white;border-radius:28px 28px 0 0;padding:20px;max-height:92vh;overflow-y:auto;animation:slideUp .2s ease}
-.sheet h2{margin:0 0 14px;font-size:26px}
-input,select,textarea{width:100%;border:none;background:#f0f0f0;border-radius:15px;padding:15px;font-size:16px;margin-bottom:10px}
-textarea{min-height:78px;resize:none}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.primary{width:100%;border:none;background:#111;color:white;border-radius:16px;padding:16px;font-size:17px;font-weight:900;margin-top:6px}
-.secondary{width:100%;border:none;background:#f0f0f0;color:#111;border-radius:16px;padding:15px;font-size:15px;font-weight:900;margin-bottom:10px;text-align:left}
-.danger{background:#fee2e2!important;color:#991b1b!important}
-.warning{background:#fff7ed;color:#9a3412;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:800;margin-bottom:10px}
-.section{font-size:12px;color:#777;font-weight:900;text-transform:uppercase;margin:16px 0 8px}
+<!-- ========================================================= -->
+<!-- 1. ADD THESE VARIABLES near your other let variables -->
+<!-- ========================================================= -->
 
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideUp{from{transform:translateY(20px);opacity:.75}to{transform:translateY(0);opacity:1}}
-</style>
-</head>
+let profileName = localStorage.getItem("pv_profile_name") || "Collector"
+let currentView = "main"
 
-<body>
-<div id="app"></div>
+<!-- ========================================================= -->
+<!-- 2. ADD THIS FUNCTION BELOW groupByBucket() -->
+<!-- ========================================================= -->
 
-<script>
-const KEY = "pokevault_v1_batch3"
-let cards = JSON.parse(localStorage.getItem(KEY) || "[]")
-
-let screen = "vault"
-let filterStatus = "All"
-let filterBucket = "All"
-let filterAnchor = "All"
-let searchText = ""
-let sortMode = "newest"
-let filtersOpen = false
-
-let sheet = null
-let selectedId = null
-
-const buckets = {H:"HOLD",G:"GRADE",T:"TRADE",S:"SELL",W:"WISHLIST"}
-const reasons = {
-  flip:"Quick Flip",
-  cash:"Need Cash",
-  drop:"Market Drop",
-  overpay:"Overpaid",
-  upgrade:"Upgrade Capital"
+function grailCards(){
+  return cards.filter(c => c.favorite)
 }
 
-function save(){
-  localStorage.setItem(KEY, JSON.stringify(cards))
-  render()
-}
+function favoritePokemon(){
+  const counts = {}
 
-function money(n){
-  return "$"+Number(n||0).toLocaleString()
-}
-
-function getAnchor(name){
-  const n = String(name||"").toLowerCase()
-  if(n.includes("pikachu")||n.includes("pichu")) return "Pikachu"
-  if(n.includes("charizard")||n.includes("charmeleon")) return "Charizard"
-  if(n.includes("umbreon")) return "Umbreon"
-  return "Other"
-}
-
-function analyze(c){
-  const cost = Number(c.value||0)
-  const psa = Number(c.psa||0)
-  const sale = Number(c.salePrice||0)
-  const target = Number(c.targetBuy||0)
-
-  const profit = sale - cost
-  const roi = cost ? Math.round((profit/cost)*100) : 0
-  const upside = psa - cost
-
-  let signal="HOLD", cls="green"
-
-  if(c.status==="wishlist"){
-    signal = target ? "WATCH":"WISHLIST"
-    cls="purple"
-  }
-  else if(c.status==="sold"){
-    signal = profit>0 ? "PROFIT" : profit<0 ? "LOSS" : "EVEN"
-    cls = profit>0 ? "green" : profit<0 ? "red" : "neutral"
-  }
-  else if(c.status==="traded"){
-    signal="TRADED"
-    cls="blue"
-  }
-  else if(psa && cost && psa>=cost*2){
-    signal="GRADE"
-    cls="blue"
-  }
-  else if(psa && cost && psa<=cost*1.3){
-    signal="SELL"
-    cls="red"
-  }
-
-  return {cost,psa,sale,target,profit,roi,upside,signal,cls}
-}
-
-function risk(c){
-  const cost=Number(c.value||0)
-  const psa=Number(c.psa||0)
-  const target=Number(c.targetBuy||0)
-
-  if(c.status==="wishlist"&&target){
-    return {label:"TARGET "+money(target),cls:"purple"}
-  }
-
-  if(!cost || !psa) return null
-
-  const ratio = psa/cost
-
-  if(ratio>=2.5) return {label:"STRONG GRADE",cls:"green"}
-  if(ratio>=1.5) return {label:"GOOD UPSIDE",cls:"blue"}
-  if(cost>=100&&ratio<1.5) return {label:"HIGH RISK BUY",cls:"red"}
-  if(ratio<=1.2) return {label:"LOW UPSIDE",cls:"red"}
-
-  return {label:"HOLD / MONITOR",cls:"neutral"}
-}
-
-function duplicateCount(name){
-  const n = String(name||"").trim().toLowerCase()
-  if(!n) return 0
-  return cards.filter(c=>String(c.name||"").trim().toLowerCase()===n).length
-}
-
-function data(){
-  const inventory = cards.filter(c=>!c.status||c.status==="active")
-  const wishlist = cards.filter(c=>c.status==="wishlist")
-  const sold = cards.filter(c=>c.status==="sold")
-  const traded = cards.filter(c=>c.status==="traded")
-  const history = [...sold,...traded]
-
-  return {
-    inventory,wishlist,sold,traded,history,
-    inventoryValue:inventory.reduce((s,c)=>s+Number(c.value||0),0),
-    invested:cards.filter(c=>c.status!=="wishlist").reduce((s,c)=>s+Number(c.value||0),0),
-    returned:sold.reduce((s,c)=>s+Number(c.salePrice||0),0),
-    profit:sold.reduce((s,c)=>s+(Number(c.salePrice||0)-Number(c.value||0)),0),
-    wishlistTarget:wishlist.reduce((s,c)=>s+Number(c.targetBuy||0),0)
-  }
-}
-
-function sortCards(list){
-  return [...list].sort((a,b)=>{
-    const aa = analyze(a)
-    const bb = analyze(b)
-
-    if(sortMode==="highest") return bb.cost - aa.cost
-    if(sortMode==="alphabetical") return String(a.name).localeCompare(String(b.name))
-    if(sortMode==="upside") return bb.upside - aa.upside
-    if(sortMode==="loss") return aa.profit - bb.profit
-
-    return new Date(b.createdAt||0)-new Date(a.createdAt||0)
-  })
-}
-
-function visibleCards(){
-  const d = data()
-
-  let list =
-    screen==="wishlist" ? d.wishlist :
-    screen==="analytics" ? [] :
-    screen==="search" ? cards :
-    screen==="vault" ? d.inventory :
-    d.history
-
-  list = list.filter(c=>{
-    if(filterStatus!=="All"&&c.status!==filterStatus) return false
-    if(filterBucket!=="All"&&c.bucket!==filterBucket) return false
-    if(filterAnchor!=="All"&&getAnchor(c.name)!==filterAnchor) return false
-    if(searchText&&!String(c.name).toLowerCase().includes(searchText.toLowerCase())) return false
-    return true
+  cards.forEach(c=>{
+    const a = getAnchor(c.name)
+    counts[a] = (counts[a] || 0) + 1
   })
 
-  return sortCards(list)
-}
+  let max = 0
+  let winner = "None"
 
-function groupByBucket(list){
-  const order = ["H","G","T","S","W"]
-  const grouped = {}
-  order.forEach(b => grouped[b] = [])
-  list.forEach(c => {
-    const key = c.bucket || "H"
-    if(!grouped[key]) grouped[key] = []
-    grouped[key].push(c)
-  })
-  return grouped
-}
-
-function addCardFromForm(){
-  const name = document.getElementById("name").value.trim()
-  if(!name) return alert("Enter card name")
-
-  const bucket = document.getElementById("bucket").value
-
-  cards.push({
-    id:Date.now(),
-    name,
-    value:Number(document.getElementById("value").value||0),
-    psa:Number(document.getElementById("psa").value||0),
-    setName:document.getElementById("setName").value.trim(),
-    language:document.getElementById("language").value,
-    rarity:document.getElementById("rarity").value,
-    folder:document.getElementById("folder").value,
-    type:document.getElementById("type").value,
-    purchaseSource:document.getElementById("purchaseSource").value.trim(),
-    purchaseDate:document.getElementById("purchaseDate").value,
-    purchaseNote:document.getElementById("purchaseNote").value.trim(),
-    bucket,
-    targetBuy:Number(document.getElementById("targetBuy").value||0),
-    status:bucket==="W"?"wishlist":"active",
-    salePrice:0,
-    tradedFor:"",
-    reasonSold:"",
-    priceHistory:[],
-    createdAt:new Date().toISOString(),
-    soldAt:"",
-    tradedAt:""
-  })
-
-  sheet=null
-  save()
-}
-
-function updateCard(){
-  const c = cards.find(x=>x.id===selectedId)
-  if(!c) return
-
-  c.name=document.getElementById("editName").value.trim()
-  c.value=Number(document.getElementById("editValue").value||0)
-  c.psa=Number(document.getElementById("editPSA").value||0)
-  c.setName=document.getElementById("editSet").value.trim()
-  c.language=document.getElementById("editLang").value
-  c.rarity=document.getElementById("editRarity").value
-  c.folder=document.getElementById("editFolder").value
-  c.type=document.getElementById("editType").value
-
-  c.purchaseSource=document.getElementById("editPurchaseSource").value.trim()
-  c.purchaseDate=document.getElementById("editPurchaseDate").value
-  c.purchaseNote=document.getElementById("editPurchaseNote").value.trim()
-
-  c.bucket=document.getElementById("editBucket").value
-  c.targetBuy=Number(document.getElementById("editTarget").value||0)
-
-  c.status=c.bucket==="W"?"wishlist":c.status==="wishlist"?"active":c.status
-
-  sheet=null
-  save()
-}
-
-function moveCard(b){
-  const c=cards.find(x=>x.id===selectedId)
-  if(!c) return
-
-  c.bucket=b
-  c.status=b==="W"?"wishlist":"active"
-  c.salePrice=0
-  c.tradedFor=""
-  c.reasonSold=""
-  c.soldAt=""
-  c.tradedAt=""
-
-  sheet=null
-  save()
-}
-
-function markSold(){
-  const c=cards.find(x=>x.id===selectedId)
-  if(!c) return
-
-  const sale=Number(document.getElementById("saleInput").value||0)
-  if(!sale) return alert("Enter sale price")
-
-  c.status="sold"
-  c.salePrice=sale
-  c.reasonSold=document.getElementById("reasonInput").value
-  c.soldAt=new Date().toISOString()
-
-  sheet=null
-  save()
-}
-
-function markTraded(){
-  const c=cards.find(x=>x.id===selectedId)
-  if(!c) return
-
-  const t=document.getElementById("tradeInput").value.trim()
-  if(!t) return alert("Enter trade details")
-
-  c.status="traded"
-  c.tradedFor=t
-  c.tradedAt=new Date().toISOString()
-
-  sheet=null
-  save()
-}
-
-function restoreCard(){
-  const c=cards.find(x=>x.id===selectedId)
-  if(!c) return
-
-  c.status="active"
-
-  if(c.bucket==="W") c.bucket="H"
-
-  c.salePrice=0
-  c.tradedFor=""
-  c.reasonSold=""
-
-  sheet=null
-  save()
-}
-
-function addPriceLog(){
-  const c=cards.find(x=>x.id===selectedId)
-  if(!c) return
-
-  const price=Number(document.getElementById("priceLog").value||0)
-  if(!price) return alert("Enter price")
-
-  if(!Array.isArray(c.priceHistory)) c.priceHistory=[]
-
-  c.priceHistory.push({
-    price,
-    note:document.getElementById("priceNote").value.trim(),
-    date:new Date().toISOString()
-  })
-
-  sheet=null
-  save()
-}
-
-function deleteCard(){
-  if(prompt("Type DELETE to confirm")!=="DELETE") return
-
-  cards=cards.filter(c=>c.id!==selectedId)
-
-  sheet=null
-  save()
-}
-
-function exportBackup(){
-  const blob = new Blob([JSON.stringify(cards,null,2)], {type:"application/json"})
-  const url = URL.createObjectURL(blob)
-  const a=document.createElement("a")
-  a.href=url
-  a.download="pokevault-backup.json"
-  a.click()
-  URL.revokeObjectURL(url)
-}
-
-function importBackup(event){
-  const file = event.target.files[0]
-  if(!file) return
-
-  const reader = new FileReader()
-
-  reader.onload = function(e){
-    try{
-      const imported = JSON.parse(e.target.result)
-
-      if(!Array.isArray(imported)){
-        alert("Invalid backup file")
-        return
-      }
-
-      cards = imported
-      save()
-      alert("Backup imported successfully")
-    }catch{
-      alert("Invalid JSON file")
+  Object.entries(counts).forEach(([k,v])=>{
+    if(v > max){
+      max = v
+      winner = k
     }
-  }
+  })
 
-  reader.readAsText(file)
+  return winner
 }
 
-function render(){
-  const app=document.getElementById("app")
-  const d=data()
-  const list=visibleCards()
-  const grouped = groupByBucket(list)
+<!-- ========================================================= -->
+<!-- 3. ADD THIS FUNCTION BELOW analytics() -->
+<!-- ========================================================= -->
 
-  app.innerHTML=`
-    <div class="top">
-      <button class="roundBtn" onclick="sheet='backup';render()">☁</button>
-      <h1>PokéVault</h1>
-      <button class="roundBtn" onclick="screen='wishlist';render()">♡</button>
+function profileScreen(d){
+
+  return `
+    <div class="card" style="padding:22px">
+      <div style="font-size:34px;font-weight:900;margin-bottom:4px">
+        ${profileName}
+      </div>
+
+      <div class="meta" style="font-size:14px">
+        PokéVault Collector
+      </div>
+
+      <div class="stats" style="margin-top:18px">
+        <div class="stat">
+          <strong>${cards.length}</strong>
+          <span>Total Cards</span>
+        </div>
+
+        <div class="stat">
+          <strong>${grailCards().length}</strong>
+          <span>Grails</span>
+        </div>
+
+        <div class="stat">
+          <strong>${money(d.inventoryValue)}</strong>
+          <span>Collection</span>
+        </div>
+
+        <div class="stat">
+          <strong>${favoritePokemon()}</strong>
+          <span>Top Pokémon</span>
+        </div>
+      </div>
+
+      <div class="section">Collector Identity</div>
+
+      <input
+        id="profileNameInput"
+        value="${profileName}"
+        placeholder="Collector Name"
+      />
+
+      <button class="primary" onclick="
+        profileName=document.getElementById('profileNameInput').value||'Collector';
+        localStorage.setItem('pv_profile_name',profileName);
+        render();
+      ">
+        Save Profile
+      </button>
     </div>
-
-    <div class="searchRow">
-      <input class="search" placeholder="Search by name" value="${searchText}" oninput="searchText=this.value;render()" />
-      <button class="filterBtn" onclick="filtersOpen=!filtersOpen;render()">☰</button>
-    </div>
-
-    ${filtersOpen ? filterPanel() : ""}
 
     ${
-      screen==="analytics"
-      ? analytics(d)
+      grailCards().length
+      ? `
+        <div class="bucketHeader">
+          <div class="bucketTitle">Grail Collection</div>
+          <div class="bucketCount">${grailCards().length}</div>
+        </div>
+
+        ${grailCards().map(cardHTML).join("")}
+      `
       : `
-        ${screen==="vault"?stats(d):""}
-        <div class="grid">
-          ${
-            list.length
-            ? Object.entries(grouped).map(([bucket,items])=>{
-                if(!items.length) return ""
-                return `
-                  <div class="bucketHeader">
-                    <div class="bucketTitle">${buckets[bucket] || bucket}</div>
-                    <div class="bucketCount">${items.length}</div>
-                  </div>
-                  ${items.map(cardHTML).join("")}
-                `
-              }).join("")
-            : emptyState()
-          }
+        <div class="empty">
+          <div class="emptyIcon">♡</div>
+          <div class="emptyTitle">No Grails Yet</div>
+          <div class="emptyText">
+            Mark favorite cards as Grails.
+          </div>
         </div>
       `
     }
-
-    <button class="fab" onclick="sheet='add';render()">+</button>
-    ${bottomNav()}
-    ${sheetHTML()}
   `
 }
 
-function filterPanel(){
-  return `
-    <div class="filterPanel">
-      <div class="chips">
-        ${["newest","highest","upside","loss","alphabetical"].map(s=>`
-          <button class="chip ${sortMode===s?"active":""}" onclick="sortMode='${s}';render()">
-            ${
-              s==="newest"?"Newest":
-              s==="highest"?"Highest":
-              s==="upside"?"Upside":
-              s==="loss"?"Loss":
-              "A-Z"
-            }
-          </button>
-        `).join("")}
-      </div>
+<!-- ========================================================= -->
+<!-- 4. ADD THIS FUNCTION BELOW cardHTML() -->
+<!-- ========================================================= -->
 
-      <div class="chips">
-        ${["All","active","wishlist","sold","traded"].map(s=>`
-          <button class="chip ${filterStatus===s?"active":""}" onclick="filterStatus='${s}';render()">
-            ${s==="active"?"Owned":s[0].toUpperCase()+s.slice(1)}
-          </button>
-        `).join("")}
-      </div>
+function detailScreen(c){
 
-      <div class="chips">
-        ${["H","G","T","S","W"].map(b=>`
-          <button class="chip bucket ${b}" onclick="filterBucket=filterBucket==='${b}'?'All':'${b}';render()">
-            ${buckets[b]}
-          </button>
-        `).join("")}
-      </div>
+  const a = analyze(c)
+  const r = risk(c)
 
-      <div class="chips">
-        ${["All","Pikachu","Charizard","Umbreon","Other"].map(a=>`
-          <button class="chip ${filterAnchor===a?"active":""}" onclick="filterAnchor='${a}';render()">
-            ${a}
-          </button>
-        `).join("")}
-      </div>
-    </div>
-  `
-}
-
-function emptyState(){
-  const label =
-    screen==="wishlist" ? "No wishlist cards yet" :
-    screen==="history" ? "No history yet" :
-    screen==="search" ? "No matching cards" :
-    "No cards in your vault"
-
-  const text =
-    screen==="wishlist" ? "Add target cards you want to buy later." :
-    screen==="history" ? "Sold and traded cards will appear here." :
-    screen==="search" ? "Try another search or open filters." :
-    "Tap the + button to add your first card."
+  const history = Array.isArray(c.priceHistory)
+    ? [...c.priceHistory].reverse()
+    : []
 
   return `
-    <div class="empty">
-      <div class="emptyIcon">◌</div>
-      <div class="emptyTitle">${label}</div>
-      <div class="emptyText">${text}</div>
-    </div>
-  `
-}
+    <div class="card" style="padding:22px">
 
-function stats(d){
-  return `
-    <div class="stats">
-      <div class="stat">
-        <strong>${money(d.inventoryValue)}</strong>
-        <span>Inventory</span>
-      </div>
+      <button
+        class="secondary"
+        onclick="currentView='main';selectedId=null;render()"
+      >
+        ← Back
+      </button>
 
-      <div class="stat">
-        <strong>${d.inventory.length}</strong>
-        <span>Owned</span>
-      </div>
+      <div style="margin-top:10px">
 
-      <div class="stat">
-        <strong class="green">${money(d.returned)}</strong>
-        <span>Returned</span>
-      </div>
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          align-items:flex-start;
+          gap:12px
+        ">
 
-      <div class="stat">
-        <strong class="${d.profit>=0?"green":"red"}">
-          ${d.profit>=0?"+":""}${money(d.profit)}
-        </strong>
-        <span>P/L</span>
-      </div>
-    </div>
-  `
-}
+          <div>
+            <div style="
+              font-size:32px;
+              font-weight:900;
+              line-height:1.05
+            ">
+              ${c.name}
+            </div>
 
-function cardHTML(c){
-  const a=analyze(c)
-  const r=risk(c)
-
-  const lp=Array.isArray(c.priceHistory)&&c.priceHistory.length
-    ? c.priceHistory[c.priceHistory.length-1]
-    : null
-
-  return `
-    <div class="card" onclick="selectedId=${c.id};sheet='manage';render()">
-      <div class="cardTop">
-        <div>
-          <div class="name">${c.name}</div>
-
-          <div class="meta">
-            ${c.type||"Raw"} · ${getAnchor(c.name)}
-            ${c.setName?" · "+c.setName:""}
-            ${c.language?" · "+c.language:""}
-            ${c.rarity?" · "+c.rarity:""}
+            <div class="meta" style="margin-top:8px">
+              ${c.type||"Raw"}
+              · ${getAnchor(c.name)}
+              ${c.setName?" · "+c.setName:""}
+              ${c.language?" · "+c.language:""}
+              ${c.rarity?" · "+c.rarity:""}
+            </div>
           </div>
 
+          <button
+            class="roundBtn"
+            onclick="
+              const card=cards.find(x=>x.id===${c.id});
+              card.favorite=!card.favorite;
+              save();
+            "
+          >
+            ${c.favorite ? "★" : "☆"}
+          </button>
+
+        </div>
+
+        <div style="margin-top:14px">
           <span class="badge ${c.bucket}">
-            ${buckets[c.bucket]||"HOLD"}
+            ${buckets[c.bucket]}
           </span>
 
           <span class="signal ${a.cls}">
             ${a.signal}
           </span>
 
-          ${r?`
-            <span class="signal ${r.cls}">
-              ${r.label}
-            </span>
-          `:""}
-
-          ${c.folder?`
-            <div class="meta">
-              Folder: ${c.folder}
-            </div>
-          `:""}
-
-          ${c.purchaseSource?`
-            <div class="meta">
-              Bought from: ${c.purchaseSource}
-            </div>
-          `:""}
-
-          ${lp?`
-            <div class="meta">
-              Last price: ${money(lp.price)}
-              ${lp.note?" · "+lp.note:""}
-            </div>
-          `:""}
-
-          ${c.status==="sold"?`
-            <div class="meta">
-              Sale:
-              <b class="${a.cls}">${money(a.sale)}</b>
-
-              · Result:
-              <b class="${a.cls}">
-                ${a.profit>=0?"+":""}${money(a.profit)}
-                (${a.roi}%)
-              </b>
-
-              ${c.reasonSold?" · "+reasons[c.reasonSold]:""}
-            </div>
-          `:""}
-
-          ${c.status==="traded"?`
-            <div class="meta">
-              Traded for: ${c.tradedFor}
-            </div>
-          `:""}
+          ${
+            r
+            ? `
+              <span class="signal ${r.cls}">
+                ${r.label}
+              </span>
+            `
+            : ""
+          }
         </div>
 
-        <div>
-          <div class="value">
-            ${c.status==="wishlist"
-              ? money(c.targetBuy)
-              : money(c.value)}
+        <div class="stats" style="margin-top:18px">
+
+          <div class="stat">
+            <strong>${money(c.value)}</strong>
+            <span>Cost</span>
           </div>
 
-          <div class="small">
-            ${c.status==="wishlist"
-              ? "Target"
-              : "Cost"}
+          <div class="stat">
+            <strong>${money(c.psa)}</strong>
+            <span>PSA10</span>
           </div>
-        </div>
-      </div>
-    </div>
-  `
-}
 
-function analytics(d){
-  const sold=[...d.sold].sort((a,b)=>
-    (b.salePrice-b.value)-(a.salePrice-a.value)
-  )
-
-  const best=sold[0]
-  const worst=sold[sold.length-1]
-
-  const reasonStats={}
-
-  d.sold.forEach(c=>{
-    const k=c.reasonSold||"unknown"
-
-    if(!reasonStats[k]){
-      reasonStats[k]={count:0,profit:0}
-    }
-
-    reasonStats[k].count++
-    reasonStats[k].profit+=
-      Number(c.salePrice||0)-Number(c.value||0)
-  })
-
-  return `
-    <div class="card">
-      <div class="name">Capital Snapshot</div>
-
-      <div class="meta">Invested: <b>${money(d.invested)}</b></div>
-      <div class="meta">Inventory Value: <b>${money(d.inventoryValue)}</b></div>
-      <div class="meta">Wishlist Target: <b class="purple">${money(d.wishlistTarget)}</b></div>
-      <div class="meta">Returned: <b class="green">${money(d.returned)}</b></div>
-
-      <div class="meta">
-        Realized P/L:
-        <b class="${d.profit>=0?"green":"red"}">
-          ${d.profit>=0?"+":""}${money(d.profit)}
-        </b>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="name">Best Sale</div>
-      ${best?saleMini(best):`<div class="meta">No sold cards yet</div>`}
-    </div>
-
-    <div class="card">
-      <div class="name">Worst Sale</div>
-      ${worst?saleMini(worst):`<div class="meta">No sold cards yet</div>`}
-    </div>
-
-    <div class="card">
-      <div class="name">Why Cards Were Sold</div>
-
-      ${
-        Object.entries(reasonStats).map(([k,v])=>`
-          <div class="meta">
-            ${reasons[k]||k}:
-            <b>${v.count}</b>
-            ·
-            <b class="${v.profit>=0?"green":"red"}">
-              ${v.profit>=0?"+":""}${money(v.profit)}
-            </b>
+          <div class="stat">
+            <strong class="${a.upside>=0?'green':'red'}">
+              ${a.upside>=0?'+':''}${money(a.upside)}
+            </strong>
+            <span>Upside</span>
           </div>
-        `).join("")
-        || `<div class="meta">No sold reasons yet</div>`
-      }
-    </div>
-  `
-}
 
-function saleMini(c){
-  const p=Number(c.salePrice||0)-Number(c.value||0)
-
-  return `
-    <div class="meta">
-      <b>${c.name}</b>
-    </div>
-
-    <div class="meta">
-      Sold ${money(c.salePrice)}
-      · Cost ${money(c.value)}
-      ·
-
-      <b class="${p>=0?"green":"red"}">
-        ${p>=0?"+":""}${money(p)}
-      </b>
-    </div>
-  `
-}
-
-function bottomNav(){
-  return `
-    <div class="bottomNav">
-      ${
-        [
-          ["vault","▦","Vault"],
-          ["wishlist","♡","Wishlist"],
-          ["analytics","▤","Analytics"],
-          ["add","＋","Add"],
-          ["search","⌕","Search"]
-        ].map(([s,i,l])=>`
-          <button
-            class="navBtn ${screen===s?"active":""}"
-            onclick="${s==="add"?"sheet='add'":"screen='"+s+"'"};render()"
-          >
-            <span class="navIcon">${i}</span>
-            ${l}
-          </button>
-        `).join("")
-      }
-    </div>
-  `
-}
-
-function sheetHTML(){
-
-  if(!sheet) return ""
-
-  if(sheet==="backup"){
-    return `
-      <div class="sheetBack" onclick="sheet=null;render()">
-        <div class="sheet" onclick="event.stopPropagation()">
-
-          <h2>Backup & Restore</h2>
-
-          <button class="secondary" onclick="exportBackup()">
-            Export JSON Backup
-          </button>
-
-          <input type="file" accept=".json" onchange="importBackup(event)" />
-
-          <button class="primary" onclick="sheet=null;render()">
-            Close
-          </button>
+          <div class="stat">
+            <strong>${c.bucket}</strong>
+            <span>Bucket</span>
+          </div>
 
         </div>
-      </div>
-    `
-  }
-
-  if(sheet==="add"){
-    return `
-      <div class="sheetBack" onclick="sheet=null;render()">
-        <div class="sheet" onclick="event.stopPropagation()">
-
-          <h2>Add Card</h2>
-
-          <input
-            id="name"
-            placeholder="Card name"
-            oninput="
-              const w=document.getElementById('dupWarn');
-              const c=duplicateCount(this.value);
-              w.innerHTML=c?'⚠ Duplicate detected: '+c+' existing':''
-            "
-          />
-
-          <div id="dupWarn" class="warning"></div>
-
-          <div class="row">
-            <input id="value" type="number" placeholder="Cost $" />
-            <input id="psa" type="number" placeholder="PSA10 estimate $" />
-          </div>
-
-          <div class="row">
-            <input id="setName" placeholder="Set / Expansion" />
-
-            <select id="language">
-              <option value="EN">English</option>
-              <option value="JP">Japanese</option>
-              <option value="KR">Korean</option>
-              <option value="ES">Spanish</option>
-            </select>
-          </div>
-
-          <div class="row">
-            <select id="rarity">
-              <option value="">Rarity</option>
-              <option>Common</option>
-              <option>Holo</option>
-              <option>Ultra Rare</option>
-              <option>Illustration Rare</option>
-              <option>SIR</option>
-              <option>Promo</option>
-            </select>
-
-            <select id="folder">
-              <option>Main Collection</option>
-              <option>Business Inventory</option>
-              <option>Personal Collection</option>
-              <option>Grading Candidates</option>
-              <option>For Sale</option>
-            </select>
-          </div>
-
-          <div class="row">
-            <select id="type">
-              <option>Raw</option>
-              <option>Slab</option>
-            </select>
-
-            <select id="bucket">
-              <option value="H">Hold</option>
-              <option value="G">Grade</option>
-              <option value="T">Trade</option>
-              <option value="S">Sell</option>
-              <option value="W">Wishlist</option>
-            </select>
-          </div>
-
-          <input id="targetBuy" type="number" placeholder="Target buy price $" />
-
-          <div class="section">Purchase Journal</div>
-
-          <input id="purchaseSource" placeholder="Where did you buy it?" />
-          <input id="purchaseDate" type="date" />
-          <textarea id="purchaseNote" placeholder="Purchase notes"></textarea>
-
-          <button class="primary" onclick="addCardFromForm()">
-            Save Card
-          </button>
-
-        </div>
-      </div>
-    `
-  }
-
-  const c=cards.find(x=>x.id===selectedId)
-  if(!c) return ""
-
-  if(sheet==="edit"){
-    return `
-      <div class="sheetBack" onclick="sheet='manage';render()">
-        <div class="sheet" onclick="event.stopPropagation()">
-
-          <h2>Edit Card</h2>
-
-          <input id="editName" value="${c.name||""}" />
-          <input id="editValue" type="number" value="${c.value||0}" />
-          <input id="editPSA" type="number" value="${c.psa||0}" />
-          <input id="editTarget" type="number" value="${c.targetBuy||0}" placeholder="Target buy $" />
-
-          <input id="editSet" value="${c.setName||""}" placeholder="Set / Expansion" />
-
-          <select id="editLang">
-            ${["EN","JP","KR","ES"].map(x=>`
-              <option value="${x}" ${c.language===x?"selected":""}>
-                ${x}
-              </option>
-            `).join("")}
-          </select>
-
-          <select id="editRarity">
-            ${
-              ["","Common","Holo","Ultra Rare","Illustration Rare","SIR","Promo"]
-              .map(x=>`
-                <option value="${x}" ${c.rarity===x?"selected":""}>
-                  ${x||"Rarity"}
-                </option>
-              `).join("")
-            }
-          </select>
-
-          <select id="editFolder">
-            ${
-              ["Main Collection","Business Inventory","Personal Collection","Grading Candidates","For Sale"]
-              .map(x=>`
-                <option ${c.folder===x?"selected":""}>
-                  ${x}
-                </option>
-              `).join("")
-            }
-          </select>
-
-          <select id="editType">
-            <option ${c.type==="Raw"?"selected":""}>Raw</option>
-            <option ${c.type==="Slab"?"selected":""}>Slab</option>
-          </select>
-
-          <select id="editBucket">
-            ${
-              ["H","G","T","S","W"].map(b=>`
-                <option value="${b}" ${c.bucket===b?"selected":""}>
-                  ${buckets[b]}
-                </option>
-              `).join("")
-            }
-          </select>
-
-          <div class="section">Purchase Journal</div>
-
-          <input
-            id="editPurchaseSource"
-            value="${c.purchaseSource||""}"
-            placeholder="Where did you buy it?"
-          />
-
-          <input
-            id="editPurchaseDate"
-            type="date"
-            value="${c.purchaseDate||""}"
-          />
-
-          <textarea
-            id="editPurchaseNote"
-            placeholder="Purchase notes"
-          >${c.purchaseNote||""}</textarea>
-
-          <button class="primary" onclick="updateCard()">
-            Save Changes
-          </button>
-
-        </div>
-      </div>
-    `
-  }
-
-  if(sheet==="price"){
-    return `
-      <div class="sheetBack" onclick="sheet='manage';render()">
-        <div class="sheet" onclick="event.stopPropagation()">
-
-          <h2>Price Snapshot</h2>
-
-          <p>${c.name}</p>
-
-          <input id="priceLog" type="number" placeholder="Current price $" />
-          <input id="priceNote" placeholder="Source / note" />
-
-          <button class="primary" onclick="addPriceLog()">
-            Save Price
-          </button>
-
-        </div>
-      </div>
-    `
-  }
-
-  return `
-    <div class="sheetBack" onclick="sheet=null;render()">
-      <div class="sheet" onclick="event.stopPropagation()">
-
-        <h2>${c.name}</h2>
-
-        <p>
-          ${c.type||"Raw"}
-          · ${getAnchor(c.name)}
-          · ${buckets[c.bucket]}
-        </p>
-
-        <div class="section">Card Actions</div>
-
-        <button class="secondary" onclick="sheet='edit';render()">
-          Edit Card
-        </button>
-
-        <button class="secondary" onclick="sheet='price';render()">
-          Add Price Snapshot
-        </button>
 
         ${
-          (c.status==="sold"||c.status==="traded"||c.status==="wishlist")
+          c.purchaseSource ||
+          c.purchaseDate ||
+          c.purchaseNote
           ? `
-            <button class="secondary" onclick="restoreCard()">
-              Restore to Inventory
-            </button>
+            <div class="section">Purchase Journal</div>
+
+            ${
+              c.purchaseSource
+              ? `
+                <div class="meta">
+                  Bought from:
+                  <b>${c.purchaseSource}</b>
+                </div>
+              `
+              : ""
+            }
+
+            ${
+              c.purchaseDate
+              ? `
+                <div class="meta">
+                  Date:
+                  <b>${c.purchaseDate}</b>
+                </div>
+              `
+              : ""
+            }
+
+            ${
+              c.purchaseNote
+              ? `
+                <div class="meta">
+                  ${c.purchaseNote}
+                </div>
+              `
+              : ""
+            }
           `
           : ""
         }
 
-        <div class="section">Move</div>
+        <div class="section">Price History</div>
 
         ${
-          ["H","G","T","S","W"].map(b=>`
-            <button class="secondary" onclick="moveCard('${b}')">
-              Move to ${buckets[b]}
-            </button>
-          `).join("")
+          history.length
+          ? history.map(h=>`
+              <div class="card" style="
+                margin-bottom:10px;
+                padding:12px;
+                border-radius:16px
+              ">
+                <div style="
+                  display:flex;
+                  justify-content:space-between;
+                  align-items:center
+                ">
+                  <div style="font-weight:900">
+                    ${money(h.price)}
+                  </div>
+
+                  <div class="meta">
+                    ${new Date(h.date).toLocaleDateString()}
+                  </div>
+                </div>
+
+                ${
+                  h.note
+                  ? `
+                    <div class="meta" style="margin-top:5px">
+                      ${h.note}
+                    </div>
+                  `
+                  : ""
+                }
+              </div>
+            `).join("")
+          : `
+            <div class="meta">
+              No price history yet.
+            </div>
+          `
         }
 
-        <div class="section">Sell / Trade</div>
+        <div class="section">Quick Actions</div>
 
-        <input id="saleInput" type="number" placeholder="Sale price $" />
-
-        <select id="reasonInput">
-          <option value="">Reason Sold</option>
-          <option value="flip">Quick Flip</option>
-          <option value="cash">Need Cash</option>
-          <option value="drop">Market Drop</option>
-          <option value="overpay">Overpaid</option>
-          <option value="upgrade">Upgrade Capital</option>
-        </select>
-
-        <button class="secondary" onclick="markSold()">
-          Mark Sold
-        </button>
-
-        <input id="tradeInput" placeholder="Traded for what?" />
-
-        <button class="secondary" onclick="markTraded()">
-          Mark Traded
-        </button>
-
-        <div class="section">Danger Zone</div>
-
-        <button class="secondary danger" onclick="deleteCard()">
-          Delete Permanently
-        </button>
-
-        <button class="primary" onclick="sheet=null;render()">
-          Close
+        <button
+          class="secondary"
+          onclick="
+            currentView='main';
+            sheet='manage';
+            render();
+          "
+        >
+          Manage Card
         </button>
 
       </div>
@@ -1084,7 +326,150 @@ function sheetHTML(){
   `
 }
 
-render()
-</script>
-</body>
-</html>
+<!-- ========================================================= -->
+<!-- 5. FIND THIS inside cardHTML() -->
+<!-- ========================================================= -->
+
+<div class="card" onclick="selectedId=${c.id};sheet='manage';render()">
+
+<!-- REPLACE WITH -->
+
+<div class="card" onclick="selectedId=${c.id};currentView='detail';render()">
+
+<!-- ========================================================= -->
+<!-- 6. FIND THIS INSIDE render() -->
+<!-- ========================================================= -->
+
+const d=data()
+const list=visibleCards()
+const grouped = groupByBucket(list)
+
+<!-- ADD BELOW -->
+
+const selectedCard = cards.find(x=>x.id===selectedId)
+
+<!-- ========================================================= -->
+<!-- 7. FIND THIS MAIN render() SECTION -->
+<!-- ========================================================= -->
+
+${
+  screen==="analytics"
+  ? analytics(d)
+  : `
+    ${screen==="vault"?stats(d):""}
+    <div class="grid">
+      ${
+        list.length
+        ? Object.entries(grouped).map(([bucket,items])=>{
+            if(!items.length) return ""
+            return `
+              <div class="bucketHeader">
+                <div class="bucketTitle">${buckets[bucket] || bucket}</div>
+                <div class="bucketCount">${items.length}</div>
+              </div>
+              ${items.map(cardHTML).join("")}
+            `
+          }).join("")
+        : emptyState()
+      }
+    </div>
+  `
+}
+
+<!-- REPLACE ENTIRE BLOCK WITH -->
+
+${
+  currentView==="detail" && selectedCard
+  ? detailScreen(selectedCard)
+
+  : screen==="profile"
+  ? profileScreen(d)
+
+  : screen==="analytics"
+  ? analytics(d)
+
+  : `
+    ${screen==="vault"?stats(d):""}
+
+    <div class="grid">
+      ${
+        list.length
+        ? Object.entries(grouped).map(([bucket,items])=>{
+            if(!items.length) return ""
+
+            return `
+              <div class="bucketHeader">
+                <div class="bucketTitle">
+                  ${buckets[bucket] || bucket}
+                </div>
+
+                <div class="bucketCount">
+                  ${items.length}
+                </div>
+              </div>
+
+              ${items.map(cardHTML).join("")}
+            `
+          }).join("")
+        : emptyState()
+      }
+    </div>
+  `
+}
+
+<!-- ========================================================= -->
+<!-- 8. FIND bottomNav() ARRAY -->
+<!-- ========================================================= -->
+
+[
+  ["vault","▦","Vault"],
+  ["wishlist","♡","Wishlist"],
+  ["analytics","▤","Analytics"],
+  ["add","＋","Add"],
+  ["search","⌕","Search"]
+]
+
+<!-- REPLACE WITH -->
+
+[
+  ["vault","▦","Vault"],
+  ["wishlist","♡","Wishlist"],
+  ["analytics","▤","Analytics"],
+  ["profile","◉","Profile"],
+  ["search","⌕","Search"]
+]
+
+<!-- ========================================================= -->
+<!-- 9. FIND THIS INSIDE bottomNav() -->
+<!-- ========================================================= -->
+
+onclick="${s==="add"?"sheet='add'":"screen='"+s+"'"};render()"
+
+<!-- REPLACE WITH -->
+
+onclick="
+  currentView='main';
+
+  ${
+    s==="add"
+    ? "sheet='add'"
+    : "screen='"+s+"'"
+  };
+
+  render()
+"
+
+<!-- ========================================================= -->
+<!-- 10. ADD THIS FLOATING BUTTON BELOW FAB -->
+<!-- ========================================================= -->
+
+<button
+  class="fab"
+  onclick="
+    currentView='main';
+    sheet='add';
+    render();
+  "
+>
+  +
+</button>
