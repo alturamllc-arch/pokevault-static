@@ -44,7 +44,7 @@ h1{margin:0;font-size:34px;font-weight:900}
 .sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;z-index:99}
 .sheet{width:100%;max-width:480px;margin:auto;background:white;border-radius:28px 28px 0 0;padding:20px;max-height:92vh;overflow-y:auto}
 .sheet h2{margin:0 0 14px;font-size:26px}
-input,select{width:100%;border:none;background:#f0f0f0;border-radius:15px;padding:15px;font-size:16px;margin-bottom:10px}
+input,select,textarea{width:100%;border:none;background:#f0f0f0;border-radius:15px;padding:15px;font-size:16px;margin-bottom:10px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .primary{width:100%;border:none;background:#111;color:white;border-radius:16px;padding:16px;font-size:17px;font-weight:900;margin-top:6px}
 .secondary{width:100%;border:none;background:#f0f0f0;color:#111;border-radius:16px;padding:15px;font-size:15px;font-weight:900;margin-bottom:10px;text-align:left}
@@ -58,62 +58,115 @@ input,select{width:100%;border:none;background:#f0f0f0;border-radius:15px;paddin
 <div id="app"></div>
 
 <script>
-const KEY = "pokevault_v1_mydex_style"
+const KEY = "pokevault_v1_batch2"
 let cards = JSON.parse(localStorage.getItem(KEY) || "[]")
+
 let screen = "vault"
 let filterStatus = "All"
 let filterBucket = "All"
 let filterAnchor = "All"
 let searchText = ""
+let sortMode = "newest"
+
 let sheet = null
 let selectedId = null
 
 const buckets = {H:"HOLD",G:"GRADE",T:"TRADE",S:"SELL",W:"WISHLIST"}
-const reasons = {flip:"Quick Flip",cash:"Need Cash",drop:"Market Drop",overpay:"Overpaid",upgrade:"Upgrade Capital"}
+const reasons = {
+  flip:"Quick Flip",
+  cash:"Need Cash",
+  drop:"Market Drop",
+  overpay:"Overpaid",
+  upgrade:"Upgrade Capital"
+}
 
-function save(){localStorage.setItem(KEY,JSON.stringify(cards));render()}
-function money(n){return "$"+Number(n||0).toLocaleString()}
+function save(){
+  localStorage.setItem(KEY, JSON.stringify(cards))
+  render()
+}
+
+function money(n){
+  return "$"+Number(n||0).toLocaleString()
+}
+
 function getAnchor(name){
-  const n=String(name||"").toLowerCase()
+  const n = String(name||"").toLowerCase()
   if(n.includes("pikachu")||n.includes("pichu")) return "Pikachu"
   if(n.includes("charizard")||n.includes("charmeleon")) return "Charizard"
   if(n.includes("umbreon")) return "Umbreon"
   return "Other"
 }
+
 function analyze(c){
-  const cost=Number(c.value||0), psa=Number(c.psa||0), sale=Number(c.salePrice||0), target=Number(c.targetBuy||0)
-  const profit=sale-cost
-  const roi=cost?Math.round((profit/cost)*100):0
+  const cost = Number(c.value||0)
+  const psa = Number(c.psa||0)
+  const sale = Number(c.salePrice||0)
+  const target = Number(c.targetBuy||0)
+
+  const profit = sale - cost
+  const roi = cost ? Math.round((profit/cost)*100) : 0
+  const upside = psa - cost
+
   let signal="HOLD", cls="green"
-  if(c.status==="wishlist"){signal=target?"WATCH":"WISHLIST";cls="purple"}
-  else if(c.status==="sold"){signal=profit>0?"PROFIT":profit<0?"LOSS":"EVEN";cls=profit>0?"green":profit<0?"red":"neutral"}
-  else if(c.status==="traded"){signal="TRADED";cls="blue"}
-  else if(psa&&cost&&psa>=cost*2){signal="GRADE";cls="blue"}
-  else if(psa&&cost&&psa<=cost*1.3){signal="SELL";cls="red"}
-  return {cost,psa,sale,target,profit,roi,signal,cls}
+
+  if(c.status==="wishlist"){
+    signal = target ? "WATCH":"WISHLIST"
+    cls="purple"
+  }
+  else if(c.status==="sold"){
+    signal = profit>0 ? "PROFIT" : profit<0 ? "LOSS" : "EVEN"
+    cls = profit>0 ? "green" : profit<0 ? "red" : "neutral"
+  }
+  else if(c.status==="traded"){
+    signal="TRADED"
+    cls="blue"
+  }
+  else if(psa && cost && psa>=cost*2){
+    signal="GRADE"
+    cls="blue"
+  }
+  else if(psa && cost && psa<=cost*1.3){
+    signal="SELL"
+    cls="red"
+  }
+
+  return {cost,psa,sale,target,profit,roi,upside,signal,cls}
 }
+
 function risk(c){
-  const cost=Number(c.value||0), psa=Number(c.psa||0), target=Number(c.targetBuy||0)
-  if(c.status==="wishlist"&&target)return {label:"TARGET "+money(target),cls:"purple"}
-  if(!cost||!psa)return null
-  const r=psa/cost
-  if(r>=2.5)return {label:"STRONG GRADE",cls:"green"}
-  if(r>=1.5)return {label:"GOOD UPSIDE",cls:"blue"}
-  if(cost>=100&&r<1.5)return {label:"HIGH RISK BUY",cls:"red"}
-  if(r<=1.2)return {label:"LOW UPSIDE",cls:"red"}
+  const cost=Number(c.value||0)
+  const psa=Number(c.psa||0)
+  const target=Number(c.targetBuy||0)
+
+  if(c.status==="wishlist"&&target){
+    return {label:"TARGET "+money(target),cls:"purple"}
+  }
+
+  if(!cost || !psa) return null
+
+  const ratio = psa/cost
+
+  if(ratio>=2.5) return {label:"STRONG GRADE",cls:"green"}
+  if(ratio>=1.5) return {label:"GOOD UPSIDE",cls:"blue"}
+  if(cost>=100&&ratio<1.5) return {label:"HIGH RISK BUY",cls:"red"}
+  if(ratio<=1.2) return {label:"LOW UPSIDE",cls:"red"}
+
   return {label:"HOLD / MONITOR",cls:"neutral"}
 }
+
 function duplicateCount(name){
-  const n=String(name||"").trim().toLowerCase()
-  if(!n)return 0
+  const n = String(name||"").trim().toLowerCase()
+  if(!n) return 0
   return cards.filter(c=>String(c.name||"").trim().toLowerCase()===n).length
 }
+
 function data(){
-  const inventory=cards.filter(c=>!c.status||c.status==="active")
-  const wishlist=cards.filter(c=>c.status==="wishlist")
-  const sold=cards.filter(c=>c.status==="sold")
-  const traded=cards.filter(c=>c.status==="traded")
-  const history=[...sold,...traded]
+  const inventory = cards.filter(c=>!c.status||c.status==="active")
+  const wishlist = cards.filter(c=>c.status==="wishlist")
+  const sold = cards.filter(c=>c.status==="sold")
+  const traded = cards.filter(c=>c.status==="traded")
+  const history = [...sold,...traded]
+
   return {
     inventory,wishlist,sold,traded,history,
     inventoryValue:inventory.reduce((s,c)=>s+Number(c.value||0),0),
@@ -123,24 +176,62 @@ function data(){
     wishlistTarget:wishlist.reduce((s,c)=>s+Number(c.targetBuy||0),0)
   }
 }
-function visibleCards(){
-  const d=data()
-  let list=screen==="wishlist"?d.wishlist:screen==="analytics"?[]:screen==="search"?cards:screen==="vault"?d.inventory:d.history
-  return list.filter(c=>{
-    if(filterStatus!=="All"&&c.status!==filterStatus)return false
-    if(filterBucket!=="All"&&c.bucket!==filterBucket)return false
-    if(filterAnchor!=="All"&&getAnchor(c.name)!==filterAnchor)return false
-    if(searchText&&!String(c.name).toLowerCase().includes(searchText.toLowerCase()))return false
-    return true
+
+function sortCards(list){
+  return [...list].sort((a,b)=>{
+    const aa = analyze(a)
+    const bb = analyze(b)
+
+    if(sortMode==="highest"){
+      return bb.cost - aa.cost
+    }
+
+    if(sortMode==="alphabetical"){
+      return String(a.name).localeCompare(String(b.name))
+    }
+
+    if(sortMode==="upside"){
+      return bb.upside - aa.upside
+    }
+
+    if(sortMode==="loss"){
+      return aa.profit - bb.profit
+    }
+
+    return new Date(b.createdAt||0)-new Date(a.createdAt||0)
   })
 }
 
+function visibleCards(){
+  const d = data()
+
+  let list =
+    screen==="wishlist" ? d.wishlist :
+    screen==="analytics" ? [] :
+    screen==="search" ? cards :
+    screen==="vault" ? d.inventory :
+    d.history
+
+  list = list.filter(c=>{
+    if(filterStatus!=="All"&&c.status!==filterStatus) return false
+    if(filterBucket!=="All"&&c.bucket!==filterBucket) return false
+    if(filterAnchor!=="All"&&getAnchor(c.name)!==filterAnchor) return false
+    if(searchText&&!String(c.name).toLowerCase().includes(searchText.toLowerCase())) return false
+    return true
+  })
+
+  return sortCards(list)
+}
+
 function addCardFromForm(){
-  const name=document.getElementById("name").value.trim()
-  if(!name)return alert("Enter card name")
-  const bucket=document.getElementById("bucket").value
+  const name = document.getElementById("name").value.trim()
+  if(!name) return alert("Enter card name")
+
+  const bucket = document.getElementById("bucket").value
+
   cards.push({
-    id:Date.now(),name,
+    id:Date.now(),
+    name,
     value:Number(document.getElementById("value").value||0),
     psa:Number(document.getElementById("psa").value||0),
     setName:document.getElementById("setName").value.trim(),
@@ -148,17 +239,29 @@ function addCardFromForm(){
     rarity:document.getElementById("rarity").value,
     folder:document.getElementById("folder").value,
     type:document.getElementById("type").value,
+    purchaseSource:document.getElementById("purchaseSource").value.trim(),
+    purchaseDate:document.getElementById("purchaseDate").value,
+    purchaseNote:document.getElementById("purchaseNote").value.trim(),
     bucket,
     targetBuy:Number(document.getElementById("targetBuy").value||0),
     status:bucket==="W"?"wishlist":"active",
-    salePrice:0,tradedFor:"",reasonSold:"",priceHistory:[],
-    createdAt:new Date().toISOString(),soldAt:"",tradedAt:""
+    salePrice:0,
+    tradedFor:"",
+    reasonSold:"",
+    priceHistory:[],
+    createdAt:new Date().toISOString(),
+    soldAt:"",
+    tradedAt:""
   })
+
   sheet=null
   save()
 }
+
 function updateCard(){
-  const c=cards.find(x=>x.id===selectedId); if(!c)return
+  const c = cards.find(x=>x.id===selectedId)
+  if(!c) return
+
   c.name=document.getElementById("editName").value.trim()
   c.value=Number(document.getElementById("editValue").value||0)
   c.psa=Number(document.getElementById("editPSA").value||0)
@@ -167,54 +270,160 @@ function updateCard(){
   c.rarity=document.getElementById("editRarity").value
   c.folder=document.getElementById("editFolder").value
   c.type=document.getElementById("editType").value
+
+  c.purchaseSource=document.getElementById("editPurchaseSource").value.trim()
+  c.purchaseDate=document.getElementById("editPurchaseDate").value
+  c.purchaseNote=document.getElementById("editPurchaseNote").value.trim()
+
   c.bucket=document.getElementById("editBucket").value
   c.targetBuy=Number(document.getElementById("editTarget").value||0)
+
   c.status=c.bucket==="W"?"wishlist":c.status==="wishlist"?"active":c.status
+
   sheet=null
   save()
 }
+
 function moveCard(b){
-  const c=cards.find(x=>x.id===selectedId); if(!c)return
-  c.bucket=b;c.status=b==="W"?"wishlist":"active";c.salePrice=0;c.tradedFor="";c.reasonSold="";c.soldAt="";c.tradedAt=""
-  sheet=null;save()
+  const c=cards.find(x=>x.id===selectedId)
+  if(!c) return
+
+  c.bucket=b
+  c.status=b==="W"?"wishlist":"active"
+
+  c.salePrice=0
+  c.tradedFor=""
+  c.reasonSold=""
+  c.soldAt=""
+  c.tradedAt=""
+
+  sheet=null
+  save()
 }
+
 function markSold(){
-  const c=cards.find(x=>x.id===selectedId); if(!c)return
+  const c=cards.find(x=>x.id===selectedId)
+  if(!c) return
+
   const sale=Number(document.getElementById("saleInput").value||0)
-  if(!sale)return alert("Enter sale price")
-  c.status="sold";c.salePrice=sale;c.reasonSold=document.getElementById("reasonInput").value;c.soldAt=new Date().toISOString()
-  sheet=null;save()
+  if(!sale) return alert("Enter sale price")
+
+  c.status="sold"
+  c.salePrice=sale
+  c.reasonSold=document.getElementById("reasonInput").value
+  c.soldAt=new Date().toISOString()
+
+  sheet=null
+  save()
 }
+
 function markTraded(){
-  const c=cards.find(x=>x.id===selectedId); if(!c)return
+  const c=cards.find(x=>x.id===selectedId)
+  if(!c) return
+
   const t=document.getElementById("tradeInput").value.trim()
-  if(!t)return alert("Enter trade details")
-  c.status="traded";c.tradedFor=t;c.tradedAt=new Date().toISOString()
-  sheet=null;save()
+  if(!t) return alert("Enter trade details")
+
+  c.status="traded"
+  c.tradedFor=t
+  c.tradedAt=new Date().toISOString()
+
+  sheet=null
+  save()
 }
+
 function restoreCard(){
-  const c=cards.find(x=>x.id===selectedId); if(!c)return
-  c.status="active"; if(c.bucket==="W")c.bucket="H"; c.salePrice=0;c.tradedFor="";c.reasonSold=""
-  sheet=null;save()
+  const c=cards.find(x=>x.id===selectedId)
+  if(!c) return
+
+  c.status="active"
+
+  if(c.bucket==="W") c.bucket="H"
+
+  c.salePrice=0
+  c.tradedFor=""
+  c.reasonSold=""
+
+  sheet=null
+  save()
 }
+
 function addPriceLog(){
-  const c=cards.find(x=>x.id===selectedId); if(!c)return
+  const c=cards.find(x=>x.id===selectedId)
+  if(!c) return
+
   const price=Number(document.getElementById("priceLog").value||0)
-  if(!price)return alert("Enter price")
-  if(!Array.isArray(c.priceHistory))c.priceHistory=[]
-  c.priceHistory.push({price,note:document.getElementById("priceNote").value.trim(),date:new Date().toISOString()})
-  sheet=null;save()
+  if(!price) return alert("Enter price")
+
+  if(!Array.isArray(c.priceHistory)) c.priceHistory=[]
+
+  c.priceHistory.push({
+    price,
+    note:document.getElementById("priceNote").value.trim(),
+    date:new Date().toISOString()
+  })
+
+  sheet=null
+  save()
 }
+
 function deleteCard(){
-  if(prompt("Type DELETE to confirm")!=="DELETE")return
-  cards=cards.filter(c=>c.id!==selectedId);sheet=null;save()
+  if(prompt("Type DELETE to confirm")!=="DELETE") return
+
+  cards=cards.filter(c=>c.id!==selectedId)
+
+  sheet=null
+  save()
+}
+
+function exportBackup(){
+  const blob = new Blob([JSON.stringify(cards,null,2)], {type:"application/json"})
+  const url = URL.createObjectURL(blob)
+
+  const a=document.createElement("a")
+  a.href=url
+  a.download="pokevault-backup.json"
+  a.click()
+
+  URL.revokeObjectURL(url)
+}
+
+function importBackup(event){
+  const file = event.target.files[0]
+  if(!file) return
+
+  const reader = new FileReader()
+
+  reader.onload = function(e){
+    try{
+      const imported = JSON.parse(e.target.result)
+
+      if(!Array.isArray(imported)){
+        alert("Invalid backup file")
+        return
+      }
+
+      cards = imported
+      save()
+
+      alert("Backup imported successfully")
+
+    }catch{
+      alert("Invalid JSON file")
+    }
+  }
+
+  reader.readAsText(file)
 }
 
 function render(){
-  const app=document.getElementById("app"), d=data(), list=visibleCards()
+  const app=document.getElementById("app")
+  const d=data()
+  const list=visibleCards()
+
   app.innerHTML=`
     <div class="top">
-      <button class="roundBtn">⚙</button>
+      <button class="roundBtn" onclick="sheet='backup';render()">☁</button>
       <h1>PokéVault</h1>
       <button class="roundBtn" onclick="screen='wishlist';render()">♡</button>
     </div>
@@ -222,145 +431,611 @@ function render(){
     <input class="search" placeholder="Search by name" value="${searchText}" oninput="searchText=this.value;render()" />
 
     <div class="chips">
-      ${["All","active","wishlist","sold","traded"].map(s=>`<button class="chip ${filterStatus===s?"active":""}" onclick="filterStatus='${s}';render()">${s==="active"?"Owned":s[0].toUpperCase()+s.slice(1)}</button>`).join("")}
+      ${["newest","highest","upside","loss","alphabetical"].map(s=>`
+        <button class="chip ${sortMode===s?"active":""}" onclick="sortMode='${s}';render()">
+          ${
+            s==="newest"?"Newest":
+            s==="highest"?"Highest Value":
+            s==="upside"?"Biggest Upside":
+            s==="loss"?"Biggest Loss":
+            "A-Z"
+          }
+        </button>
+      `).join("")}
     </div>
 
     <div class="chips">
-      ${["H","G","T","S","W"].map(b=>`<button class="chip bucket ${b}" onclick="filterBucket=filterBucket==='${b}'?'All':'${b}';render()">${buckets[b]}</button>`).join("")}
+      ${["All","active","wishlist","sold","traded"].map(s=>`
+        <button class="chip ${filterStatus===s?"active":""}" onclick="filterStatus='${s}';render()">
+          ${s==="active"?"Owned":s[0].toUpperCase()+s.slice(1)}
+        </button>
+      `).join("")}
     </div>
 
     <div class="chips">
-      ${["All","Pikachu","Charizard","Umbreon","Other"].map(a=>`<button class="chip ${filterAnchor===a?"active":""}" onclick="filterAnchor='${a}';render()">${a}</button>`).join("")}
+      ${["H","G","T","S","W"].map(b=>`
+        <button class="chip bucket ${b}" onclick="filterBucket=filterBucket==='${b}'?'All':'${b}';render()">
+          ${buckets[b]}
+        </button>
+      `).join("")}
     </div>
 
-    ${screen==="analytics"?analytics(d):`
-      ${screen==="vault"?stats(d):""}
-      <div class="grid">${list.length?list.map(cardHTML).join(""):`<div class="empty">No cards here</div>`}</div>
-    `}
+    <div class="chips">
+      ${["All","Pikachu","Charizard","Umbreon","Other"].map(a=>`
+        <button class="chip ${filterAnchor===a?"active":""}" onclick="filterAnchor='${a}';render()">
+          ${a}
+        </button>
+      `).join("")}
+    </div>
+
+    ${
+      screen==="analytics"
+      ? analytics(d)
+      : `
+        ${screen==="vault"?stats(d):""}
+        <div class="grid">
+          ${list.length ? list.map(cardHTML).join("") : `<div class="empty">No cards here</div>`}
+        </div>
+      `
+    }
 
     ${bottomNav()}
     ${sheetHTML()}
   `
 }
+
 function stats(d){
-  return `<div class="stats">
-    <div class="stat"><strong>${money(d.inventoryValue)}</strong><span>Inventory</span></div>
-    <div class="stat"><strong>${d.inventory.length}</strong><span>Owned</span></div>
-    <div class="stat"><strong class="green">${money(d.returned)}</strong><span>Returned</span></div>
-    <div class="stat"><strong class="${d.profit>=0?"green":"red"}">${d.profit>=0?"+":""}${money(d.profit)}</strong><span>P/L</span></div>
-  </div>`
-}
-function cardHTML(c){
-  const a=analyze(c), r=risk(c), lp=Array.isArray(c.priceHistory)&&c.priceHistory.length?c.priceHistory[c.priceHistory.length-1]:null
-  return `<div class="card" onclick="selectedId=${c.id};sheet='manage';render()">
-    <div class="cardTop">
-      <div>
-        <div class="name">${c.name}</div>
-        <div class="meta">${c.type||"Raw"} · ${getAnchor(c.name)}${c.setName?" · "+c.setName:""}${c.language?" · "+c.language:""}${c.rarity?" · "+c.rarity:""}</div>
-        <span class="badge ${c.bucket}">${buckets[c.bucket]||"HOLD"}</span>
-        <span class="signal ${a.cls}">${a.signal}</span>
-        ${r?`<span class="signal ${r.cls}">${r.label}</span>`:""}
-        ${c.folder?`<div class="meta">Folder: ${c.folder}</div>`:""}
-        ${lp?`<div class="meta">Last price: ${money(lp.price)}${lp.note?" · "+lp.note:""}</div>`:""}
-        ${c.status==="sold"?`<div class="meta">Sale: <b class="${a.cls}">${money(a.sale)}</b> · Result: <b class="${a.cls}">${a.profit>=0?"+":""}${money(a.profit)} (${a.roi}%)</b>${c.reasonSold?" · "+reasons[c.reasonSold]:""}</div>`:""}
-        ${c.status==="traded"?`<div class="meta">Traded for: ${c.tradedFor}</div>`:""}
-      </div>
-      <div>
-        <div class="value">${c.status==="wishlist"?money(c.targetBuy):money(c.value)}</div>
-        <div class="small">${c.status==="wishlist"?"Target":"Cost"}</div>
-      </div>
-    </div>
-  </div>`
-}
-function analytics(d){
-  const sold=[...d.sold].sort((a,b)=>(b.salePrice-b.value)-(a.salePrice-a.value)), best=sold[0], worst=sold[sold.length-1]
-  const reasonStats={}
-  d.sold.forEach(c=>{const k=c.reasonSold||"unknown"; if(!reasonStats[k])reasonStats[k]={count:0,profit:0}; reasonStats[k].count++; reasonStats[k].profit+=Number(c.salePrice||0)-Number(c.value||0)})
   return `
-    <div class="card"><div class="name">Capital Snapshot</div>
-      <div class="meta">Invested: <b>${money(d.invested)}</b></div>
-      <div class="meta">Inventory Value: <b>${money(d.inventoryValue)}</b></div>
-      <div class="meta">Wishlist Target: <b class="purple">${money(d.wishlistTarget)}</b></div>
-      <div class="meta">Returned: <b class="green">${money(d.returned)}</b></div>
-      <div class="meta">Realized P/L: <b class="${d.profit>=0?"green":"red"}">${d.profit>=0?"+":""}${money(d.profit)}</b></div>
+    <div class="stats">
+      <div class="stat">
+        <strong>${money(d.inventoryValue)}</strong>
+        <span>Inventory</span>
+      </div>
+
+      <div class="stat">
+        <strong>${d.inventory.length}</strong>
+        <span>Owned</span>
+      </div>
+
+      <div class="stat">
+        <strong class="green">${money(d.returned)}</strong>
+        <span>Returned</span>
+      </div>
+
+      <div class="stat">
+        <strong class="${d.profit>=0?"green":"red"}">
+          ${d.profit>=0?"+":""}${money(d.profit)}
+        </strong>
+        <span>P/L</span>
+      </div>
     </div>
-    <div class="card"><div class="name">Best Sale</div>${best?saleMini(best):`<div class="meta">No sold cards yet</div>`}</div>
-    <div class="card"><div class="name">Worst Sale</div>${worst?saleMini(worst):`<div class="meta">No sold cards yet</div>`}</div>
-    <div class="card"><div class="name">Why Cards Were Sold</div>${Object.entries(reasonStats).map(([k,v])=>`<div class="meta">${reasons[k]||k}: <b>${v.count}</b> · <b class="${v.profit>=0?"green":"red"}">${v.profit>=0?"+":""}${money(v.profit)}</b></div>`).join("")||`<div class="meta">No sold reasons yet</div>`}</div>
   `
 }
+
+function cardHTML(c){
+  const a=analyze(c)
+  const r=risk(c)
+
+  const lp=Array.isArray(c.priceHistory)&&c.priceHistory.length
+    ? c.priceHistory[c.priceHistory.length-1]
+    : null
+
+  return `
+    <div class="card" onclick="selectedId=${c.id};sheet='manage';render()">
+      <div class="cardTop">
+        <div>
+          <div class="name">${c.name}</div>
+
+          <div class="meta">
+            ${c.type||"Raw"} · ${getAnchor(c.name)}
+            ${c.setName?" · "+c.setName:""}
+            ${c.language?" · "+c.language:""}
+            ${c.rarity?" · "+c.rarity:""}
+          </div>
+
+          <span class="badge ${c.bucket}">
+            ${buckets[c.bucket]||"HOLD"}
+          </span>
+
+          <span class="signal ${a.cls}">
+            ${a.signal}
+          </span>
+
+          ${r?`
+            <span class="signal ${r.cls}">
+              ${r.label}
+            </span>
+          `:""}
+
+          ${c.folder?`
+            <div class="meta">
+              Folder: ${c.folder}
+            </div>
+          `:""}
+
+          ${c.purchaseSource?`
+            <div class="meta">
+              Bought from: ${c.purchaseSource}
+            </div>
+          `:""}
+
+          ${lp?`
+            <div class="meta">
+              Last price: ${money(lp.price)}
+              ${lp.note?" · "+lp.note:""}
+            </div>
+          `:""}
+
+          ${c.status==="sold"?`
+            <div class="meta">
+              Sale:
+              <b class="${a.cls}">${money(a.sale)}</b>
+
+              · Result:
+              <b class="${a.cls}">
+                ${a.profit>=0?"+":""}${money(a.profit)}
+                (${a.roi}%)
+              </b>
+
+              ${c.reasonSold?" · "+reasons[c.reasonSold]:""}
+            </div>
+          `:""}
+
+          ${c.status==="traded"?`
+            <div class="meta">
+              Traded for: ${c.tradedFor}
+            </div>
+          `:""}
+        </div>
+
+        <div>
+          <div class="value">
+            ${c.status==="wishlist"
+              ? money(c.targetBuy)
+              : money(c.value)}
+          </div>
+
+          <div class="small">
+            ${c.status==="wishlist"
+              ? "Target"
+              : "Cost"}
+          </div>
+        </div>
+      </div>
+    </div>
+  `
+}
+
+function analytics(d){
+  const sold=[...d.sold].sort((a,b)=>
+    (b.salePrice-b.value)-(a.salePrice-a.value)
+  )
+
+  const best=sold[0]
+  const worst=sold[sold.length-1]
+
+  const reasonStats={}
+
+  d.sold.forEach(c=>{
+    const k=c.reasonSold||"unknown"
+
+    if(!reasonStats[k]){
+      reasonStats[k]={count:0,profit:0}
+    }
+
+    reasonStats[k].count++
+    reasonStats[k].profit+=
+      Number(c.salePrice||0)-Number(c.value||0)
+  })
+
+  return `
+    <div class="card">
+      <div class="name">Capital Snapshot</div>
+
+      <div class="meta">
+        Invested: <b>${money(d.invested)}</b>
+      </div>
+
+      <div class="meta">
+        Inventory Value: <b>${money(d.inventoryValue)}</b>
+      </div>
+
+      <div class="meta">
+        Wishlist Target:
+        <b class="purple">${money(d.wishlistTarget)}</b>
+      </div>
+
+      <div class="meta">
+        Returned:
+        <b class="green">${money(d.returned)}</b>
+      </div>
+
+      <div class="meta">
+        Realized P/L:
+        <b class="${d.profit>=0?"green":"red"}">
+          ${d.profit>=0?"+":""}${money(d.profit)}
+        </b>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="name">Best Sale</div>
+      ${best?saleMini(best):`<div class="meta">No sold cards yet</div>`}
+    </div>
+
+    <div class="card">
+      <div class="name">Worst Sale</div>
+      ${worst?saleMini(worst):`<div class="meta">No sold cards yet</div>`}
+    </div>
+
+    <div class="card">
+      <div class="name">Why Cards Were Sold</div>
+
+      ${
+        Object.entries(reasonStats).map(([k,v])=>`
+          <div class="meta">
+            ${reasons[k]||k}:
+            <b>${v.count}</b>
+            ·
+            <b class="${v.profit>=0?"green":"red"}">
+              ${v.profit>=0?"+":""}${money(v.profit)}
+            </b>
+          </div>
+        `).join("")
+        || `<div class="meta">No sold reasons yet</div>`
+      }
+    </div>
+  `
+}
+
 function saleMini(c){
   const p=Number(c.salePrice||0)-Number(c.value||0)
-  return `<div class="meta"><b>${c.name}</b></div><div class="meta">Sold ${money(c.salePrice)} · Cost ${money(c.value)} · <b class="${p>=0?"green":"red"}">${p>=0?"+":""}${money(p)}</b></div>`
+
+  return `
+    <div class="meta">
+      <b>${c.name}</b>
+    </div>
+
+    <div class="meta">
+      Sold ${money(c.salePrice)}
+      · Cost ${money(c.value)}
+      ·
+
+      <b class="${p>=0?"green":"red"}">
+        ${p>=0?"+":""}${money(p)}
+      </b>
+    </div>
+  `
 }
+
 function bottomNav(){
-  return `<div class="bottomNav">
-    ${[
-      ["vault","▦","Vault"],
-      ["wishlist","♡","Wishlist"],
-      ["analytics","▤","Analytics"],
-      ["add","＋","Add"],
-      ["search","⌕","Search"]
-    ].map(([s,i,l])=>`<button class="navBtn ${screen===s?"active":""}" onclick="${s==="add"?"sheet='add'":"screen='"+s+"'"};render()"><span class="navIcon">${i}</span>${l}</button>`).join("")}
-  </div>`
+  return `
+    <div class="bottomNav">
+      ${
+        [
+          ["vault","▦","Vault"],
+          ["wishlist","♡","Wishlist"],
+          ["analytics","▤","Analytics"],
+          ["add","＋","Add"],
+          ["search","⌕","Search"]
+        ].map(([s,i,l])=>`
+          <button
+            class="navBtn ${screen===s?"active":""}"
+            onclick="${s==="add"?"sheet='add'":"screen='"+s+"'"};render()"
+          >
+            <span class="navIcon">${i}</span>
+            ${l}
+          </button>
+        `).join("")
+      }
+    </div>
+  `
 }
+
 function sheetHTML(){
-  if(!sheet)return ""
+
+  if(!sheet) return ""
+
+  if(sheet==="backup"){
+    return `
+      <div class="sheetBack" onclick="sheet=null;render()">
+        <div class="sheet" onclick="event.stopPropagation()">
+
+          <h2>Backup & Restore</h2>
+
+          <button class="secondary" onclick="exportBackup()">
+            Export JSON Backup
+          </button>
+
+          <input type="file" accept=".json" onchange="importBackup(event)" />
+
+          <button class="primary" onclick="sheet=null;render()">
+            Close
+          </button>
+
+        </div>
+      </div>
+    `
+  }
+
   if(sheet==="add"){
-    const live=document.getElementById("name")?.value||""
-    return `<div class="sheetBack" onclick="sheet=null;render()"><div class="sheet" onclick="event.stopPropagation()">
-      <h2>Add Card</h2>
-      <input id="name" placeholder="Card name" oninput="const w=document.getElementById('dupWarn');const c=duplicateCount(this.value);w.innerHTML=c?'⚠ Duplicate detected: '+c+' existing':''" />
-      <div id="dupWarn" class="warning"></div>
-      <div class="row"><input id="value" type="number" placeholder="Cost $" /><input id="psa" type="number" placeholder="PSA10 estimate $" /></div>
-      <div class="row"><input id="setName" placeholder="Set / Expansion" /><select id="language"><option value="EN">English</option><option value="JP">Japanese</option><option value="KR">Korean</option><option value="ES">Spanish</option></select></div>
-      <div class="row"><select id="rarity"><option value="">Rarity</option><option>Common</option><option>Holo</option><option>Ultra Rare</option><option>Illustration Rare</option><option>SIR</option><option>Promo</option></select><select id="folder"><option>Main Collection</option><option>Business Inventory</option><option>Personal Collection</option><option>Grading Candidates</option><option>For Sale</option></select></div>
-      <div class="row"><select id="type"><option>Raw</option><option>Slab</option></select><select id="bucket"><option value="H">Hold</option><option value="G">Grade</option><option value="T">Trade</option><option value="S">Sell</option><option value="W">Wishlist</option></select></div>
-      <input id="targetBuy" type="number" placeholder="Target buy price $" />
-      <button class="primary" onclick="addCardFromForm()">Save Card</button>
-    </div></div>`
+    return `
+      <div class="sheetBack" onclick="sheet=null;render()">
+        <div class="sheet" onclick="event.stopPropagation()">
+
+          <h2>Add Card</h2>
+
+          <input
+            id="name"
+            placeholder="Card name"
+            oninput="
+              const w=document.getElementById('dupWarn');
+              const c=duplicateCount(this.value);
+              w.innerHTML=c?'⚠ Duplicate detected: '+c+' existing':''
+            "
+          />
+
+          <div id="dupWarn" class="warning"></div>
+
+          <div class="row">
+            <input id="value" type="number" placeholder="Cost $" />
+            <input id="psa" type="number" placeholder="PSA10 estimate $" />
+          </div>
+
+          <div class="row">
+            <input id="setName" placeholder="Set / Expansion" />
+
+            <select id="language">
+              <option value="EN">English</option>
+              <option value="JP">Japanese</option>
+              <option value="KR">Korean</option>
+              <option value="ES">Spanish</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <select id="rarity">
+              <option value="">Rarity</option>
+              <option>Common</option>
+              <option>Holo</option>
+              <option>Ultra Rare</option>
+              <option>Illustration Rare</option>
+              <option>SIR</option>
+              <option>Promo</option>
+            </select>
+
+            <select id="folder">
+              <option>Main Collection</option>
+              <option>Business Inventory</option>
+              <option>Personal Collection</option>
+              <option>Grading Candidates</option>
+              <option>For Sale</option>
+            </select>
+          </div>
+
+          <div class="row">
+            <select id="type">
+              <option>Raw</option>
+              <option>Slab</option>
+            </select>
+
+            <select id="bucket">
+              <option value="H">Hold</option>
+              <option value="G">Grade</option>
+              <option value="T">Trade</option>
+              <option value="S">Sell</option>
+              <option value="W">Wishlist</option>
+            </select>
+          </div>
+
+          <input id="targetBuy" type="number" placeholder="Target buy price $" />
+
+          <div class="section">Purchase Journal</div>
+
+          <input id="purchaseSource" placeholder="Where did you buy it?" />
+          <input id="purchaseDate" type="date" />
+          <textarea id="purchaseNote" placeholder="Purchase notes"></textarea>
+
+          <button class="primary" onclick="addCardFromForm()">
+            Save Card
+          </button>
+
+        </div>
+      </div>
+    `
   }
-  const c=cards.find(x=>x.id===selectedId); if(!c)return ""
+
+  const c=cards.find(x=>x.id===selectedId)
+  if(!c) return ""
+
   if(sheet==="edit"){
-    return `<div class="sheetBack" onclick="sheet='manage';render()"><div class="sheet" onclick="event.stopPropagation()">
-      <h2>Edit Card</h2>
-      <input id="editName" value="${c.name||""}" /><input id="editValue" type="number" value="${c.value||0}" /><input id="editPSA" type="number" value="${c.psa||0}" /><input id="editTarget" type="number" value="${c.targetBuy||0}" placeholder="Target buy $" />
-      <input id="editSet" value="${c.setName||""}" placeholder="Set / Expansion" />
-      <select id="editLang">${["EN","JP","KR","ES"].map(x=>`<option value="${x}" ${c.language===x?"selected":""}>${x}</option>`).join("")}</select>
-      <select id="editRarity">${["","Common","Holo","Ultra Rare","Illustration Rare","SIR","Promo"].map(x=>`<option value="${x}" ${c.rarity===x?"selected":""}>${x||"Rarity"}</option>`).join("")}</select>
-      <select id="editFolder">${["Main Collection","Business Inventory","Personal Collection","Grading Candidates","For Sale"].map(x=>`<option ${c.folder===x?"selected":""}>${x}</option>`).join("")}</select>
-      <select id="editType"><option ${c.type==="Raw"?"selected":""}>Raw</option><option ${c.type==="Slab"?"selected":""}>Slab</option></select>
-      <select id="editBucket">${["H","G","T","S","W"].map(b=>`<option value="${b}" ${c.bucket===b?"selected":""}>${buckets[b]}</option>`).join("")}</select>
-      <button class="primary" onclick="updateCard()">Save Changes</button>
-    </div></div>`
+    return `
+      <div class="sheetBack" onclick="sheet='manage';render()">
+        <div class="sheet" onclick="event.stopPropagation()">
+
+          <h2>Edit Card</h2>
+
+          <input id="editName" value="${c.name||""}" />
+          <input id="editValue" type="number" value="${c.value||0}" />
+          <input id="editPSA" type="number" value="${c.psa||0}" />
+          <input id="editTarget" type="number" value="${c.targetBuy||0}" placeholder="Target buy $" />
+
+          <input id="editSet" value="${c.setName||""}" placeholder="Set / Expansion" />
+
+          <select id="editLang">
+            ${["EN","JP","KR","ES"].map(x=>`
+              <option value="${x}" ${c.language===x?"selected":""}>
+                ${x}
+              </option>
+            `).join("")}
+          </select>
+
+          <select id="editRarity">
+            ${
+              ["","Common","Holo","Ultra Rare","Illustration Rare","SIR","Promo"]
+              .map(x=>`
+                <option value="${x}" ${c.rarity===x?"selected":""}>
+                  ${x||"Rarity"}
+                </option>
+              `).join("")
+            }
+          </select>
+
+          <select id="editFolder">
+            ${
+              ["Main Collection","Business Inventory","Personal Collection","Grading Candidates","For Sale"]
+              .map(x=>`
+                <option ${c.folder===x?"selected":""}>
+                  ${x}
+                </option>
+              `).join("")
+            }
+          </select>
+
+          <select id="editType">
+            <option ${c.type==="Raw"?"selected":""}>Raw</option>
+            <option ${c.type==="Slab"?"selected":""}>Slab</option>
+          </select>
+
+          <select id="editBucket">
+            ${
+              ["H","G","T","S","W"].map(b=>`
+                <option value="${b}" ${c.bucket===b?"selected":""}>
+                  ${buckets[b]}
+                </option>
+              `).join("")
+            }
+          </select>
+
+          <div class="section">Purchase Journal</div>
+
+          <input
+            id="editPurchaseSource"
+            value="${c.purchaseSource||""}"
+            placeholder="Where did you buy it?"
+          />
+
+          <input
+            id="editPurchaseDate"
+            type="date"
+            value="${c.purchaseDate||""}"
+          />
+
+          <textarea
+            id="editPurchaseNote"
+            placeholder="Purchase notes"
+          >${c.purchaseNote||""}</textarea>
+
+          <button class="primary" onclick="updateCard()">
+            Save Changes
+          </button>
+
+        </div>
+      </div>
+    `
   }
+
   if(sheet==="price"){
-    return `<div class="sheetBack" onclick="sheet='manage';render()"><div class="sheet" onclick="event.stopPropagation()">
-      <h2>Price Snapshot</h2><p>${c.name}</p>
-      <input id="priceLog" type="number" placeholder="Current price $" />
-      <input id="priceNote" placeholder="Source / note" />
-      <button class="primary" onclick="addPriceLog()">Save Price</button>
-    </div></div>`
+    return `
+      <div class="sheetBack" onclick="sheet='manage';render()">
+        <div class="sheet" onclick="event.stopPropagation()">
+
+          <h2>Price Snapshot</h2>
+
+          <p>${c.name}</p>
+
+          <input id="priceLog" type="number" placeholder="Current price $" />
+          <input id="priceNote" placeholder="Source / note" />
+
+          <button class="primary" onclick="addPriceLog()">
+            Save Price
+          </button>
+
+        </div>
+      </div>
+    `
   }
-  return `<div class="sheetBack" onclick="sheet=null;render()"><div class="sheet" onclick="event.stopPropagation()">
-    <h2>${c.name}</h2><p>${c.type||"Raw"} · ${getAnchor(c.name)} · ${buckets[c.bucket]}</p>
-    <div class="section">Card Actions</div>
-    <button class="secondary" onclick="sheet='edit';render()">Edit Card</button>
-    <button class="secondary" onclick="sheet='price';render()">Add Price Snapshot</button>
-    ${(c.status==="sold"||c.status==="traded"||c.status==="wishlist")?`<button class="secondary" onclick="restoreCard()">Restore to Inventory</button>`:""}
-    <div class="section">Move</div>
-    ${["H","G","T","S","W"].map(b=>`<button class="secondary" onclick="moveCard('${b}')">Move to ${buckets[b]}</button>`).join("")}
-    <div class="section">Sell / Trade</div>
-    <input id="saleInput" type="number" placeholder="Sale price $" />
-    <select id="reasonInput"><option value="">Reason Sold</option><option value="flip">Quick Flip</option><option value="cash">Need Cash</option><option value="drop">Market Drop</option><option value="overpay">Overpaid</option><option value="upgrade">Upgrade Capital</option></select>
-    <button class="secondary" onclick="markSold()">Mark Sold</button>
-    <input id="tradeInput" placeholder="Traded for what?" />
-    <button class="secondary" onclick="markTraded()">Mark Traded</button>
-    <div class="section">Danger Zone</div>
-    <button class="secondary danger" onclick="deleteCard()">Delete Permanently</button>
-    <button class="primary" onclick="sheet=null;render()">Close</button>
-  </div></div>`
+
+  return `
+    <div class="sheetBack" onclick="sheet=null;render()">
+      <div class="sheet" onclick="event.stopPropagation()">
+
+        <h2>${c.name}</h2>
+
+        <p>
+          ${c.type||"Raw"}
+          · ${getAnchor(c.name)}
+          · ${buckets[c.bucket]}
+        </p>
+
+        <div class="section">Card Actions</div>
+
+        <button class="secondary" onclick="sheet='edit';render()">
+          Edit Card
+        </button>
+
+        <button class="secondary" onclick="sheet='price';render()">
+          Add Price Snapshot
+        </button>
+
+        ${
+          (c.status==="sold"||c.status==="traded"||c.status==="wishlist")
+          ? `
+            <button class="secondary" onclick="restoreCard()">
+              Restore to Inventory
+            </button>
+          `
+          : ""
+        }
+
+        <div class="section">Move</div>
+
+        ${
+          ["H","G","T","S","W"].map(b=>`
+            <button class="secondary" onclick="moveCard('${b}')">
+              Move to ${buckets[b]}
+            </button>
+          `).join("")
+        }
+
+        <div class="section">Sell / Trade</div>
+
+        <input id="saleInput" type="number" placeholder="Sale price $" />
+
+        <select id="reasonInput">
+          <option value="">Reason Sold</option>
+          <option value="flip">Quick Flip</option>
+          <option value="cash">Need Cash</option>
+          <option value="drop">Market Drop</option>
+          <option value="overpay">Overpaid</option>
+          <option value="upgrade">Upgrade Capital</option>
+        </select>
+
+        <button class="secondary" onclick="markSold()">
+          Mark Sold
+        </button>
+
+        <input id="tradeInput" placeholder="Traded for what?" />
+
+        <button class="secondary" onclick="markTraded()">
+          Mark Traded
+        </button>
+
+        <div class="section">Danger Zone</div>
+
+        <button class="secondary danger" onclick="deleteCard()">
+          Delete Permanently
+        </button>
+
+        <button class="primary" onclick="sheet=null;render()">
+          Close
+        </button>
+
+      </div>
+    </div>
+  `
 }
+
 render()
 </script>
 </body>
