@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>PokéVault v1</title>
-
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f4f4f6;color:#111;font-family:Arial,sans-serif}
@@ -16,43 +15,46 @@ h1{margin:0;font-size:32px;font-weight:900;letter-spacing:-.5px}
 .search{flex:1;border:none;background:white;border-radius:18px;padding:16px;font-size:17px;box-shadow:0 6px 18px rgba(0,0,0,.05)}
 .filterBtn{width:52px;border:none;background:#111;color:white;border-radius:18px;font-size:20px;font-weight:900}
 .filterSummary{background:white;border-radius:18px;padding:10px 14px;margin-bottom:12px;font-size:12px;font-weight:900;color:#777;box-shadow:0 5px 16px rgba(0,0,0,.045)}
-.filterPanel{background:white;border-radius:22px;padding:14px;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,0,0,.07);animation:fadeIn .18s ease}
+.filterOverlay{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:80;display:flex;align-items:flex-start;justify-content:center;padding:86px 16px 0;animation:fadeIn .16s ease}
+.filterPanel{width:100%;max-width:448px;background:white;border-radius:24px;padding:14px;box-shadow:0 14px 40px rgba(0,0,0,.2);animation:slideDown .18s ease}
+.filterHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.filterTitle{font-size:18px;font-weight:900}
+.closeMini{border:none;background:#eee;border-radius:999px;width:34px;height:34px;font-size:18px;font-weight:900}
 .chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:10px;padding-bottom:3px}
 .chips:last-child{margin-bottom:0}
 .chip{border:1px solid #ddd;background:#f7f7f8;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:900;white-space:nowrap}
 .chip.active{background:#108cf5;color:white;border-color:#108cf5}
 .chip.bucket{color:white;border:none}
-.H{background:#6f936a!important}
-.G{background:#6687c2!important}
-.T{background:#e28a55!important}
-.S{background:#c76565!important}
-.W{background:#8b5cf6!important}
+.H{background:#6f936a!important}.G{background:#6687c2!important}.T{background:#e28a55!important}.S{background:#c76565!important}.W{background:#8b5cf6!important}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
 .stat{background:white;border-radius:16px;padding:11px 7px;box-shadow:0 4px 14px rgba(0,0,0,.045);text-align:center}
 .stat strong{display:block;font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .stat span{font-size:10px;color:#777;text-transform:uppercase;font-weight:800}
-.progressWrap{background:white;border-radius:22px;padding:14px;margin:12px 0;box-shadow:0 6px 20px rgba(0,0,0,.055)}
-.progressTitle{font-size:16px;font-weight:900;margin-bottom:10px}
-.progressRow{display:flex;align-items:center;gap:8px;margin:8px 0}
-.progressLbl{width:58px;font-size:11px;font-weight:900;color:#777}
-.progressBar{flex:1;height:10px;background:#eee;border-radius:999px;overflow:hidden}
-.progressFill{height:100%;border-radius:999px}
-.progressNum{width:28px;text-align:right;font-size:11px;font-weight:900;color:#777}
 .grid{display:grid;grid-template-columns:1fr;gap:10px}
+.gridMode{grid-template-columns:1fr 1fr;gap:10px}
 .bucketHeader{display:flex;align-items:center;justify-content:space-between;margin:16px 2px 8px}
 .bucketTitle{font-size:16px;font-weight:900}
 .bucketCount{font-size:12px;font-weight:900;color:#777;background:white;border-radius:999px;padding:5px 10px}
 .card,.detailCard,.profileCard{background:white;border-radius:20px;padding:14px;box-shadow:0 5px 16px rgba(0,0,0,.065);animation:fadeUp .2s ease}
 .cardTop{display:flex;justify-content:space-between;gap:10px}
+.gridMode .card{padding:10px;border-radius:18px}
+.gridMode .cardTop{display:block}
+.cardImage{height:0;display:none}
+.gridMode .cardImage{display:flex;height:132px;background:linear-gradient(135deg,#ededf2,#fafafa);border-radius:14px;margin-bottom:10px;align-items:center;justify-content:center;color:#aaa;font-size:30px;font-weight:900}
 .name{font-size:18px;font-weight:900;line-height:1.15}
+.gridMode .name{font-size:14px;min-height:32px}
 .meta{font-size:12.5px;color:#777;margin-top:5px;line-height:1.38}
+.gridMode .meta{font-size:11px}
 .badge{display:inline-block;margin-top:9px;margin-right:5px;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900}
 .signal{display:inline-block;margin-top:9px;margin-right:5px;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900;background:#eee}
+.gridMode .signal:nth-of-type(n+3),.gridMode .quickRow,.gridMode .folderMeta,.gridMode .sourceMeta,.gridMode .priceMeta{display:none}
 .quickRow{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .quickBtn{border:none;background:#eee;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:900}
 .green{color:#15803d!important}.red{color:#dc2626!important}.blue{color:#2563eb!important}.purple{color:#7c3aed!important}.orange{color:#ea580c!important}.neutral{color:#111!important}
 .value{text-align:right;font-size:18px;font-weight:900}
+.gridMode .value{text-align:left;font-size:15px;margin-top:8px}
 .small{font-size:11px;color:#777;text-align:right}
+.gridMode .small{text-align:left}
 .empty{background:white;border-radius:24px;text-align:center;color:#777;padding:34px 20px;margin-top:14px;box-shadow:0 6px 20px rgba(0,0,0,.05)}
 .emptyIcon{font-size:40px;margin-bottom:10px}
 .emptyTitle{font-size:20px;font-weight:900;color:#111;margin-bottom:6px}
@@ -88,6 +90,7 @@ textarea{min-height:78px;resize:none}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideUp{from{transform:translateY(20px);opacity:.75}to{transform:translateY(0);opacity:1}}
+@keyframes slideDown{from{transform:translateY(-10px);opacity:.75}to{transform:translateY(0);opacity:1}}
 </style>
 </head>
 
@@ -95,7 +98,7 @@ textarea{min-height:78px;resize:none}
 <div id="app"></div>
 
 <script>
-const KEY = "pokevault_v1_batch5"
+const KEY = "pokevault_v1_batch6"
 let cards = JSON.parse(localStorage.getItem(KEY) || "[]")
 
 let screen = "vault"
@@ -103,8 +106,10 @@ let previousScreen = "vault"
 let filterStatus = "All"
 let filterBucket = "All"
 let filterAnchor = "All"
+let filterFolder = "All"
 let searchText = ""
 let sortMode = "newest"
+let viewMode = "list"
 let filtersOpen = false
 let sheet = null
 let selectedId = null
@@ -112,7 +117,7 @@ let selectedId = null
 const buckets = {H:"HOLD",G:"GRADE",T:"TRADE",S:"SELL",W:"WISHLIST"}
 const reasons = {flip:"Quick Flip",cash:"Need Cash",drop:"Market Drop",overpay:"Overpaid",upgrade:"Upgrade Capital"}
 
-function save(){localStorage.setItem(KEY, JSON.stringify(cards));render()}
+function save(){localStorage.setItem(KEY,JSON.stringify(cards));render()}
 function money(n){return "$"+Number(n||0).toLocaleString()}
 
 function getAnchor(name){
@@ -123,32 +128,32 @@ function getAnchor(name){
   return "Other"
 }
 
+function shortFolder(folder){
+  if(!folder) return "All"
+  if(folder.includes("Personal")) return "Personal"
+  if(folder.includes("Business")) return "Business"
+  if(folder.includes("Grading")) return "Grading"
+  if(folder.includes("For Sale")) return "For Sale"
+  return folder
+}
+
 function analyze(c){
-  const cost=Number(c.value||0)
-  const psa=Number(c.psa||0)
-  const sale=Number(c.salePrice||0)
-  const target=Number(c.targetBuy||0)
-  const profit=sale-cost
-  const roi=cost?Math.round((profit/cost)*100):0
-  const upside=psa-cost
+  const cost=Number(c.value||0), psa=Number(c.psa||0), sale=Number(c.salePrice||0), target=Number(c.targetBuy||0)
+  const profit=sale-cost, roi=cost?Math.round((profit/cost)*100):0, upside=psa-cost
   const potentialPct=cost&&psa?Math.round((upside/cost)*100):0
-
   let signal="HOLD", cls="green"
-
   if(c.status==="wishlist"){signal=target?"WATCH":"WISHLIST";cls="purple"}
   else if(c.status==="sold"){signal=profit>0?"PROFIT":profit<0?"LOSS":"EVEN";cls=profit>0?"green":profit<0?"red":"neutral"}
   else if(c.status==="traded"){signal="TRADED";cls="blue"}
   else if(psa&&cost&&psa>=cost*2){signal="GRADE";cls="blue"}
   else if(psa&&cost&&psa<=cost*1.3){signal="SELL";cls="red"}
-
   return {cost,psa,sale,target,profit,roi,upside,potentialPct,signal,cls}
 }
 
 function marketTrend(c){
   const h=Array.isArray(c.priceHistory)?c.priceHistory:[]
   if(h.length<2) return {label:"Not enough data",cls:"neutral"}
-  const first=Number(h[0].price||0)
-  const last=Number(h[h.length-1].price||0)
+  const first=Number(h[0].price||0), last=Number(h[h.length-1].price||0)
   if(!first||!last) return {label:"Not enough data",cls:"neutral"}
   const change=((last-first)/first)*100
   if(change>=8) return {label:"Rising",cls:"green"}
@@ -157,9 +162,7 @@ function marketTrend(c){
 }
 
 function risk(c){
-  const cost=Number(c.value||0)
-  const psa=Number(c.psa||0)
-  const target=Number(c.targetBuy||0)
+  const cost=Number(c.value||0), psa=Number(c.psa||0), target=Number(c.targetBuy||0)
   if(c.status==="wishlist"&&target) return {label:"TARGET "+money(target),cls:"purple"}
   if(!cost||!psa) return null
   const ratio=psa/cost
@@ -183,12 +186,9 @@ function data(){
   const traded=cards.filter(c=>c.status==="traded")
   const history=[...sold,...traded]
   const grails=cards.filter(c=>c.favorite)
-
   const bucketCounts={H:0,G:0,T:0,S:0,W:0}
-  cards.forEach(c=>{ if(bucketCounts[c.bucket]!==undefined) bucketCounts[c.bucket]++ })
-
+  cards.forEach(c=>{if(bucketCounts[c.bucket]!==undefined)bucketCounts[c.bucket]++})
   const unrealizedUpside=inventory.reduce((s,c)=>s+Math.max(0,Number(c.psa||0)-Number(c.value||0)),0)
-
   return {
     inventory,wishlist,sold,traded,history,grails,bucketCounts,
     inventoryValue:inventory.reduce((s,c)=>s+Number(c.value||0),0),
@@ -231,6 +231,7 @@ function visibleCards(){
     if(filterStatus!=="All"&&c.status!==filterStatus) return false
     if(filterBucket!=="All"&&c.bucket!==filterBucket) return false
     if(filterAnchor!=="All"&&getAnchor(c.name)!==filterAnchor) return false
+    if(filterFolder!=="All"&&shortFolder(c.folder)!==filterFolder) return false
     if(searchText&&!String(c.name).toLowerCase().includes(searchText.toLowerCase())) return false
     return true
   })
@@ -249,34 +250,10 @@ function groupByBucket(list){
   return grouped
 }
 
-function openDetail(id){
-  selectedId=id
-  previousScreen=screen==="detail"?"vault":screen
-  screen="detail"
-  sheet=null
-  render()
-}
-
-function goBack(){
-  screen=previousScreen||"vault"
-  selectedId=null
-  render()
-}
-
-function toggleFavorite(id){
-  const c=cards.find(x=>x.id===id)
-  if(!c) return
-  c.favorite=!c.favorite
-  save()
-}
-
-function quickMove(id,b){
-  const c=cards.find(x=>x.id===id)
-  if(!c) return
-  c.bucket=b
-  c.status=b==="W"?"wishlist":"active"
-  save()
-}
+function openDetail(id){selectedId=id;previousScreen=screen==="detail"?"vault":screen;screen="detail";sheet=null;render()}
+function goBack(){screen=previousScreen||"vault";selectedId=null;render()}
+function toggleFavorite(id){const c=cards.find(x=>x.id===id);if(!c)return;c.favorite=!c.favorite;save()}
+function quickMove(id,b){const c=cards.find(x=>x.id===id);if(!c)return;c.bucket=b;c.status=b==="W"?"wishlist":"active";save()}
 
 function addCardFromForm(){
   const name=document.getElementById("name").value.trim()
@@ -329,11 +306,9 @@ function updateCard(){
 function moveCard(b){
   const c=cards.find(x=>x.id===selectedId)
   if(!c) return
-  c.bucket=b
-  c.status=b==="W"?"wishlist":"active"
+  c.bucket=b;c.status=b==="W"?"wishlist":"active"
   c.salePrice=0;c.tradedFor="";c.reasonSold="";c.soldAt="";c.tradedAt=""
-  sheet=null
-  save()
+  sheet=null;save()
 }
 
 function markSold(){
@@ -341,12 +316,8 @@ function markSold(){
   if(!c) return
   const sale=Number(document.getElementById("saleInput").value||0)
   if(!sale) return alert("Enter sale price")
-  c.status="sold"
-  c.salePrice=sale
-  c.reasonSold=document.getElementById("reasonInput").value
-  c.soldAt=new Date().toISOString()
-  sheet=null
-  save()
+  c.status="sold";c.salePrice=sale;c.reasonSold=document.getElementById("reasonInput").value;c.soldAt=new Date().toISOString()
+  sheet=null;save()
 }
 
 function markTraded(){
@@ -354,11 +325,8 @@ function markTraded(){
   if(!c) return
   const t=document.getElementById("tradeInput").value.trim()
   if(!t) return alert("Enter trade details")
-  c.status="traded"
-  c.tradedFor=t
-  c.tradedAt=new Date().toISOString()
-  sheet=null
-  save()
+  c.status="traded";c.tradedFor=t;c.tradedAt=new Date().toISOString()
+  sheet=null;save()
 }
 
 function restoreCard(){
@@ -367,8 +335,7 @@ function restoreCard(){
   c.status="active"
   if(c.bucket==="W") c.bucket="H"
   c.salePrice=0;c.tradedFor="";c.reasonSold=""
-  sheet=null
-  save()
+  sheet=null;save()
 }
 
 function addPriceLog(){
@@ -378,26 +345,20 @@ function addPriceLog(){
   if(!price) return alert("Enter price")
   if(!Array.isArray(c.priceHistory)) c.priceHistory=[]
   c.priceHistory.push({price,note:document.getElementById("priceNote").value.trim(),date:new Date().toISOString()})
-  sheet=null
-  save()
+  sheet=null;save()
 }
 
 function deleteCard(){
   if(prompt("Type DELETE to confirm")!=="DELETE") return
   cards=cards.filter(c=>c.id!==selectedId)
-  selectedId=null
-  screen=previousScreen||"vault"
-  sheet=null
-  save()
+  selectedId=null;screen=previousScreen||"vault";sheet=null;save()
 }
 
 function exportBackup(){
   const blob=new Blob([JSON.stringify(cards,null,2)],{type:"application/json"})
   const url=URL.createObjectURL(blob)
   const a=document.createElement("a")
-  a.href=url
-  a.download="pokevault-backup.json"
-  a.click()
+  a.href=url;a.download="pokevault-backup.json";a.click()
   URL.revokeObjectURL(url)
 }
 
@@ -409,9 +370,7 @@ function importBackup(event){
     try{
       const imported=JSON.parse(e.target.result)
       if(!Array.isArray(imported)){alert("Invalid backup file");return}
-      cards=imported
-      save()
-      alert("Backup imported successfully")
+      cards=imported;save();alert("Backup imported successfully")
     }catch{alert("Invalid JSON file")}
   }
   reader.readAsText(file)
@@ -427,34 +386,27 @@ function render(){
     ${topHTML()}
 
     ${
-      screen==="detail"
-      ? detailScreen()
-      : screen==="profile"
-      ? profileScreen(d)
-      : `
+      screen==="detail"?detailScreen():
+      screen==="profile"?profileScreen(d):
+      `
         <div class="searchRow">
           <input class="search" placeholder="Search by name" value="${searchText}" oninput="searchText=this.value;render()" />
-          <button class="filterBtn" onclick="filtersOpen=!filtersOpen;render()">${filtersOpen?"×":"☰"}</button>
+          <button class="filterBtn" onclick="filtersOpen=true;render()">☰</button>
         </div>
 
-        ${!filtersOpen ? `<div class="filterSummary">Sort: ${sortMode.toUpperCase()} · Status: ${filterStatus} · Bucket: ${filterBucket} · Anchor: ${filterAnchor}</div>` : ""}
-        ${filtersOpen ? filterPanel() : ""}
+        <div class="filterSummary">View: ${viewMode.toUpperCase()} · Sort: ${sortMode.toUpperCase()} · Folder: ${filterFolder}</div>
 
         ${
-          screen==="analytics"
-          ? analytics(d)
-          : `
-            ${screen==="vault"?stats(d)+progressBlock(d):""}
-            <div class="grid">
+          screen==="analytics"?analytics(d):
+          `
+            ${screen==="vault"?stats(d):""}
+            <div class="grid ${viewMode==="grid"?"gridMode":""}">
               ${
                 list.length
                 ? Object.entries(grouped).map(([bucket,items])=>{
                     if(!items.length) return ""
                     return `
-                      <div class="bucketHeader">
-                        <div class="bucketTitle">${buckets[bucket]||bucket}</div>
-                        <div class="bucketCount">${items.length}</div>
-                      </div>
+                      ${viewMode==="list"?`<div class="bucketHeader"><div class="bucketTitle">${buckets[bucket]||bucket}</div><div class="bucketCount">${items.length}</div></div>`:""}
                       ${items.map(cardHTML).join("")}
                     `
                   }).join("")
@@ -466,7 +418,8 @@ function render(){
       `
     }
 
-    ${screen!=="detail"&&screen!=="profile" ? `<button class="fab" onclick="sheet='add';render()">+</button>` : ""}
+    ${filtersOpen?filterOverlay():""}
+    ${screen!=="detail"&&screen!=="profile"?`<button class="fab" onclick="sheet='add';render()">+</button>`:""}
     ${bottomNav()}
     ${sheetHTML()}
   `
@@ -483,13 +436,45 @@ function topHTML(){
   return `<div class="top"><button class="roundBtn" onclick="screen='profile';render()">☁</button><h1>PokéVault</h1><button class="roundBtn" onclick="screen='wishlist';render()">♡</button></div>`
 }
 
-function filterPanel(){
+function filterOverlay(){
   return `
-    <div class="filterPanel">
-      <div class="chips">${["newest","highest","upside","loss","alphabetical"].map(s=>`<button class="chip ${sortMode===s?"active":""}" onclick="sortMode='${s}';render()">${s==="newest"?"Newest":s==="highest"?"Highest":s==="upside"?"Upside":s==="loss"?"Loss":"A-Z"}</button>`).join("")}</div>
-      <div class="chips">${["All","active","wishlist","sold","traded"].map(s=>`<button class="chip ${filterStatus===s?"active":""}" onclick="filterStatus='${s}';render()">${s==="active"?"Owned":s[0].toUpperCase()+s.slice(1)}</button>`).join("")}</div>
-      <div class="chips">${["H","G","T","S","W"].map(b=>`<button class="chip bucket ${b}" onclick="filterBucket=filterBucket==='${b}'?'All':'${b}';render()">${buckets[b]}</button>`).join("")}</div>
-      <div class="chips">${["All","Pikachu","Charizard","Umbreon","Other"].map(a=>`<button class="chip ${filterAnchor===a?"active":""}" onclick="filterAnchor='${a}';render()">${a}</button>`).join("")}</div>
+    <div class="filterOverlay" onclick="filtersOpen=false;render()">
+      <div class="filterPanel" onclick="event.stopPropagation()">
+        <div class="filterHead">
+          <div class="filterTitle">Filters</div>
+          <button class="closeMini" onclick="filtersOpen=false;render()">×</button>
+        </div>
+
+        <div class="section">View</div>
+        <div class="chips">
+          ${["list","grid"].map(v=>`<button class="chip ${viewMode===v?"active":""}" onclick="viewMode='${v}';render()">${v==="list"?"List":"Grid"}</button>`).join("")}
+        </div>
+
+        <div class="section">Sort</div>
+        <div class="chips">
+          ${["newest","highest","upside","loss","alphabetical"].map(s=>`<button class="chip ${sortMode===s?"active":""}" onclick="sortMode='${s}';render()">${s==="newest"?"Newest":s==="highest"?"Highest":s==="upside"?"Upside":s==="loss"?"Loss":"A-Z"}</button>`).join("")}
+        </div>
+
+        <div class="section">Status</div>
+        <div class="chips">
+          ${["All","active","wishlist","sold","traded"].map(s=>`<button class="chip ${filterStatus===s?"active":""}" onclick="filterStatus='${s}';render()">${s==="active"?"Owned":s[0].toUpperCase()+s.slice(1)}</button>`).join("")}
+        </div>
+
+        <div class="section">Bucket</div>
+        <div class="chips">
+          ${["H","G","T","S","W"].map(b=>`<button class="chip bucket ${b}" onclick="filterBucket=filterBucket==='${b}'?'All':'${b}';render()">${buckets[b]}</button>`).join("")}
+        </div>
+
+        <div class="section">Folder</div>
+        <div class="chips">
+          ${["All","Personal","Business","Grading","For Sale"].map(f=>`<button class="chip ${filterFolder===f?"active":""}" onclick="filterFolder='${f}';render()">${f}</button>`).join("")}
+        </div>
+
+        <div class="section">Anchor</div>
+        <div class="chips">
+          ${["All","Pikachu","Charizard","Umbreon","Other"].map(a=>`<button class="chip ${filterAnchor===a?"active":""}" onclick="filterAnchor='${a}';render()">${a}</button>`).join("")}
+        </div>
+      </div>
     </div>
   `
 }
@@ -509,29 +494,12 @@ function stats(d){
   </div>`
 }
 
-function progressBlock(d){
-  const total=cards.length||1
-  return `
-    <div class="progressWrap">
-      <div class="progressTitle">Collection Progress</div>
-      ${["H","G","T","S","W"].map(b=>{
-        const count=d.bucketCounts[b]||0
-        const pct=Math.round((count/total)*100)
-        return `<div class="progressRow">
-          <div class="progressLbl">${buckets[b]}</div>
-          <div class="progressBar"><div class="progressFill ${b}" style="width:${pct}%"></div></div>
-          <div class="progressNum">${count}</div>
-        </div>`
-      }).join("")}
-    </div>
-  `
-}
-
 function cardHTML(c){
   const a=analyze(c), r=risk(c), t=marketTrend(c)
   const lp=Array.isArray(c.priceHistory)&&c.priceHistory.length?c.priceHistory[c.priceHistory.length-1]:null
   return `
     <div class="card" onclick="openDetail(${c.id})">
+      <div class="cardImage">▧</div>
       <div class="cardTop">
         <div>
           <div class="name">${c.favorite?"★ ":""}${c.name}</div>
@@ -540,9 +508,9 @@ function cardHTML(c){
           <span class="signal ${a.cls}">${a.signal}</span>
           ${r?`<span class="signal ${r.cls}">${r.label}</span>`:""}
           <span class="signal ${t.cls}">${t.label}</span>
-          ${c.folder?`<div class="meta">Folder: ${c.folder}</div>`:""}
-          ${c.purchaseSource?`<div class="meta">Bought from: ${c.purchaseSource}</div>`:""}
-          ${lp?`<div class="meta">Last price: ${money(lp.price)}${lp.note?" · "+lp.note:""}</div>`:""}
+          ${c.folder?`<div class="meta folderMeta">Folder: ${c.folder}</div>`:""}
+          ${c.purchaseSource?`<div class="meta sourceMeta">Bought from: ${c.purchaseSource}</div>`:""}
+          ${lp?`<div class="meta priceMeta">Last price: ${money(lp.price)}${lp.note?" · "+lp.note:""}</div>`:""}
           ${c.status==="sold"?`<div class="meta">Sale: <b class="${a.cls}">${money(a.sale)}</b> · Result: <b class="${a.cls}">${a.profit>=0?"+":""}${money(a.profit)} (${a.roi}%)</b>${c.reasonSold?" · "+reasons[c.reasonSold]:""}</div>`:""}
           ${c.status==="traded"?`<div class="meta">Traded for: ${c.tradedFor}</div>`:""}
           <div class="quickRow" onclick="event.stopPropagation()">
@@ -561,13 +529,26 @@ function cardHTML(c){
   `
 }
 
+function progressBlock(d){
+  const total=cards.length||1
+  return `
+    <div class="progressWrap">
+      <div class="progressTitle">Collection Progress</div>
+      ${["H","G","T","S","W"].map(b=>{
+        const count=d.bucketCounts[b]||0
+        const pct=Math.round((count/total)*100)
+        return `<div class="progressRow"><div class="progressLbl">${buckets[b]}</div><div class="progressBar"><div class="progressFill ${b}" style="width:${pct}%"></div></div><div class="progressNum">${count}</div></div>`
+      }).join("")}
+    </div>
+  `
+}
+
 function detailScreen(){
   const c=cards.find(x=>x.id===selectedId)
   if(!c) return emptyState()
   const a=analyze(c), r=risk(c), t=marketTrend(c)
   const priceHistory=Array.isArray(c.priceHistory)?c.priceHistory:[]
   const isSold=c.status==="sold"
-
   return `
     <div class="detailHero">
       <div class="detailTitle">${c.favorite?"★ ":""}${c.name}</div>
@@ -580,33 +561,15 @@ function detailScreen(){
       <div class="meta">${c.status==="wishlist"?"Target Buy Price":"Current Cost Basis"}</div>
       <button class="primary" onclick="sheet='manage';render()">Manage Card</button>
     </div>
-
     <div class="detailGrid">
       <div class="detailMini"><strong>${money(c.value)}</strong><span>Cost</span></div>
       <div class="detailMini"><strong>${money(c.psa)}</strong><span>PSA10 Est</span></div>
       <div class="detailMini"><strong class="${isSold?(a.profit>=0?"green":"red"):(a.upside>=0?"green":"red")}">${isSold?(a.profit>=0?"+":""):(a.upside>=0?"+":"")}${money(isSold?a.profit:a.upside)}</strong><span>${isSold?"Profit":"Upside"}</span></div>
       <div class="detailMini"><strong class="${isSold?(a.roi>=0?"green":"red"):(a.potentialPct>=0?"green":"red")}">${isSold?a.roi:a.potentialPct}%</strong><span>${isSold?"ROI":"Potential"}</span></div>
     </div>
-
-    <div class="detailCard" style="margin-top:12px">
-      <div class="name">Ownership</div>
-      <div class="meta">Folder: <b>${c.folder||"Not set"}</b></div>
-      <div class="meta">Bought from: <b>${c.purchaseSource||"Not logged"}</b></div>
-      <div class="meta">Purchase date: <b>${c.purchaseDate||"Not logged"}</b></div>
-      <div class="meta">Notes: <b>${c.purchaseNote||"None"}</b></div>
-    </div>
-
-    <div class="detailCard" style="margin-top:12px">
-      <div class="name">Market Trend</div>
-      <div class="meta">Manual snapshot trend: <b class="${t.cls}">${t.label}</b></div>
-      <div class="meta">Based only on your saved price snapshots.</div>
-    </div>
-
-    <div class="detailCard" style="margin-top:12px">
-      <div class="name">Price History</div>
-      ${priceHistory.length?priceHistory.map(p=>`<div class="meta"><b>${money(p.price)}</b>${p.note?" · "+p.note:""}${p.date?" · "+new Date(p.date).toLocaleDateString():""}</div>`).join(""):`<div class="meta">No price snapshots yet.</div>`}
-    </div>
-
+    <div class="detailCard" style="margin-top:12px"><div class="name">Ownership</div><div class="meta">Folder: <b>${c.folder||"Not set"}</b></div><div class="meta">Bought from: <b>${c.purchaseSource||"Not logged"}</b></div><div class="meta">Purchase date: <b>${c.purchaseDate||"Not logged"}</b></div><div class="meta">Notes: <b>${c.purchaseNote||"None"}</b></div></div>
+    <div class="detailCard" style="margin-top:12px"><div class="name">Market Trend</div><div class="meta">Manual snapshot trend: <b class="${t.cls}">${t.label}</b></div><div class="meta">Based only on your saved price snapshots.</div></div>
+    <div class="detailCard" style="margin-top:12px"><div class="name">Price History</div>${priceHistory.length?priceHistory.map(p=>`<div class="meta"><b>${money(p.price)}</b>${p.note?" · "+p.note:""}${p.date?" · "+new Date(p.date).toLocaleDateString():""}</div>`).join(""):`<div class="meta">No price snapshots yet.</div>`}</div>
     ${c.status==="sold"?`<div class="detailCard" style="margin-top:12px"><div class="name">Sale Result</div><div class="meta">Sale Price: <b>${money(c.salePrice)}</b></div><div class="meta">Result: <b class="${a.cls}">${a.profit>=0?"+":""}${money(a.profit)} (${a.roi}%)</b></div><div class="meta">Reason: <b>${reasons[c.reasonSold]||c.reasonSold||"Not logged"}</b></div></div>`:""}
   `
 }
@@ -615,21 +578,9 @@ function profileScreen(d){
   const topCard=mostValuableCard()
   return `
     <div class="profileHeader"><div class="profileIcon">☁</div><div class="profileTitle">Collector Profile</div><div class="profileSub">PokéVault v1 collection identity</div></div>
-    <div class="stats">
-      <div class="stat"><strong>${cards.length}</strong><span>Total</span></div>
-      <div class="stat"><strong>${d.grails.length}</strong><span>Grails</span></div>
-      <div class="stat"><strong>${money(d.inventoryValue)}</strong><span>Vault</span></div>
-      <div class="stat"><strong>${d.wishlist.length}</strong><span>Wishlist</span></div>
-    </div>
+    <div class="stats"><div class="stat"><strong>${cards.length}</strong><span>Total</span></div><div class="stat"><strong>${d.grails.length}</strong><span>Grails</span></div><div class="stat"><strong>${money(d.inventoryValue)}</strong><span>Vault</span></div><div class="stat"><strong>${d.wishlist.length}</strong><span>Wishlist</span></div></div>
     ${progressBlock(d)}
-    <div class="profileCard">
-      <div class="name">Collector Identity</div>
-      <div class="meta">Favorite Pokémon: <b>${favoritePokemon()}</b></div>
-      <div class="meta">Top Card: <b>${topCard?topCard.name+" · "+money(topCard.value):"None yet"}</b></div>
-      <div class="meta">Capital Returned: <b class="green">${money(d.returned)}</b></div>
-      <div class="meta">Realized P/L: <b class="${d.profit>=0?"green":"red"}">${d.profit>=0?"+":""}${money(d.profit)}</b></div>
-      <div class="meta">Unrealized Upside: <b class="blue">${money(d.unrealizedUpside)}</b></div>
-    </div>
+    <div class="profileCard"><div class="name">Collector Identity</div><div class="meta">Favorite Pokémon: <b>${favoritePokemon()}</b></div><div class="meta">Top Card: <b>${topCard?topCard.name+" · "+money(topCard.value):"None yet"}</b></div><div class="meta">Capital Returned: <b class="green">${money(d.returned)}</b></div><div class="meta">Realized P/L: <b class="${d.profit>=0?"green":"red"}">${d.profit>=0?"+":""}${money(d.profit)}</b></div><div class="meta">Unrealized Upside: <b class="blue">${money(d.unrealizedUpside)}</b></div></div>
     <div class="profileCard" style="margin-top:12px"><div class="name">Grails</div>${d.grails.length?d.grails.map(c=>`<div class="meta"><b>★ ${c.name}</b> · ${money(c.value||c.targetBuy)}</div>`).join(""):`<div class="meta">No grails marked yet. Open a card and tap ☆.</div>`}</div>
     <div class="profileCard" style="margin-top:12px"><div class="name">Backup</div><div class="meta">Use this before major changes or future cloud sync.</div><button class="secondary" style="margin-top:12px" onclick="sheet='backup';render()">Backup & Restore</button></div>
   `
