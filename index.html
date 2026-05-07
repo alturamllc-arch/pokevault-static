@@ -7,63 +7,75 @@
 
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f4f4f6;color:#111;font-family:Arial,sans-serif}
-#app{max-width:480px;margin:auto;min-height:100vh;padding:18px 16px 96px}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-h1{margin:0;font-size:32px;font-weight:900;letter-spacing:-.5px}
-.roundBtn{width:48px;height:48px;border-radius:16px;border:none;background:white;font-size:22px;box-shadow:0 6px 18px rgba(0,0,0,.08)}
-.searchRow{display:flex;gap:10px;margin-bottom:12px}
-.search{flex:1;border:none;background:white;border-radius:18px;padding:16px;font-size:17px;box-shadow:0 6px 18px rgba(0,0,0,.05)}
+:root{
+  --bg:#f4f4f6;
+  --card:#fff;
+  --text:#111;
+  --muted:#777;
+  --dark:#111;
+  --blue:#108cf5;
+  --gold:#f6c343;
+  --char:#ef6b2f;
+  --umbreon:#1d1b2f;
+  --mew:#d97cff;
+}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+#app{max-width:480px;margin:auto;min-height:100vh;padding:16px 14px 96px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+h1{margin:0;font-size:32px;font-weight:900;letter-spacing:-.7px}
+.roundBtn{width:48px;height:48px;border-radius:17px;border:none;background:white;font-size:22px;box-shadow:0 8px 22px rgba(0,0,0,.08)}
+.searchRow{display:flex;gap:10px;margin-bottom:10px}
+.search{flex:1;border:none;background:white;border-radius:18px;padding:15px;font-size:17px;box-shadow:0 7px 20px rgba(0,0,0,.05)}
 .filterBtn{width:52px;border:none;background:#111;color:white;border-radius:18px;font-size:20px;font-weight:900}
-.filterSummary{background:white;border-radius:18px;padding:10px 14px;margin-bottom:12px;font-size:12px;font-weight:900;color:#777;box-shadow:0 5px 16px rgba(0,0,0,.045)}
-.filterHead{position:sticky;top:-22px;background:white;padding-top:6px;z-index:4;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.filterTitle{font-size:18px;font-weight:900}
-.closeMini{border:none;background:#eee;border-radius:999px;width:34px;height:34px;font-size:18px;font-weight:900}
-.chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:10px;padding-bottom:3px}
-.chip{border:1px solid #ddd;background:#f7f7f8;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:900;white-space:nowrap}
-.chip.active{background:#108cf5;color:white;border-color:#108cf5}
-.chip.bucket{color:white;border:none}
-.H{background:#6f936a!important}.G{background:#6687c2!important}.T{background:#e28a55!important}.S{background:#c76565!important}.W{background:#8b5cf6!important}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
-.stat{background:white;border-radius:16px;padding:11px 7px;box-shadow:0 4px 14px rgba(0,0,0,.045);text-align:center}
-.stat strong{display:block;font-size:16px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stat span{font-size:10px;color:#777;text-transform:uppercase;font-weight:800}
+.filterSummary{background:white;border-radius:16px;padding:9px 13px;margin-bottom:10px;font-size:11px;font-weight:900;color:#777;box-shadow:0 5px 16px rgba(0,0,0,.045)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0 12px}
+.stat{background:white;border-radius:16px;padding:10px 6px;box-shadow:0 5px 16px rgba(0,0,0,.05);text-align:center}
+.stat strong{display:block;font-size:15px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat span{font-size:9.5px;color:#777;text-transform:uppercase;font-weight:900}
 .grid{display:grid;grid-template-columns:1fr;gap:10px}
-.gridMode{grid-template-columns:1fr 1fr;gap:10px}
-.bucketHeader{display:flex;align-items:center;justify-content:space-between;margin:16px 2px 8px}
-.bucketTitle{font-size:16px;font-weight:900}
-.bucketCount{font-size:12px;font-weight:900;color:#777;background:white;border-radius:999px;padding:5px 10px}
-.card,.detailCard,.profileCard{background:white;border-radius:20px;padding:14px;box-shadow:0 5px 16px rgba(0,0,0,.065);animation:fadeUp .2s ease;transition:transform .16s ease,box-shadow .16s ease}
+.gridMode{grid-template-columns:1fr 1fr}
+.bucketHeader{display:flex;align-items:center;justify-content:space-between;margin:14px 2px 7px}
+.bucketTitle{font-size:15px;font-weight:900}
+.bucketCount{font-size:11px;font-weight:900;color:#777;background:white;border-radius:999px;padding:4px 9px}
+.card,.detailCard,.profileCard{background:white;border-radius:22px;padding:12px;box-shadow:0 10px 24px rgba(0,0,0,.075);animation:fadeUp .22s ease;transition:transform .16s ease,box-shadow .16s ease}
 .card:active{transform:scale(.985)}
 .cardTop{display:flex;justify-content:space-between;gap:10px}
-.gridMode .card{padding:10px;border-radius:18px}
+.gridMode .card{padding:9px;border-radius:18px}
 .gridMode .cardTop{display:block}
-.cardImage{display:flex;align-items:center;justify-content:center;height:120px;border-radius:16px;background:linear-gradient(135deg,#ececf1,#fafafa);color:#b5b5b5;font-size:34px;font-weight:900;margin-bottom:12px}
-.gridMode .cardImage{display:flex;height:120px}
-.name{font-size:18px;font-weight:900;line-height:1.15}
+.cardImage{display:flex;align-items:center;justify-content:center;height:80px;border-radius:16px;background:linear-gradient(135deg,#ececf1,#fafafa);color:#aaa;font-size:32px;font-weight:900;margin-bottom:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}
+.gridMode .cardImage{height:120px}
+.name{font-size:17px;font-weight:900;line-height:1.15}
 .gridMode .name{font-size:14px;min-height:32px}
-.meta{font-size:12.5px;color:#777;margin-top:6px;line-height:1.3}
+.meta{font-size:12px;color:#777;margin-top:5px;line-height:1.3}
 .gridMode .meta{font-size:11px}
-.badge{display:inline-block;margin-top:9px;margin-right:5px;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900}
-.signal{display:inline-block;margin-top:9px;margin-right:5px;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900;background:#eee}
-.gridMode .signal:nth-of-type(n+3),.gridMode .folderMeta,.gridMode .sourceMeta,.gridMode .priceMeta{display:none}
-.quickRow{display:none}
-.green{color:#15803d!important}.red{color:#dc2626!important}.blue{color:#2563eb!important}.purple{color:#7c3aed!important}.orange{color:#ea580c!important}.neutral{color:#111!important}
-.value{text-align:right;font-size:18px;font-weight:900}
+.badge,.signal{display:inline-block;margin-top:8px;margin-right:5px;border-radius:999px;padding:5px 10px;font-size:10.5px;font-weight:900}
+.signal{background:#eee}
+.H{background:#6f936a!important;color:white}.G{background:#6687c2!important;color:white}.T{background:#e28a55!important;color:white}.S{background:#c76565!important;color:white}.W{background:#8b5cf6!important;color:white}
+.green{color:#15803d!important}.red{color:#dc2626!important}.blue{color:#2563eb!important}.purple{color:#7c3aed!important}.gold{color:#b7791f!important}.neutral{color:#111!important}
+.accent-pikachu{box-shadow:0 10px 28px rgba(246,195,67,.24)}
+.accent-charizard{box-shadow:0 10px 28px rgba(239,107,47,.22)}
+.accent-umbreon{box-shadow:0 10px 28px rgba(29,27,47,.22)}
+.accent-mew{box-shadow:0 10px 28px rgba(217,124,255,.22)}
+.accent-pikachu .cardImage{background:linear-gradient(135deg,#fff5bf,#fff)}
+.accent-charizard .cardImage{background:linear-gradient(135deg,#ffe0cc,#fff)}
+.accent-umbreon .cardImage{background:linear-gradient(135deg,#1d1b2f,#4d4769);color:#e5c76b}
+.accent-mew .cardImage{background:linear-gradient(135deg,#f7d2ff,#fff)}
+.grailCard{box-shadow:0 12px 34px rgba(246,195,67,.35)!important}
+.value{text-align:right;font-size:17px;font-weight:900}
 .gridMode .value{text-align:left;font-size:15px;margin-top:8px}
 .small{font-size:11px;color:#777;text-align:right}
 .gridMode .small{text-align:left}
-.empty{background:white;border-radius:24px;text-align:center;color:#777;padding:34px 20px;margin-top:14px;box-shadow:0 6px 20px rgba(0,0,0,.05)}
-.emptyIcon{font-size:40px;margin-bottom:10px}
+.empty{background:white;border-radius:24px;text-align:center;color:#777;padding:32px 20px;margin-top:12px;box-shadow:0 8px 22px rgba(0,0,0,.06)}
+.emptyIcon{font-size:40px;margin-bottom:8px}
 .emptyTitle{font-size:20px;font-weight:900;color:#111;margin-bottom:6px}
 .emptyText{font-size:14px;line-height:1.4}
-.fab{position:fixed;right:max(20px,calc(50vw - 220px));bottom:98px;width:60px;height:60px;border:none;border-radius:22px;background:#111;color:white;font-size:34px;font-weight:300;box-shadow:0 12px 28px rgba(0,0,0,.24);z-index:30}
-.bottomNav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);width:calc(100% - 32px);max-width:450px;background:white;border-radius:28px;display:grid;grid-template-columns:repeat(5,1fr);padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.16);z-index:25}
+.fab{position:fixed;right:max(20px,calc(50vw - 220px));bottom:98px;width:60px;height:60px;border:none;border-radius:23px;background:#111;color:white;font-size:34px;font-weight:300;box-shadow:0 14px 32px rgba(0,0,0,.28);z-index:30;animation:floaty 2.4s ease-in-out infinite}
+.bottomNav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);width:calc(100% - 32px);max-width:450px;background:white;border-radius:28px;display:grid;grid-template-columns:repeat(5,1fr);padding:8px;box-shadow:0 12px 34px rgba(0,0,0,.18);z-index:25}
 .navBtn{border:none;background:transparent;border-radius:22px;padding:10px 4px;font-size:12px;font-weight:900;color:#333}
 .navBtn.active{background:#e9e9ee;color:#111}
 .navIcon{display:block;font-size:22px;margin-bottom:3px}
-.sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:flex-end;z-index:99;backdrop-filter:blur(8px);animation:fadeIn .18s ease}
-.sheet{width:100%;max-width:480px;margin:auto;background:white;border-radius:30px 30px 0 0;padding:22px;max-height:92vh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.25);animation:slideUp .22s cubic-bezier(.22,1,.36,1)}
+.sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.74);display:flex;align-items:flex-end;z-index:99;backdrop-filter:blur(9px);animation:fadeIn .18s ease}
+.sheet{width:100%;max-width:480px;margin:auto;background:white;border-radius:30px 30px 0 0;padding:22px;max-height:92vh;overflow-y:auto;box-shadow:0 -12px 44px rgba(0,0,0,.28);animation:slideUp .24s cubic-bezier(.22,1,.36,1)}
 .compactSheet{max-height:68vh!important;padding-bottom:86px!important}
 .sheetHandle{width:60px;height:6px;background:#ddd;border-radius:999px;margin:0 auto 18px}
 .sheet h2{margin:0 0 14px;font-size:26px}
@@ -78,28 +90,35 @@ textarea{min-height:78px;resize:none}
 .section{font-size:12px;color:#777;font-weight:900;text-transform:uppercase;margin:16px 0 8px}
 .advancedBox{display:none;background:#fafafa;border-radius:18px;padding:12px;margin:8px 0 12px}
 .advancedBox.open{display:block}
-.detailHero{background:linear-gradient(180deg,#fff,#f8f8fa);border-radius:26px;padding:22px;margin-bottom:12px;box-shadow:0 8px 28px rgba(0,0,0,.08)}
+.chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:10px;padding-bottom:3px}
+.chip{border:1px solid #ddd;background:#f7f7f8;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:900;white-space:nowrap}
+.chip.active{background:#108cf5;color:white;border-color:#108cf5}
+.filterHead{position:sticky;top:-22px;background:white;padding-top:6px;z-index:4;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.filterTitle{font-size:18px;font-weight:900}
+.closeMini{border:none;background:#eee;border-radius:999px;width:34px;height:34px;font-size:18px;font-weight:900}
+.detailHero{border-radius:28px;padding:22px;margin-bottom:12px;background:linear-gradient(180deg,#fff,#f8f8fa);box-shadow:0 12px 34px rgba(0,0,0,.1)}
 .detailTitle{font-size:30px;font-weight:900;line-height:1.05;margin-bottom:8px}
 .detailValue{font-size:34px;font-weight:900;margin-top:14px}
 .detailGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.detailMini{background:white;border-radius:18px;padding:14px;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.detailMini{background:white;border-radius:18px;padding:14px;box-shadow:0 6px 18px rgba(0,0,0,.06)}
 .detailMini strong{display:block;font-size:18px}
 .detailMini span{font-size:12px;color:#777;font-weight:800;text-transform:uppercase}
-.profileHeader{text-align:center;background:white;border-radius:26px;padding:24px 16px;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.07)}
+.profileHeader{text-align:center;background:linear-gradient(180deg,#fff,#f7f7fa);border-radius:28px;padding:24px 16px;margin-bottom:12px;box-shadow:0 10px 28px rgba(0,0,0,.08)}
 .profileIcon{font-size:42px;margin-bottom:8px}
 .profileTitle{font-size:28px;font-weight:900}
 .profileSub{font-size:14px;color:#777;margin-top:5px}
-.progressWrap{background:white;border-radius:22px;padding:14px;margin:12px 0;box-shadow:0 6px 20px rgba(0,0,0,.055)}
+.progressWrap{background:white;border-radius:22px;padding:14px;margin:12px 0;box-shadow:0 8px 22px rgba(0,0,0,.06)}
 .progressTitle{font-size:16px;font-weight:900;margin-bottom:10px}
 .progressRow{display:flex;align-items:center;gap:8px;margin:8px 0}
 .progressLbl{width:58px;font-size:11px;font-weight:900;color:#777}
 .progressBar{flex:1;height:10px;background:#eee;border-radius:999px;overflow:hidden}
 .progressFill{height:100%;border-radius:999px}
 .progressNum{width:28px;text-align:right;font-size:11px;font-weight:900;color:#777}
-.grailStar{color:#f59e0b!important}
+.grailStar{color:#f59e0b!important;text-shadow:0 0 10px rgba(246,195,67,.5)}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideUp{from{transform:translateY(22px);opacity:.7}to{transform:translateY(0);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{transform:translateY(24px);opacity:.72}to{transform:translateY(0);opacity:1}}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 </style>
 </head>
 
@@ -107,7 +126,7 @@ textarea{min-height:78px;resize:none}
 <div id="app"></div>
 
 <script>
-const KEY="pokevault_v1_batch7"
+const KEY="pokevault_v1_phase8"
 let cards=JSON.parse(localStorage.getItem(KEY)||"[]")
 let screen="vault",previousScreen="vault",filterStatus="All",filterBucket="All",filterAnchor="All",filterFolder="All",searchText="",sortMode="newest",viewMode="list",filtersOpen=false,sheet=null,selectedId=null,advancedAdd=false
 
@@ -123,7 +142,17 @@ function getAnchor(name){
   if(n.includes("pikachu")||n.includes("pichu"))return"Pikachu"
   if(n.includes("charizard")||n.includes("charmeleon"))return"Charizard"
   if(n.includes("umbreon"))return"Umbreon"
+  if(n.includes("mew"))return"Mew"
   return"Other"
+}
+
+function accentClass(c){
+  const a=getAnchor(c.name)
+  if(a==="Pikachu")return"accent-pikachu"
+  if(a==="Charizard")return"accent-charizard"
+  if(a==="Umbreon")return"accent-umbreon"
+  if(a==="Mew")return"accent-mew"
+  return""
 }
 
 function shortFolder(folder){
@@ -400,7 +429,7 @@ function filterOverlay(){
         <div class="section">Status</div><div class="chips">${["All","active","wishlist","sold","traded"].map(s=>`<button class="chip ${filterStatus===s?"active":""}" onclick="filterStatus='${s}';render()">${s==="active"?"Owned":s[0].toUpperCase()+s.slice(1)}</button>`).join("")}</div>
         <div class="section">Bucket</div><div class="chips">${["H","G","T","S","W"].map(b=>`<button class="chip bucket ${b}" onclick="filterBucket=filterBucket==='${b}'?'All':'${b}';render()">${buckets[b]}</button>`).join("")}</div>
         <div class="section">Folder</div><div class="chips">${["All","Personal","Business","Grading","For Sale"].map(f=>`<button class="chip ${filterFolder===f?"active":""}" onclick="filterFolder='${f}';render()">${f}</button>`).join("")}</div>
-        <div class="section">Anchor</div><div class="chips">${["All","Pikachu","Charizard","Umbreon","Other"].map(a=>`<button class="chip ${filterAnchor===a?"active":""}" onclick="filterAnchor='${a}';render()">${a}</button>`).join("")}</div>
+        <div class="section">Anchor</div><div class="chips">${["All","Pikachu","Charizard","Umbreon","Mew","Other"].map(a=>`<button class="chip ${filterAnchor===a?"active":""}" onclick="filterAnchor='${a}';render()">${a}</button>`).join("")}</div>
       </div>
     </div>`
 }
@@ -418,8 +447,8 @@ function stats(d){
 function cardHTML(c){
   const a=analyze(c),r=risk(c)
   return `
-    <div class="card" onclick="openDetail(${c.id})">
-      <div class="cardImage">▧</div>
+    <div class="card ${accentClass(c)} ${c.favorite?"grailCard":""}" onclick="openDetail(${c.id})">
+      <div class="cardImage">${c.favorite?"★":"▧"}</div>
       <div class="cardTop">
         <div>
           <div class="name">${c.favorite?"★ ":""}${safe(c.name)}</div>
@@ -441,7 +470,7 @@ function detailScreen(){
   const c=cards.find(x=>x.id===selectedId);if(!c)return emptyState()
   const a=analyze(c),r=risk(c),t=marketTrend(c),priceHistory=Array.isArray(c.priceHistory)?c.priceHistory:[],isSold=c.status==="sold"
   return `
-    <div class="detailHero">
+    <div class="detailHero ${accentClass(c)}">
       <div class="detailTitle">${c.favorite?"★ ":""}${safe(c.name)}</div>
       <div class="meta">${c.type||"Raw"} · ${getAnchor(c.name)}${c.setName?" · "+safe(c.setName):""}${c.language?" · "+c.language:""}${c.rarity?" · "+c.rarity:""}</div>
       <span class="badge ${c.bucket}">${buckets[c.bucket]||"HOLD"}</span><span class="signal ${a.cls}">${a.signal}</span>${r?`<span class="signal ${r.cls}">${r.label}</span>`:""}<span class="signal ${t.cls}">${t.label}</span>
@@ -463,7 +492,7 @@ function detailScreen(){
 
 function profileScreen(d){
   const topCard=mostValuableCard()
-  return `<div class="profileHeader"><div class="profileIcon">☁</div><div class="profileTitle">Collector Profile</div><div class="profileSub">PokéVault v1 collection identity</div></div><div class="stats"><div class="stat"><strong>${cards.length}</strong><span>Total</span></div><div class="stat"><strong>${d.grails.length}</strong><span>Grails</span></div><div class="stat"><strong>${money(d.inventoryValue)}</strong><span>Vault</span></div><div class="stat"><strong>${d.wishlist.length}</strong><span>Wishlist</span></div></div>${progressBlock(d)}<div class="profileCard"><div class="name">Collector Identity</div><div class="meta">Favorite Pokémon: <b>${favoritePokemon()}</b></div><div class="meta">Top Card: <b>${topCard?safe(topCard.name)+" · "+money(topCard.value):"None yet"}</b></div><div class="meta">Capital Returned: <b class="green">${money(d.returned)}</b></div><div class="meta">Realized P/L: <b class="${d.profit>=0?"green":"red"}">${d.profit>=0?"+":""}${money(d.profit)}</b></div><div class="meta">Unrealized Upside: <b class="blue">${money(d.unrealizedUpside)}</b></div></div><div class="profileCard" style="margin-top:12px"><div class="name">Grails</div>${d.grails.length?d.grails.map(c=>`<div class="meta"><b>★ ${safe(c.name)}</b> · ${money(c.value||c.targetBuy)}</div>`).join(""):`<div class="meta">No grails marked yet. Open a card and tap ☆.</div>`}</div><div class="profileCard" style="margin-top:12px"><div class="name">Backup</div><div class="meta">Use this before major changes or future cloud sync.</div><button class="secondary" style="margin-top:12px" onclick="sheet='backup';render()">Backup & Restore</button></div>`
+  return `<div class="profileHeader"><div class="profileIcon">☁</div><div class="profileTitle">Collector Profile</div><div class="profileSub">PokéVault v1 collection identity</div></div><div class="stats"><div class="stat"><strong>${cards.length}</strong><span>Total</span></div><div class="stat"><strong>${d.grails.length}</strong><span>Grails</span></div><div class="stat"><strong>${money(d.inventoryValue)}</strong><span>Vault</span></div><div class="stat"><strong>${d.wishlist.length}</strong><span>Wishlist</span></div></div>${progressBlock(d)}<div class="profileCard"><div class="name">Collector Identity</div><div class="meta">Favorite Pokémon: <b>${favoritePokemon()}</b></div><div class="meta">Top Card: <b>${topCard?safe(topCard.name)+" · "+money(topCard.value):"None yet"}</b></div><div class="meta">Capital Returned: <b class="green">${money(d.returned)}</b></div><div class="meta">Realized P/L: <b class="${d.profit>=0?"green":"red"}">${d.profit>=0?"+":""}${money(d.profit)}</b></div><div class="meta">Unrealized Upside: <b class="blue">${money(d.unrealizedUpside)}</b></div></div><div class="profileCard grailCard" style="margin-top:12px"><div class="name">Top Grails</div>${d.grails.length?d.grails.map(c=>`<div class="meta"><b>★ ${safe(c.name)}</b> · ${money(c.value||c.targetBuy)}</div>`).join(""):`<div class="meta">No grails marked yet. Open a card and tap ☆.</div>`}</div><div class="profileCard" style="margin-top:12px"><div class="name">Backup</div><div class="meta">Use this before major changes or future cloud sync.</div><button class="secondary" style="margin-top:12px" onclick="sheet='backup';render()">Backup & Restore</button></div>`
 }
 
 function analytics(d){
