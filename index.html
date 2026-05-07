@@ -3,6 +3,22 @@
 
 <style>
 
+window.onerror=function(msg,url,line,col,error){
+  document.body.innerHTML=`
+    <div style="
+      padding:20px;
+      font-family:Arial;
+      color:white;
+      background:#111;
+      min-height:100vh;
+    ">
+      <h2>PokéVault Crash</h2>
+      <p><b>Error:</b> ${msg}</p>
+      <p><b>Line:</b> ${line}</p>
+    </div>
+  `;
+};
+
 :root{
   --bg:#06070b;
   --card:#11131a;
