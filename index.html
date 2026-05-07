@@ -20,21 +20,21 @@
   --mew:#d97cff;
 }
 body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
-#app{max-width:480px;margin:auto;min-height:100vh;padding:16px 14px 96px}
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-h1{margin:0;font-size:32px;font-weight:900;letter-spacing:-.7px}
-.roundBtn{width:48px;height:48px;border-radius:17px;border:none;background:white;font-size:22px;box-shadow:0 8px 22px rgba(0,0,0,.08)}
-.searchRow{display:flex;gap:10px;margin-bottom:10px}
-.search{flex:1;border:none;background:white;border-radius:18px;padding:15px;font-size:17px;box-shadow:0 7px 20px rgba(0,0,0,.05)}
+#app{max-width:480px;margin:auto;min-height:100vh;padding:14px 14px 150px}
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+h1{margin:0;font-size:30px;font-weight:900;letter-spacing:-.7px}
+.roundBtn{width:46px;height:46px;border-radius:17px;border:none;background:white;font-size:21px;box-shadow:0 8px 22px rgba(0,0,0,.08)}
+.searchRow{display:flex;gap:10px;margin-bottom:9px}
+.search{flex:1;border:none;background:white;border-radius:18px;padding:14px 15px;font-size:16px;box-shadow:0 7px 20px rgba(0,0,0,.05)}
 .filterBtn{width:52px;border:none;background:#111;color:white;border-radius:18px;font-size:20px;font-weight:900}
-.filterSummary{background:white;border-radius:16px;padding:9px 13px;margin-bottom:10px;font-size:11px;font-weight:900;color:#777;box-shadow:0 5px 16px rgba(0,0,0,.045)}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0 12px}
-.stat{background:white;border-radius:16px;padding:10px 6px;box-shadow:0 5px 16px rgba(0,0,0,.05);text-align:center}
-.stat strong{display:block;font-size:15px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.stat span{font-size:9.5px;color:#777;text-transform:uppercase;font-weight:900}
-.grid{display:grid;grid-template-columns:1fr;gap:10px}
-.gridMode{grid-template-columns:1fr 1fr}
-.bucketHeader{display:flex;align-items:center;justify-content:space-between;margin:14px 2px 7px}
+.filterSummary{background:white;border-radius:16px;padding:8px 13px;margin-bottom:9px;font-size:11px;font-weight:900;color:#777;box-shadow:0 5px 16px rgba(0,0,0,.045)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:9px 0 10px}
+.stat{background:white;border-radius:15px;padding:9px 6px;box-shadow:0 5px 16px rgba(0,0,0,.05);text-align:center}
+.stat strong{display:block;font-size:14px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat span{font-size:9px;color:#777;text-transform:uppercase;font-weight:900}
+.grid{display:grid;grid-template-columns:1fr;gap:12px;padding-bottom:28px}
+.gridMode{grid-template-columns:1fr 1fr;gap:10px}
+.bucketHeader{display:flex;align-items:center;justify-content:space-between;margin:14px 2px 6px}
 .bucketTitle{font-size:15px;font-weight:900}
 .bucketCount{font-size:11px;font-weight:900;color:#777;background:white;border-radius:999px;padding:4px 9px}
 .card,.detailCard,.profileCard{background:white;border-radius:22px;padding:12px;box-shadow:0 10px 24px rgba(0,0,0,.075);animation:fadeUp .22s ease;transition:transform .16s ease,box-shadow .16s ease}
@@ -61,6 +61,8 @@ h1{margin:0;font-size:32px;font-weight:900;letter-spacing:-.7px}
 .accent-umbreon .cardImage{background:linear-gradient(135deg,#1d1b2f,#4d4769);color:#e5c76b}
 .accent-mew .cardImage{background:linear-gradient(135deg,#f7d2ff,#fff)}
 .grailCard{box-shadow:0 12px 34px rgba(246,195,67,.35)!important}
+.grailCard .cardImage{color:#d99a00!important}
+.grailText{color:#d99a00!important;text-shadow:0 0 10px rgba(246,195,67,.45)}
 .value{text-align:right;font-size:17px;font-weight:900}
 .gridMode .value{text-align:left;font-size:15px;margin-top:8px}
 .small{font-size:11px;color:#777;text-align:right}
@@ -69,7 +71,7 @@ h1{margin:0;font-size:32px;font-weight:900;letter-spacing:-.7px}
 .emptyIcon{font-size:40px;margin-bottom:8px}
 .emptyTitle{font-size:20px;font-weight:900;color:#111;margin-bottom:6px}
 .emptyText{font-size:14px;line-height:1.4}
-.fab{position:fixed;right:max(20px,calc(50vw - 220px));bottom:98px;width:60px;height:60px;border:none;border-radius:23px;background:#111;color:white;font-size:34px;font-weight:300;box-shadow:0 14px 32px rgba(0,0,0,.28);z-index:30;animation:floaty 2.4s ease-in-out infinite}
+.fab{position:fixed;right:max(20px,calc(50vw - 220px));bottom:104px;width:60px;height:60px;border:none;border-radius:23px;background:#111;color:white;font-size:34px;font-weight:300;box-shadow:0 14px 32px rgba(0,0,0,.28);z-index:30;animation:floaty 2.4s ease-in-out infinite}
 .bottomNav{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);width:calc(100% - 32px);max-width:450px;background:white;border-radius:28px;display:grid;grid-template-columns:repeat(5,1fr);padding:8px;box-shadow:0 12px 34px rgba(0,0,0,.18);z-index:25}
 .navBtn{border:none;background:transparent;border-radius:22px;padding:10px 4px;font-size:12px;font-weight:900;color:#333}
 .navBtn.active{background:#e9e9ee;color:#111}
@@ -137,6 +139,15 @@ function save(){localStorage.setItem(KEY,JSON.stringify(cards));render()}
 function money(n){return "$"+Number(n||0).toLocaleString()}
 function safe(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;")}
 
+function titleCaseName(str){
+  const keep=["PSA","GX","EX","V","VMAX","VSTAR","SAR","SIR","TG","SV","JP","EN"]
+  return String(str||"").trim().split(/\s+/).map(w=>{
+    const clean=w.replace(/[^a-zA-Z0-9]/g,"").toUpperCase()
+    if(keep.includes(clean))return clean
+    return w.charAt(0).toUpperCase()+w.slice(1).toLowerCase()
+  }).join(" ")
+}
+
 function getAnchor(name){
   const n=String(name||"").toLowerCase()
   if(n.includes("pikachu")||n.includes("pichu"))return"Pikachu"
@@ -197,6 +208,13 @@ function risk(c){
   if(cost>=100&&ratio<1.5)return{label:"HIGH RISK BUY",cls:"red"}
   if(ratio<=1.2)return{label:"LOW UPSIDE",cls:"red"}
   return{label:"HOLD / MONITOR",cls:"neutral"}
+}
+
+function displaySignal(c){
+  const r=risk(c),a=analyze(c)
+  if(r)return r
+  if(a.signal && a.signal !== (buckets[c.bucket]||"HOLD"))return{label:a.signal,cls:a.cls}
+  return null
 }
 
 function duplicateCount(name){
@@ -268,8 +286,9 @@ function toggleFavorite(id){const c=cards.find(x=>x.id===id);if(!c)return;c.favo
 function quickMove(id,b){const c=cards.find(x=>x.id===id);if(!c)return;c.bucket=b;c.status=b==="W"?"wishlist":"active";save()}
 
 function addCardFromForm(){
-  const name=document.getElementById("name").value.trim()
-  if(!name)return alert("Enter card name")
+  const rawName=document.getElementById("name").value.trim()
+  if(!rawName)return alert("Enter card name")
+  const name=titleCaseName(rawName)
   const bucket=document.getElementById("bucket").value
   cards.push({
     id:Date.now(),name,
@@ -293,7 +312,7 @@ function addCardFromForm(){
 
 function updateCard(){
   const c=cards.find(x=>x.id===selectedId);if(!c)return
-  c.name=document.getElementById("editName").value.trim()
+  c.name=titleCaseName(document.getElementById("editName").value.trim())
   c.value=Number(document.getElementById("editValue").value||0)
   c.psa=Number(document.getElementById("editPSA").value||0)
   c.setName=document.getElementById("editSet").value.trim()
@@ -445,16 +464,16 @@ function stats(d){
 }
 
 function cardHTML(c){
-  const a=analyze(c),r=risk(c)
+  const sig=displaySignal(c)
   return `
     <div class="card ${accentClass(c)} ${c.favorite?"grailCard":""}" onclick="openDetail(${c.id})">
-      <div class="cardImage">${c.favorite?"★":"▧"}</div>
+      <div class="cardImage ${c.favorite?"grailText":""}">${c.favorite?"★":"▧"}</div>
       <div class="cardTop">
         <div>
-          <div class="name">${c.favorite?"★ ":""}${safe(c.name)}</div>
+          <div class="name">${c.favorite?`<span class="grailText">★</span> `:""}${safe(c.name)}</div>
           <div class="meta">${c.type||"Raw"} · ${getAnchor(c.name)}</div>
           <span class="badge ${c.bucket}">${buckets[c.bucket]||"HOLD"}</span>
-          ${r?`<span class="signal ${r.cls}">${r.label}</span>`:`<span class="signal ${a.cls}">${a.signal}</span>`}
+          ${sig?`<span class="signal ${sig.cls}">${sig.label}</span>`:""}
         </div>
         <div><div class="value">${c.status==="wishlist"?money(c.targetBuy):money(c.value)}</div><div class="small">${c.status==="wishlist"?"Target":"Cost"}</div></div>
       </div>
@@ -471,7 +490,7 @@ function detailScreen(){
   const a=analyze(c),r=risk(c),t=marketTrend(c),priceHistory=Array.isArray(c.priceHistory)?c.priceHistory:[],isSold=c.status==="sold"
   return `
     <div class="detailHero ${accentClass(c)}">
-      <div class="detailTitle">${c.favorite?"★ ":""}${safe(c.name)}</div>
+      <div class="detailTitle">${c.favorite?`<span class="grailText">★</span> `:""}${safe(c.name)}</div>
       <div class="meta">${c.type||"Raw"} · ${getAnchor(c.name)}${c.setName?" · "+safe(c.setName):""}${c.language?" · "+c.language:""}${c.rarity?" · "+c.rarity:""}</div>
       <span class="badge ${c.bucket}">${buckets[c.bucket]||"HOLD"}</span><span class="signal ${a.cls}">${a.signal}</span>${r?`<span class="signal ${r.cls}">${r.label}</span>`:""}<span class="signal ${t.cls}">${t.label}</span>
       <div class="detailValue">${c.status==="wishlist"?money(c.targetBuy):money(c.value)}</div>
@@ -492,7 +511,7 @@ function detailScreen(){
 
 function profileScreen(d){
   const topCard=mostValuableCard()
-  return `<div class="profileHeader"><div class="profileIcon">☁</div><div class="profileTitle">Collector Profile</div><div class="profileSub">PokéVault v1 collection identity</div></div><div class="stats"><div class="stat"><strong>${cards.length}</strong><span>Total</span></div><div class="stat"><strong>${d.grails.length}</strong><span>Grails</span></div><div class="stat"><strong>${money(d.inventoryValue)}</strong><span>Vault</span></div><div class="stat"><strong>${d.wishlist.length}</strong><span>Wishlist</span></div></div>${progressBlock(d)}<div class="profileCard"><div class="name">Collector Identity</div><div class="meta">Favorite Pokémon: <b>${favoritePokemon()}</b></div><div class="meta">Top Card: <b>${topCard?safe(topCard.name)+" · "+money(topCard.value):"None yet"}</b></div><div class="meta">Capital Returned: <b class="green">${money(d.returned)}</b></div><div class="meta">Realized P/L: <b class="${d.profit>=0?"green":"red"}">${d.profit>=0?"+":""}${money(d.profit)}</b></div><div class="meta">Unrealized Upside: <b class="blue">${money(d.unrealizedUpside)}</b></div></div><div class="profileCard grailCard" style="margin-top:12px"><div class="name">Top Grails</div>${d.grails.length?d.grails.map(c=>`<div class="meta"><b>★ ${safe(c.name)}</b> · ${money(c.value||c.targetBuy)}</div>`).join(""):`<div class="meta">No grails marked yet. Open a card and tap ☆.</div>`}</div><div class="profileCard" style="margin-top:12px"><div class="name">Backup</div><div class="meta">Use this before major changes or future cloud sync.</div><button class="secondary" style="margin-top:12px" onclick="sheet='backup';render()">Backup & Restore</button></div>`
+  return `<div class="profileHeader"><div class="profileIcon">☁</div><div class="profileTitle">Collector Profile</div><div class="profileSub">PokéVault v1 collection identity</div></div><div class="stats"><div class="stat"><strong>${cards.length}</strong><span>Total</span></div><div class="stat"><strong>${d.grails.length}</strong><span>Grails</span></div><div class="stat"><strong>${money(d.inventoryValue)}</strong><span>Vault</span></div><div class="stat"><strong>${d.wishlist.length}</strong><span>Wishlist</span></div></div>${progressBlock(d)}<div class="profileCard"><div class="name">Collector Identity</div><div class="meta">Favorite Pokémon: <b>${favoritePokemon()}</b></div><div class="meta">Top Card: <b>${topCard?safe(topCard.name)+" · "+money(topCard.value):"None yet"}</b></div><div class="meta">Capital Returned: <b class="green">${money(d.returned)}</b></div><div class="meta">Realized P/L: <b class="${d.profit>=0?"green":"red"}">${d.profit>=0?"+":""}${money(d.profit)}</b></div><div class="meta">Unrealized Upside: <b class="blue">${money(d.unrealizedUpside)}</b></div></div><div class="profileCard grailCard" style="margin-top:12px"><div class="name">Top Grails</div>${d.grails.length?d.grails.map(c=>`<div class="meta"><b><span class="grailText">★</span> ${safe(c.name)}</b> · ${money(c.value||c.targetBuy)}</div>`).join(""):`<div class="meta">No grails marked yet. Open a card and tap ☆.</div>`}</div><div class="profileCard" style="margin-top:12px"><div class="name">Backup</div><div class="meta">Use this before major changes or future cloud sync.</div><button class="secondary" style="margin-top:12px" onclick="sheet='backup';render()">Backup & Restore</button></div>`
 }
 
 function analytics(d){
