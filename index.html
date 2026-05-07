@@ -48,7 +48,6 @@ h1{margin:0;font-size:32px;font-weight:900;letter-spacing:-.5px}
 .signal{display:inline-block;margin-top:9px;margin-right:5px;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900;background:#eee}
 .gridMode .signal:nth-of-type(n+3),.gridMode .folderMeta,.gridMode .sourceMeta,.gridMode .priceMeta{display:none}
 .quickRow{display:none}
-.quickBtn{border:none;background:#eee;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:900}
 .green{color:#15803d!important}.red{color:#dc2626!important}.blue{color:#2563eb!important}.purple{color:#7c3aed!important}.orange{color:#ea580c!important}.neutral{color:#111!important}
 .value{text-align:right;font-size:18px;font-weight:900}
 .gridMode .value{text-align:left;font-size:15px;margin-top:8px}
@@ -65,15 +64,20 @@ h1{margin:0;font-size:32px;font-weight:900;letter-spacing:-.5px}
 .navIcon{display:block;font-size:22px;margin-bottom:3px}
 .sheetBack{position:fixed;inset:0;background:rgba(0,0,0,.72);display:flex;align-items:flex-end;z-index:99;backdrop-filter:blur(8px);animation:fadeIn .18s ease}
 .sheet{width:100%;max-width:480px;margin:auto;background:white;border-radius:30px 30px 0 0;padding:22px;max-height:92vh;overflow-y:auto;box-shadow:0 -10px 40px rgba(0,0,0,.25);animation:slideUp .22s cubic-bezier(.22,1,.36,1)}
+.compactSheet{max-height:68vh!important;padding-bottom:86px!important}
+.sheetHandle{width:60px;height:6px;background:#ddd;border-radius:999px;margin:0 auto 18px}
 .sheet h2{margin:0 0 14px;font-size:26px}
 input,select,textarea{width:100%;border:none;background:#f0f0f0;border-radius:15px;padding:15px;font-size:16px;margin-bottom:10px}
 textarea{min-height:78px;resize:none}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .primary{width:100%;border:none;background:#111;color:white;border-radius:16px;padding:16px;font-size:17px;font-weight:900;margin-top:6px}
+.stickySave{position:sticky;bottom:0;background:white;padding-top:12px}
 .secondary{width:100%;border:none;background:#f0f0f0;color:#111;border-radius:16px;padding:15px;font-size:15px;font-weight:900;margin-bottom:10px;text-align:left}
 .danger{background:#fee2e2!important;color:#991b1b!important}
 .warning{background:#fff7ed;color:#9a3412;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:800;margin-bottom:10px}
 .section{font-size:12px;color:#777;font-weight:900;text-transform:uppercase;margin:16px 0 8px}
+.advancedBox{display:none;background:#fafafa;border-radius:18px;padding:12px;margin:8px 0 12px}
+.advancedBox.open{display:block}
 .detailHero{background:linear-gradient(180deg,#fff,#f8f8fa);border-radius:26px;padding:22px;margin-bottom:12px;box-shadow:0 8px 28px rgba(0,0,0,.08)}
 .detailTitle{font-size:30px;font-weight:900;line-height:1.05;margin-bottom:8px}
 .detailValue{font-size:34px;font-weight:900;margin-top:14px}
@@ -103,9 +107,9 @@ textarea{min-height:78px;resize:none}
 <div id="app"></div>
 
 <script>
-const KEY="pokevault_v1_batch6"
+const KEY="pokevault_v1_batch7"
 let cards=JSON.parse(localStorage.getItem(KEY)||"[]")
-let screen="vault",previousScreen="vault",filterStatus="All",filterBucket="All",filterAnchor="All",filterFolder="All",searchText="",sortMode="newest",viewMode="list",filtersOpen=false,sheet=null,selectedId=null
+let screen="vault",previousScreen="vault",filterStatus="All",filterBucket="All",filterAnchor="All",filterFolder="All",searchText="",sortMode="newest",viewMode="list",filtersOpen=false,sheet=null,selectedId=null,advancedAdd=false
 
 const buckets={H:"HOLD",G:"GRADE",T:"TRADE",S:"SELL",W:"WISHLIST"}
 const reasons={flip:"Quick Flip",cash:"Need Cash",drop:"Market Drop",overpay:"Overpaid",upgrade:"Upgrade Capital"}
@@ -242,18 +246,20 @@ function addCardFromForm(){
     id:Date.now(),name,
     value:Number(document.getElementById("value").value||0),
     psa:Number(document.getElementById("psa").value||0),
-    setName:document.getElementById("setName").value.trim(),
-    language:document.getElementById("language").value,
-    rarity:document.getElementById("rarity").value,
-    folder:document.getElementById("folder").value,
-    type:document.getElementById("type").value,
-    purchaseSource:document.getElementById("purchaseSource").value.trim(),
-    purchaseDate:document.getElementById("purchaseDate").value,
-    purchaseNote:document.getElementById("purchaseNote").value.trim(),
-    bucket,targetBuy:Number(document.getElementById("targetBuy").value||0),
+    setName:document.getElementById("setName")?.value.trim()||"",
+    language:document.getElementById("language")?.value||"EN",
+    rarity:document.getElementById("rarity")?.value||"",
+    folder:document.getElementById("folder")?.value||"Main Collection",
+    type:document.getElementById("type")?.value||"Raw",
+    purchaseSource:document.getElementById("purchaseSource")?.value.trim()||"",
+    purchaseDate:document.getElementById("purchaseDate")?.value||"",
+    purchaseNote:document.getElementById("purchaseNote")?.value.trim()||"",
+    bucket,targetBuy:Number(document.getElementById("targetBuy")?.value||0),
     status:bucket==="W"?"wishlist":"active",favorite:false,salePrice:0,tradedFor:"",reasonSold:"",priceHistory:[],createdAt:new Date().toISOString(),soldAt:"",tradedAt:""
   })
-  sheet=null;save()
+  advancedAdd=false
+  sheet=null
+  save()
 }
 
 function updateCard(){
@@ -368,7 +374,7 @@ function render(){
       }`
     }
     ${filtersOpen?filterOverlay():""}
-    ${screen!=="detail"&&screen!=="profile"?`<button class="fab" onclick="sheet='add';render()">+</button>`:""}
+    ${screen!=="detail"&&screen!=="profile"?`<button class="fab" onclick="advancedAdd=false;sheet='add';render()">+</button>`:""}
     ${bottomNav()}
     ${sheetHTML()}
   `
@@ -386,8 +392,8 @@ function topHTML(){
 function filterOverlay(){
   return `
     <div class="sheetBack" onclick="filtersOpen=false;render()">
-      <div class="sheet" style="max-height:72vh;border-radius:30px 30px 0 0;padding-bottom:120px;" onclick="event.stopPropagation()">
-        <div style="width:60px;height:6px;background:#ddd;border-radius:999px;margin:0 auto 18px;"></div>
+      <div class="sheet compactSheet" onclick="event.stopPropagation()">
+        <div class="sheetHandle"></div>
         <div class="filterHead"><div class="filterTitle">Filters</div><button class="closeMini" onclick="filtersOpen=false;render()">×</button></div>
         <div class="section">View</div><div class="chips">${["list","grid"].map(v=>`<button class="chip ${viewMode===v?"active":""}" onclick="viewMode='${v}';render()">${v==="list"?"List":"Grid"}</button>`).join("")}</div>
         <div class="section">Sort</div><div class="chips">${["newest","highest","upside","loss","alphabetical"].map(s=>`<button class="chip ${sortMode===s?"active":""}" onclick="sortMode='${s}';render()">${s==="newest"?"Newest":s==="highest"?"Highest":s==="upside"?"Upside":s==="loss"?"Loss":"A-Z"}</button>`).join("")}</div>
@@ -480,7 +486,7 @@ function sheetHTML(){
 
   if(sheet==="backup")return `<div class="sheetBack" onclick="sheet=null;render()"><div class="sheet" onclick="event.stopPropagation()"><h2>Backup & Restore</h2><button class="secondary" onclick="exportBackup()">Export JSON Backup</button><input type="file" accept=".json" onchange="importBackup(event)" /><button class="primary" onclick="sheet=null;render()">Close</button></div></div>`
 
-  if(sheet==="add")return `<div class="sheetBack" onclick="sheet=null;render()"><div class="sheet" onclick="event.stopPropagation()"><h2>Add Card</h2><input id="name" placeholder="Card name" oninput="const w=document.getElementById('dupWarn');const c=duplicateCount(this.value);w.innerHTML=c?'⚠ Duplicate detected: '+c+' existing':''" /><div id="dupWarn" class="warning"></div><div class="row"><input id="value" type="number" placeholder="Cost $" /><input id="psa" type="number" placeholder="PSA10 estimate $" /></div><div class="row"><input id="setName" placeholder="Set / Expansion" /><select id="language"><option value="EN">English</option><option value="JP">Japanese</option><option value="KR">Korean</option><option value="ES">Spanish</option></select></div><div class="row"><select id="rarity"><option value="">Rarity</option><option>Common</option><option>Holo</option><option>Ultra Rare</option><option>Illustration Rare</option><option>SIR</option><option>Promo</option></select><select id="folder"><option>Main Collection</option><option>Business Inventory</option><option>Personal Collection</option><option>Grading Candidates</option><option>For Sale</option></select></div><div class="row"><select id="type"><option>Raw</option><option>Slab</option></select><select id="bucket"><option value="H">Hold</option><option value="G">Grade</option><option value="T">Trade</option><option value="S">Sell</option><option value="W">Wishlist</option></select></div><input id="targetBuy" type="number" placeholder="Target buy price $" /><div class="section">Purchase Journal</div><input id="purchaseSource" placeholder="Where did you buy it?" /><input id="purchaseDate" type="date" /><textarea id="purchaseNote" placeholder="Purchase notes"></textarea><button class="primary" onclick="addCardFromForm()">Save Card</button></div></div>`
+  if(sheet==="add")return `<div class="sheetBack" onclick="sheet=null;render()"><div class="sheet compactSheet" onclick="event.stopPropagation()"><div class="sheetHandle"></div><h2>Add Card</h2><input id="name" placeholder="Card name" oninput="const w=document.getElementById('dupWarn');const c=duplicateCount(this.value);w.innerHTML=c?'⚠ Duplicate detected: '+c+' existing':''" /><div id="dupWarn" class="warning"></div><div class="row"><input id="value" type="number" placeholder="Cost $" /><input id="psa" type="number" placeholder="PSA10 $" /></div><select id="bucket"><option value="H">Hold</option><option value="G">Grade</option><option value="T">Trade</option><option value="S">Sell</option><option value="W">Wishlist</option></select><button class="secondary" onclick="advancedAdd=!advancedAdd;render()">Advanced Details ${advancedAdd?"▴":"▾"}</button><div class="advancedBox ${advancedAdd?"open":""}"><div class="row"><input id="setName" placeholder="Set / Expansion" /><select id="language"><option value="EN">English</option><option value="JP">Japanese</option><option value="KR">Korean</option><option value="ES">Spanish</option></select></div><div class="row"><select id="rarity"><option value="">Rarity</option><option>Common</option><option>Holo</option><option>Ultra Rare</option><option>Illustration Rare</option><option>SIR</option><option>Promo</option></select><select id="folder"><option>Main Collection</option><option>Business Inventory</option><option>Personal Collection</option><option>Grading Candidates</option><option>For Sale</option></select></div><div class="row"><select id="type"><option>Raw</option><option>Slab</option></select><input id="targetBuy" type="number" placeholder="Target buy $" /></div><div class="section">Purchase Journal</div><input id="purchaseSource" placeholder="Where did you buy it?" /><input id="purchaseDate" type="date" /><textarea id="purchaseNote" placeholder="Purchase notes"></textarea></div><div class="stickySave"><button class="primary" onclick="addCardFromForm()">Save Card</button></div></div></div>`
 
   const c=cards.find(x=>x.id===selectedId)
   if(!c)return""
