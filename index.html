@@ -1,22 +1,19 @@
-Replace the entire index.html with this complete file. No patches. No partial CSS.
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>PokéVault v10.4</title>
+<title>PokéVault v10.4.1</title>
 
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
 :root{
   --bg:#0f1116;
   --surface:#171a21;
   --surface2:#1d212a;
-  --glass:rgba(24,27,35,.72);
   --text:#f4f4f6;
   --muted:#9ca3af;
-  --soft:#2a2f3a;
   --gold:#f6c343;
   --blue:#60a5fa;
   --green:#4ade80;
@@ -36,14 +33,19 @@ body{
   max-width:480px;
   margin:auto;
   min-height:100vh;
-  padding:6px 12px 132px;
+  padding:8px 12px 128px;
 }
 
-.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:6px;
+}
 
 h1{
   margin:0;
-  font-size:24px;
+  font-size:25px;
   font-weight:900;
   letter-spacing:-.5px;
   color:white;
@@ -62,7 +64,11 @@ h1{
   box-shadow:0 6px 18px rgba(0,0,0,.18);
 }
 
-.searchRow{display:flex;gap:8px;margin-bottom:4px}
+.searchRow{
+  display:flex;
+  gap:8px;
+  margin-bottom:5px;
+}
 
 .search{
   flex:1;
@@ -91,7 +97,6 @@ h1{
   backdrop-filter:blur(18px);
   border:1px solid rgba(255,255,255,.08);
   box-shadow:0 6px 18px rgba(0,0,0,.16);
-  transition:all .18s ease;
 }
 .filterBtn:active{transform:scale(.94)}
 
@@ -100,7 +105,7 @@ h1{
   border:1px solid rgba(255,255,255,.07);
   border-radius:15px;
   padding:7px 12px;
-  margin-bottom:6px;
+  margin-bottom:7px;
   font-size:10px;
   font-weight:900;
   color:#aab0bd;
@@ -111,7 +116,7 @@ h1{
   display:grid;
   grid-template-columns:repeat(4,1fr);
   gap:6px;
-  margin:4px 0 4px;
+  margin:5px 0 8px;
 }
 
 .stat{
@@ -152,6 +157,14 @@ h1{
   gap:10px;
 }
 
+.gridMode.oneCard{
+  grid-template-columns:1fr;
+}
+
+.gridMode.oneCard .card{
+  max-width:250px;
+}
+
 .bucketHeader{
   grid-column:1/-1;
   display:flex;
@@ -160,7 +173,12 @@ h1{
   margin:8px 2px 0;
 }
 
-.bucketTitle{font-size:12px;font-weight:900;color:#cbd5e1;letter-spacing:.3px}
+.bucketTitle{
+  font-size:12px;
+  font-weight:900;
+  color:#cbd5e1;
+  letter-spacing:.3px;
+}
 
 .bucketCount{
   font-size:10px;
@@ -174,7 +192,6 @@ h1{
 .card{
   position:relative;
   overflow:hidden;
-  min-height:250px;
   background:#141821;
   border:1px solid rgba(255,255,255,.08);
   border-radius:22px;
@@ -184,13 +201,15 @@ h1{
   transition:transform .16s ease,box-shadow .16s ease;
 }
 
-.card:active{transform:scale(.975) translateY(1px);box-shadow:0 10px 20px rgba(0,0,0,.32)}
-.gridMode .card{min-height:250px;border-radius:22px}
+.card:active{
+  transform:scale(.975) translateY(1px);
+  box-shadow:0 10px 20px rgba(0,0,0,.32);
+}
 
 .cardImage{
   position:relative;
   width:100%;
-  height:184px;
+  height:155px;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -201,41 +220,58 @@ h1{
   overflow:hidden;
 }
 
-.gridMode .cardImage{height:148px}
+.gridMode .cardImage{height:150px}
+.gridMode.oneCard .cardImage{height:170px}
 
 .cardImage img{
   width:100%;
   height:100%;
-  object-fit:cover;
+  object-fit:contain;
   display:block;
+  padding:4px;
 }
 
 .cardImage::after{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,.18),transparent);
+  background:linear-gradient(to top,rgba(0,0,0,.18),rgba(0,0,0,0));
   pointer-events:none;
 }
 
 .cardTop{
-  margin-top:-52px;
   position:relative;
   z-index:3;
-  padding:0 11px 11px;
+  padding:10px 11px 11px;
   display:flex;
   justify-content:space-between;
   gap:8px;
+  background:linear-gradient(180deg,rgba(16,19,27,.96),rgba(10,12,17,.98));
+  min-height:92px;
 }
 
-.name{font-size:14px;font-weight:900;line-height:1.1;color:white}
-.gridMode .name{font-size:13px;min-height:auto}
+.name{
+  font-size:14px;
+  font-weight:900;
+  line-height:1.1;
+  color:white;
+  max-width:120px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.gridMode .name{font-size:13px}
 
 .meta{
   font-size:10.5px;
   color:#aab0bd;
   margin-top:4px;
   line-height:1.25;
+  max-width:120px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
 }
 
 .gridMode .meta{font-size:10px}
@@ -250,7 +286,10 @@ h1{
   font-weight:900;
 }
 
-.signal{background:rgba(255,255,255,.1);color:#d1d5db}
+.signal{
+  background:rgba(255,255,255,.1);
+  color:#d1d5db;
+}
 
 .H{background:rgba(111,147,106,.9)!important;color:white}
 .G{background:rgba(102,135,194,.92)!important;color:white}
@@ -273,9 +312,17 @@ h1{
   white-space:nowrap;
 }
 
-.gridMode .value{text-align:right;font-size:13px;margin-top:0}
-.small{font-size:9.5px;color:#9ca3af;text-align:right}
-.gridMode .small{text-align:right}
+.gridMode .value{
+  text-align:right;
+  font-size:13px;
+  margin-top:0;
+}
+
+.small{
+  font-size:9.5px;
+  color:#9ca3af;
+  text-align:right;
+}
 
 .cardImage.accent-pikachu,.detailImageHero.accent-pikachu{background:linear-gradient(135deg,#f6c343,#fff1a8)}
 .cardImage.accent-charizard,.detailImageHero.accent-charizard{background:linear-gradient(135deg,#ef6b2f,#3b1720)}
@@ -308,11 +355,11 @@ h1{
 .fab{
   position:fixed;
   right:max(20px,calc(50vw - 220px));
-  bottom:92px;
-  width:58px;
-  height:58px;
+  bottom:90px;
+  width:56px;
+  height:56px;
   border:none;
-  border-radius:22px;
+  border-radius:21px;
   background:#f6c343;
   color:#111;
   font-size:30px;
@@ -358,7 +405,11 @@ h1{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
 }
 
-.navIcon{display:block;font-size:19px;margin-bottom:2px}
+.navIcon{
+  display:block;
+  font-size:19px;
+  margin-bottom:2px;
+}
 
 .sheetBack{
   position:fixed;
@@ -481,7 +532,11 @@ textarea{min-height:78px;resize:none}
   white-space:nowrap;
 }
 
-.chip.active{background:#f6c343;color:#111;border-color:#f6c343}
+.chip.active{
+  background:#f6c343;
+  color:#111;
+  border-color:#f6c343;
+}
 
 .filterHead{
   position:sticky;
@@ -610,9 +665,10 @@ window.onerror=function(msg,url,line,col,error){
   `;
 };
 
-const KEY="pokevault_v1_phase10_4_fixed"
+const KEY="pokevault_v1_phase10_4_1_fixed"
 let cards=JSON.parse(
   localStorage.getItem(KEY)||
+  localStorage.getItem("pokevault_v1_phase10_4_fixed")||
   localStorage.getItem("pokevault_v1_phase10_4")||
   localStorage.getItem("pokevault_v1_phase10_3")||
   localStorage.getItem("pokevault_v1_phase9")||
@@ -973,6 +1029,7 @@ function render(){
   const d=data()
   const list=visibleCards()
   const grouped=groupByBucket(list)
+  const gridClass=`grid ${viewMode==="grid"?"gridMode":""} ${list.length===1&&viewMode==="grid"?"oneCard":""}`
 
   app.innerHTML=`
     ${topHTML()}
@@ -989,7 +1046,7 @@ function render(){
         screen==="analytics"?analytics(d):
         `
         ${screen==="vault"?stats(d):""}
-        <div class="grid ${viewMode==="grid"?"gridMode":""}">
+        <div class="${gridClass}">
           ${
             list.length
             ? Object.entries(grouped).map(([bucket,items])=>{
@@ -1178,7 +1235,7 @@ function analytics(d){
   })
 
   return `
-    <div class="card">
+    <div class="detailCard">
       <div class="name">Capital Snapshot</div>
       <div class="meta">Invested: <b>${money(d.invested)}</b></div>
       <div class="meta">Inventory Value: <b>${money(d.inventoryValue)}</b></div>
@@ -1187,9 +1244,9 @@ function analytics(d){
       <div class="meta">Returned: <b class="green">${money(d.returned)}</b></div>
       <div class="meta">Realized P/L: <b class="${d.profit>=0?"green":"red"}">${d.profit>=0?"+":""}${money(d.profit)}</b></div>
     </div>
-    <div class="card"><div class="name">Best Sale</div>${best?saleMini(best):`<div class="meta">No sold cards yet</div>`}</div>
-    <div class="card"><div class="name">Worst Sale</div>${worst?saleMini(worst):`<div class="meta">No sold cards yet</div>`}</div>
-    <div class="card"><div class="name">Why Cards Were Sold</div>${Object.entries(reasonStats).map(([k,v])=>`<div class="meta">${reasons[k]||k}: <b>${v.count}</b> · <b class="${v.profit>=0?"green":"red"}">${v.profit>=0?"+":""}${money(v.profit)}</b></div>`).join("")||`<div class="meta">No sold reasons yet</div>`}</div>
+    <div class="detailCard"><div class="name">Best Sale</div>${best?saleMini(best):`<div class="meta">No sold cards yet</div>`}</div>
+    <div class="detailCard"><div class="name">Worst Sale</div>${worst?saleMini(worst):`<div class="meta">No sold cards yet</div>`}</div>
+    <div class="detailCard"><div class="name">Why Cards Were Sold</div>${Object.entries(reasonStats).map(([k,v])=>`<div class="meta">${reasons[k]||k}: <b>${v.count}</b> · <b class="${v.profit>=0?"green":"red"}">${v.profit>=0?"+":""}${money(v.profit)}</b></div>`).join("")||`<div class="meta">No sold reasons yet</div>`}</div>
   `
 }
 
