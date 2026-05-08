@@ -1,14 +1,76 @@
-<!-- ========================================================= -->
-<!-- PHASE 10.5 — LAYOUT STABILIZATION SYSTEM -->
-<!-- FULL REPLACEMENT FOR CARD LAYOUT + IMAGE SYSTEM -->
-<!-- ========================================================= -->
+function cardHTML(c){
 
-<style>
+  const sig=displaySignal(c)
 
-/* ========================================================= */
-/* CARD GRID */
-/* ========================================================= */
+  return `
+    <div class="card ${accentClass(c)} ${c.favorite?"grailCard":""}" onclick="openDetail(${c.id})">
 
+      <div class="cardImage">
+
+        ${
+          hasImage(c)
+          ? `<img src="${safe(c.imageUrl)}" alt="${safe(c.name)}" />`
+          : `<div class="cardImageFallback">${c.favorite?"★":"▧"}</div>`
+        }
+
+      </div>
+
+      <div class="cardTop">
+
+        <div>
+          <div class="name">
+            ${c.favorite?`<span class="grailText">★</span> `:""}
+            ${safe(c.name)}
+          </div>
+
+          <div class="meta">
+            ${c.type||"Raw"} · ${getAnchor(c.name)}
+          </div>
+        </div>
+
+        <div class="cardBottom">
+
+          <div class="badgeWrap">
+
+            <span class="badge ${c.bucket}">
+              ${buckets[c.bucket]||"HOLD"}
+            </span>
+
+            ${
+              sig
+              ? `<span class="signal ${sig.cls}">
+                  ${sig.label}
+                </span>`
+              : ""
+            }
+
+          </div>
+
+          <div class="valueWrap">
+            <div class="value">
+              ${
+                c.status==="wishlist"
+                ? money(c.targetBuy)
+                : money(c.value)
+              }
+            </div>
+
+            <div class="small">
+              ${
+                c.status==="wishlist"
+                ? "Target"
+                : "Cost"
+              }
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  `
+}
 .grid{
   display:grid;
   grid-template-columns:1fr;
