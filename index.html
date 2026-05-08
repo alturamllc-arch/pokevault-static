@@ -1,861 +1,581 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
-<title>PokéVault</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{
-  --bg:#080a0f;
-  --card:#151922;
-  --card2:#1f2633;
-  --line:rgba(255,255,255,.09);
-  --text:#f8fafc;
-  --muted:#9aa3b8;
-  --gold:#f6c343;
-  --green:#4ade80;
-  --blue:#7ea6ff;
-  --red:#fb7185;
-  --purple:#a78bfa;
-}
-html,body{
-  min-height:100%;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,sans-serif;
-}
-body{
-  background:radial-gradient(circle at top,#263044 0%,#10141d 42%,#05060a 100%);
-  overflow-x:hidden;
-}
-button,input,select{font-family:inherit}
-button{cursor:pointer}
-#app{
-  width:100%;
-  max-width:480px;
-  min-height:100vh;
-  margin:auto;
-  padding:14px 14px calc(124px + env(safe-area-inset-bottom));
-}
-.top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:14px;
-}
-h1{
-  font-size:31px;
-  font-weight:900;
-  letter-spacing:-1px;
-}
-.iconBtn{
-  width:52px;
-  height:52px;
-  border:1px solid var(--line);
-  border-radius:20px;
-  background:rgba(255,255,255,.07);
-  color:white;
-  font-size:21px;
-  backdrop-filter:blur(16px);
-}
-.searchRow{
-  display:flex;
-  gap:10px;
-  margin-bottom:10px;
-}
-.search{
-  flex:1;
-  height:56px;
-  border:1px solid var(--line);
-  outline:none;
-  border-radius:22px;
-  background:rgba(255,255,255,.07);
-  color:white;
-  padding:0 18px;
-  font-size:16px;
-}
-.search::placeholder{color:#9aa3b8}
-.filterBtn{
-  width:56px;
-  height:56px;
-  border:1px solid var(--line);
-  border-radius:22px;
-  background:rgba(255,255,255,.07);
-  color:white;
-  font-size:23px;
-}
-.summary{
-  background:rgba(255,255,255,.055);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:13px 15px;
-  margin-bottom:12px;
-  font-size:12px;
-  font-weight:900;
-  color:#b8c0d0;
-}
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:16px;
-}
-.stat{
-  background:rgba(255,255,255,.06);
-  border:1px solid var(--line);
-  border-radius:20px;
-  padding:13px 8px;
-  text-align:center;
-}
-.stat strong{
-  display:block;
-  font-size:15px;
-  font-weight:900;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.stat span{
-  display:block;
-  margin-top:6px;
-  font-size:9px;
-  font-weight:900;
-  color:#9aa3b8;
-  text-transform:uppercase;
-}
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-.grid.one{
-  grid-template-columns:1fr;
-}
-.grid.one .card{
-  max-width:280px;
-}
-.card{
-  display:flex;
-  flex-direction:column;
-  overflow:hidden;
-  min-height:320px;
-  border-radius:28px;
-  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
-  border:1px solid var(--line);
-  box-shadow:0 20px 40px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.05);
-  transition:.16s ease;
-}
-.card:active{transform:scale(.985)}
-.cardImage{
-  width:100%;
-  aspect-ratio:3/4;
-  background:#10141d;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
-  color:#3f4a5f;
-  font-size:42px;
-  font-weight:900;
-}
-.cardImage img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-.cardBody{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  padding:14px;
-}
-.name{
-  font-size:16px;
-  font-weight:900;
-  line-height:1.12;
-  margin-bottom:6px;
-  display:-webkit-box;
-  -webkit-line-clamp:2;
-  -webkit-box-orient:vertical;
-  overflow:hidden;
-}
-.meta{
-  font-size:11px;
-  color:#aeb8ca;
-  margin-bottom:12px;
-}
-.cardBottom{
-  margin-top:auto;
-  display:flex;
-  align-items:flex-end;
-  justify-content:space-between;
-  gap:10px;
-}
-.badges{
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-}
-.badge{
-  min-height:29px;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:0 11px;
-  border-radius:999px;
-  font-size:10px;
-  font-weight:900;
-  color:white;
-  border:1px solid rgba(255,255,255,.08);
-}
-.H{background:#6f936a}
-.G{background:#6687c2}
-.T{background:#e28a55}
-.S{background:#c76565}
-.W{background:#8b5cf6}
-.signal{background:rgba(255,255,255,.09);color:#9fe8b5}
-.valueWrap{text-align:right;flex-shrink:0}
-.value{font-size:17px;font-weight:900}
-.small{margin-top:4px;font-size:10px;font-weight:900;color:#9aa3b8}
-.empty{
-  grid-column:1/-1;
-  text-align:center;
-  padding:48px 20px;
-  border-radius:28px;
-  border:1px solid var(--line);
-  background:rgba(255,255,255,.05);
-}
-.emptyTitle{font-size:22px;font-weight:900;margin-bottom:8px}
-.emptyText{color:#9aa3b8}
-.fab{
-  position:fixed;
-  right:max(20px,calc(50vw - 218px));
-  bottom:calc(98px + env(safe-area-inset-bottom));
-  width:70px;
-  height:70px;
-  border:none;
-  border-radius:27px;
-  background:var(--gold);
-  color:#111;
-  font-size:38px;
-  box-shadow:0 18px 36px rgba(0,0,0,.34);
-  z-index:50;
-}
-.bottomNav{
-  position:fixed;
-  left:50%;
-  transform:translateX(-50%);
-  bottom:calc(16px + env(safe-area-inset-bottom));
-  width:calc(100% - 28px);
-  max-width:440px;
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  padding:8px;
-  border-radius:32px;
-  background:rgba(10,12,18,.86);
-  border:1px solid var(--line);
-  backdrop-filter:blur(20px);
-  z-index:40;
-}
-.navBtn{
-  border:none;
-  background:transparent;
-  color:#b7bfd1;
-  border-radius:20px;
-  padding:11px 4px;
-  font-size:11px;
-  font-weight:900;
-}
-.navBtn.active{
-  background:rgba(255,255,255,.08);
-  color:white;
-}
-.navIcon{
-  display:block;
-  font-size:20px;
-  margin-bottom:4px;
-}
-.backdrop{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.74);
-  display:flex;
-  align-items:flex-end;
-  backdrop-filter:blur(10px);
-  z-index:100;
-}
-.sheet{
-  width:100%;
-  max-width:480px;
-  margin:auto;
-  background:#151922;
-  border-radius:30px 30px 0 0;
-  padding:22px;
-  border:1px solid var(--line);
-  max-height:92vh;
-  overflow:auto;
-}
-.handle{
-  width:58px;
-  height:6px;
-  border-radius:999px;
-  background:#343b4b;
-  margin:0 auto 18px;
-}
-.sheet h2{
-  margin-bottom:16px;
-  font-size:26px;
-}
-.input,select{
-  width:100%;
-  border:none;
-  outline:none;
-  background:#222836;
-  border:1px solid var(--line);
-  color:white;
-  border-radius:16px;
-  padding:16px;
-  margin-bottom:10px;
-  font-size:16px;
-}
-.input::placeholder{color:#8d96aa}
-.formGrid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-.primary,.secondary,.danger{
-  width:100%;
-  border:none;
-  border-radius:18px;
-  padding:16px;
-  font-size:16px;
-  font-weight:900;
-  margin-top:8px;
-}
-.primary{background:var(--gold);color:#111}
-.secondary{background:#242b3a;color:white;border:1px solid var(--line)}
-.danger{background:#3b1620;color:#fecdd3}
-.detailHero{
-  overflow:hidden;
-  border-radius:30px;
-  border:1px solid var(--line);
-  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
-  box-shadow:0 20px 40px rgba(0,0,0,.34);
-  margin-bottom:14px;
-}
-.detailImage{
-  width:100%;
-  aspect-ratio:4/5;
-  background:#10141d;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#3f4a5f;
-  font-size:52px;
-  font-weight:900;
-}
-.detailImage img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-.detailBody{padding:20px}
-.detailTitle{
-  font-size:31px;
-  font-weight:900;
-  line-height:1.04;
-  margin-bottom:8px;
-}
-.detailValue{
-  font-size:42px;
-  font-weight:900;
-  margin-top:18px;
-}
-.detailGrid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:14px;
-}
-.detailMini{
-  border:1px solid var(--line);
-  border-radius:20px;
-  background:rgba(255,255,255,.06);
-  padding:15px;
-}
-.detailMini strong{display:block;font-size:18px}
-.detailMini span{
-  display:block;
-  margin-top:4px;
-  font-size:10px;
-  color:#9aa3b8;
-  font-weight:900;
-  text-transform:uppercase;
-}
-.green{color:var(--green)!important}
-.red{color:var(--red)!important}
-.gold{color:var(--gold)!important}
-@media(max-width:390px){
-  #app{padding-left:12px;padding-right:12px}
-  .grid{gap:10px}
-  .card{min-height:300px;border-radius:24px}
-  .cardBody{padding:12px}
-  .name{font-size:15px}
-  .badge{font-size:9px;min-height:27px;padding:0 9px}
-  .value{font-size:15px}
-}
-</style>
+  <title>PokéVault</title>
+
+  <meta
+    name="description"
+    content="Your personal Pokémon card collection vault."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-<div id="app"></div>
 
-<script>
-const STORAGE_KEY="pokevault_clean_fixed_v2";
+  <div id="app">
 
-const buckets={
-  H:"HOLD",
-  G:"GRADE",
-  T:"TRADE",
-  S:"SELL",
-  W:"WISHLIST"
-};
+    <!-- HEADER -->
+    <header class="app-header">
 
-let cards=loadCards();
-let screen="vault";
-let modalOpen=false;
-let editOpen=false;
-let selectedId=null;
-let search="";
+      <div class="header-top">
 
-function loadCards(){
-  try{
-    const old=
-      localStorage.getItem(STORAGE_KEY)||
-      localStorage.getItem("pokevault_clean_v1")||
-      localStorage.getItem("pokevault_clean_rebuild")||
-      "[]";
+        <div class="header-brand">
+          <span class="brand-icon">⚡</span>
+          <h1 class="app-title">PokéVault</h1>
+        </div>
 
-    const parsed=JSON.parse(old);
+        <div class="header-stats" id="header-stats"></div>
 
-    if(!Array.isArray(parsed)) return [];
+      </div>
 
-    return parsed.map(c=>({
-      id:c.id||Date.now()+Math.random(),
-      name:c.name||"Untitled",
-      image:c.image||c.imageUrl||"",
-      value:Number(c.value||0),
-      bucket:c.bucket||"H",
-      type:c.type||"Raw",
-      anchor:c.anchor||getAnchor(c.name||""),
-      status:c.status||"active",
-      salePrice:Number(c.salePrice||0)
-    }));
-  }catch(e){
-    return [];
-  }
-}
+      <div class="search-wrap">
 
-function save(){
-  localStorage.setItem(STORAGE_KEY,JSON.stringify(cards));
-  render();
-}
+        <span class="search-icon">
 
-function money(v){
-  return "$"+Number(v||0).toLocaleString();
-}
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              cx="11"
+              cy="11"
+              r="8"
+              stroke="currentColor"
+              stroke-width="2"
+            />
 
-function safe(v){
-  return String(v??"")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;");
-}
+            <path
+              d="m21 21-4.35-4.35"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
 
-function getAnchor(name){
-  const n=String(name||"").toLowerCase();
-  if(n.includes("pikachu")) return "Pikachu";
-  if(n.includes("charizard")) return "Charizard";
-  if(n.includes("umbreon")) return "Umbreon";
-  if(n.includes("mew")) return "Mew";
-  return name ? String(name).split(" ")[0] : "Card";
-}
+        </span>
 
-function activeCards(){
-  if(screen==="wishlist") return cards.filter(c=>c.bucket==="W");
-  if(screen==="sold") return cards.filter(c=>c.status==="sold");
-  return cards.filter(c=>c.status!=="sold" && c.bucket!=="W");
-}
-
-function filteredCards(){
-  return activeCards().filter(c=>
-    String(c.name||"").toLowerCase().includes(search.toLowerCase())
-  );
-}
-
-function stats(){
-  const owned=cards.filter(c=>c.status!=="sold" && c.bucket!=="W");
-  const sold=cards.filter(c=>c.status==="sold");
-  const inventory=owned.reduce((a,b)=>a+Number(b.value||0),0);
-  const returned=sold.reduce((a,b)=>a+Number(b.salePrice||0),0);
-  const realized=sold.reduce((a,b)=>a+(Number(b.salePrice||0)-Number(b.value||0)),0);
-  return{owned,sold,inventory,returned,realized};
-}
-
-function imageHTML(c,cls="cardImage"){
-  if(c.image && String(c.image).trim()){
-    return `
-      <div class="${cls}">
-        <img
-          src="${safe(c.image)}"
-          alt="${safe(c.name)}"
-          onerror="this.remove();this.parentElement.innerHTML='▧';"
+        <input
+          class="search-input"
+          type="search"
+          id="search-input"
+          placeholder="Search cards…"
+          autocomplete="off"
+          spellcheck="false"
         />
+
+        <button
+          class="search-clear"
+          id="search-clear"
+          aria-label="Clear search"
+          hidden
+        >
+          ✕
+        </button>
+
       </div>
-    `;
-  }
 
-  return `<div class="${cls}">▧</div>`;
-}
+    </header>
 
-function cardHTML(c){
-  const bucket=c.bucket||"H";
+    <!-- MAIN -->
+    <main class="main-content" id="main-content">
 
-  return `
-    <div class="card" onclick="openDetail(${Number(c.id)})">
+      <div class="section-header">
 
-      ${imageHTML(c)}
+        <h2 class="section-title" id="section-title">
+          My Collection
+        </h2>
 
-      <div class="cardBody">
+        <span class="section-count" id="section-count">
+          0 cards
+        </span>
 
-        <div>
-          <div class="name">${safe(c.name)}</div>
-          <div class="meta">${safe(c.type)} · ${safe(c.anchor||getAnchor(c.name))}</div>
-        </div>
+      </div>
 
-        <div class="cardBottom">
+      <div class="card-grid" id="card-grid"></div>
 
-          <div class="badges">
-            <span class="badge ${bucket}">${buckets[bucket]||"HOLD"}</span>
-            <span class="badge signal">ACTIVE</span>
+      <div
+        class="empty-state"
+        id="empty-state"
+        hidden
+      >
+        <div class="empty-icon">🃏</div>
+
+        <p class="empty-title">
+          No cards here
+        </p>
+
+        <p class="empty-sub">
+          Tap <strong>+</strong> to add your first card
+        </p>
+      </div>
+
+    </main>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" id="bottom-nav">
+
+      <button
+        class="nav-btn active"
+        data-view="home"
+        aria-label="Vault"
+      >
+
+        <svg
+          class="nav-icon"
+          width="22"
+          height="22"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <rect
+            x="3"
+            y="3"
+            width="8"
+            height="8"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+
+          <rect
+            x="13"
+            y="3"
+            width="8"
+            height="8"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+
+          <rect
+            x="3"
+            y="13"
+            width="8"
+            height="8"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+
+          <rect
+            x="13"
+            y="13"
+            width="8"
+            height="8"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="2"
+          />
+        </svg>
+
+        <span class="nav-label">Vault</span>
+
+      </button>
+
+      <button
+        class="nav-btn"
+        data-view="wishlist"
+        aria-label="Wishlist"
+      >
+
+        <svg
+          class="nav-icon"
+          width="22"
+          height="22"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"
+          />
+        </svg>
+
+        <span class="nav-label">Wishlist</span>
+
+      </button>
+
+      <button
+        class="nav-btn"
+        data-view="sold"
+        aria-label="Sold"
+      >
+
+        <svg
+          class="nav-icon"
+          width="22"
+          height="22"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M12 2 2 7l10 5 10-5-10-5z"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"
+          />
+
+          <path
+            d="M2 17l10 5 10-5"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"
+          />
+
+          <path
+            d="M2 12l10 5 10-5"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"
+          />
+        </svg>
+
+        <span class="nav-label">Sold</span>
+
+      </button>
+
+    </nav>
+
+    <!-- FAB -->
+    <button
+      class="fab"
+      id="fab"
+      aria-label="Add card"
+    >
+
+      <svg
+        width="24"
+        height="24"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          d="M12 5v14M5 12h14"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+        />
+      </svg>
+
+    </button>
+
+  </div>
+
+  <!-- DETAIL OVERLAY -->
+  <div
+    class="overlay"
+    id="detail-overlay"
+    hidden
+  >
+
+    <div class="detail-panel" id="detail-panel">
+
+      <button
+        class="overlay-close"
+        id="detail-close"
+        aria-label="Close"
+      >
+
+        <svg
+          width="18"
+          height="18"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M18 6 6 18M6 6l12 12"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          />
+        </svg>
+
+      </button>
+
+      <div
+        class="detail-content"
+        id="detail-content"
+      ></div>
+
+    </div>
+
+  </div>
+
+  <!-- ADD / EDIT MODAL -->
+  <div
+    class="overlay"
+    id="modal-overlay"
+    hidden
+  >
+
+    <div class="modal" id="modal">
+
+      <div class="modal-header">
+
+        <h2 class="modal-title" id="modal-title">
+          Add Card
+        </h2>
+
+        <button
+          class="overlay-close"
+          id="modal-close"
+          aria-label="Close"
+        >
+
+          <svg
+            width="18"
+            height="18"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M18 6 6 18M6 6l12 12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <form id="card-form" novalidate>
+
+          <input
+            type="hidden"
+            id="field-id"
+          />
+
+          <div class="form-group">
+
+            <label
+              class="form-label"
+              for="field-name"
+            >
+              Card Name
+              <span class="required">*</span>
+            </label>
+
+            <input
+              class="form-input"
+              type="text"
+              id="field-name"
+              placeholder="e.g. Charizard"
+              autocomplete="off"
+            />
+
           </div>
 
-          <div class="valueWrap">
-            <div class="value">${money(c.value)}</div>
-            <div class="small">Cost</div>
+          <div class="form-row">
+
+            <div class="form-group">
+
+              <label
+                class="form-label"
+                for="field-type"
+              >
+                Type
+              </label>
+
+              <select
+                class="form-input"
+                id="field-type"
+              >
+                <option value="Normal">Normal</option>
+                <option value="Fire">🔥 Fire</option>
+                <option value="Water">💧 Water</option>
+                <option value="Grass">🌿 Grass</option>
+                <option value="Electric">⚡ Electric</option>
+                <option value="Psychic">🔮 Psychic</option>
+                <option value="Dark">🌑 Dark</option>
+              </select>
+
+            </div>
+
+            <div class="form-group">
+
+              <label
+                class="form-label"
+                for="field-value"
+              >
+                Value ($)
+              </label>
+
+              <input
+                class="form-input"
+                type="number"
+                id="field-value"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+              />
+
+            </div>
+
           </div>
 
+          <div class="form-group">
+
+            <label
+              class="form-label"
+              for="field-status"
+            >
+              Status
+            </label>
+
+            <select
+              class="form-input"
+              id="field-status"
+            >
+              <option value="owned">Owned</option>
+              <option value="wishlist">Wishlist</option>
+              <option value="sold">Sold</option>
+            </select>
+
+          </div>
+
+          <div class="form-group">
+
+            <label
+              class="form-label"
+              for="field-image"
+            >
+              Image URL
+              <span class="optional">(optional)</span>
+            </label>
+
+            <input
+              class="form-input"
+              type="url"
+              id="field-image"
+              placeholder="https://…"
+            />
+
+          </div>
+
+          <div class="form-group form-toggle">
+
+            <label
+              class="form-label"
+              for="field-favorite"
+            >
+              Mark as Favorite
+            </label>
+
+            <label class="toggle-switch">
+
+              <input
+                type="checkbox"
+                id="field-favorite"
+              />
+
+              <span class="toggle-track"></span>
+
+            </label>
+
+          </div>
+
+        </form>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button
+          class="btn btn-danger"
+          id="btn-delete"
+          hidden
+        >
+          Delete
+        </button>
+
+        <div class="modal-footer-right">
+
+          <button
+            class="btn btn-ghost"
+            id="btn-cancel"
+          >
+            Cancel
+          </button>
+
+          <button
+            class="btn btn-primary"
+            id="btn-save"
+          >
+            Save Card
+          </button>
+
         </div>
 
       </div>
 
     </div>
-  `;
-}
 
-function render(){
-  const app=document.getElementById("app");
-  const s=stats();
+  </div>
 
-  if(screen==="detail"){
-    app.innerHTML=detailHTML();
-    return;
-  }
+  <!-- CONFIRM DELETE -->
+  <div
+    class="overlay"
+    id="confirm-overlay"
+    hidden
+  >
 
-  const list=filteredCards();
+    <div class="modal modal-sm" id="confirm-modal">
 
-  app.innerHTML=`
-
-    <div class="top">
-      <button class="iconBtn" onclick="setScreen('vault')">☁</button>
-      <h1>PokéVault</h1>
-      <button class="iconBtn" onclick="setScreen('wishlist')">♡</button>
-    </div>
-
-    <div class="searchRow">
-      <input
-        class="search"
-        placeholder="Search collection"
-        value="${safe(search)}"
-        oninput="setSearch(this.value)"
-      />
-      <button class="filterBtn">☰</button>
-    </div>
-
-    <div class="summary">
-      View: GRID · Screen: ${screen.toUpperCase()} · Cards: ${list.length}
-    </div>
-
-    ${screen==="vault"?`
-      <div class="stats">
-        <div class="stat"><strong>${money(s.inventory)}</strong><span>Inventory</span></div>
-        <div class="stat"><strong>${s.owned.length}</strong><span>Owned</span></div>
-        <div class="stat"><strong class="green">${money(s.returned)}</strong><span>Returned</span></div>
-        <div class="stat"><strong class="${s.realized>=0?"green":"red"}">${s.realized>=0?"+":""}${money(s.realized)}</strong><span>Realized</span></div>
+      <div class="modal-header">
+        <h2 class="modal-title">
+          Delete Card?
+        </h2>
       </div>
-    `:""}
 
-    <div class="grid ${list.length===1?"one":""}">
-      ${list.length?list.map(cardHTML).join(""):emptyHTML()}
-    </div>
-
-    <button class="fab" onclick="openModal()">+</button>
-
-    ${navHTML()}
-
-    ${modalOpen?modalHTML():""}
-    ${editOpen?editHTML():""}
-  `;
-}
-
-function detailHTML(){
-  const c=cards.find(x=>Number(x.id)===Number(selectedId));
-
-  if(!c){
-    screen="vault";
-    return "";
-  }
-
-  return `
-    <div class="top">
-      <button class="iconBtn" onclick="setScreen('vault')">‹</button>
-      <h1>Card</h1>
-      <button class="iconBtn">☆</button>
-    </div>
-
-    <div class="detailHero">
-      ${imageHTML(c,"detailImage")}
-
-      <div class="detailBody">
-        <div class="detailTitle">${safe(c.name)}</div>
-        <div class="meta">${safe(c.type)} · ${safe(c.anchor||getAnchor(c.name))}</div>
-
-        <div class="badges" style="margin-top:12px">
-          <span class="badge ${c.bucket||"H"}">${buckets[c.bucket||"H"]}</span>
-          <span class="badge signal">${c.status==="sold"?"SOLD":"ACTIVE"}</span>
-        </div>
-
-        <div class="detailValue">${money(c.value)}</div>
-        <div class="small">Current Cost</div>
-
-        <button class="primary" onclick="openEdit()">Manage Card</button>
+      <div class="modal-body">
+        <p class="confirm-text">
+          This will permanently remove the card from your vault.
+        </p>
       </div>
-    </div>
 
-    <div class="detailGrid">
-      <div class="detailMini"><strong>${money(c.value)}</strong><span>Cost</span></div>
-      <div class="detailMini"><strong>${c.bucket||"H"}</strong><span>Bucket</span></div>
-      <div class="detailMini"><strong>${safe(c.type)}</strong><span>Type</span></div>
-      <div class="detailMini"><strong>${safe(c.status||"active")}</strong><span>Status</span></div>
-    </div>
+      <div class="modal-footer">
 
-    ${navHTML()}
-    ${editOpen?editHTML():""}
-  `;
-}
+        <button
+          class="btn btn-ghost"
+          id="btn-confirm-cancel"
+        >
+          Cancel
+        </button>
 
-function emptyHTML(){
-  return `
-    <div class="empty">
-      <div class="emptyTitle">No cards here</div>
-      <div class="emptyText">Tap + to add a card.</div>
-    </div>
-  `;
-}
+        <button
+          class="btn btn-danger"
+          id="btn-confirm-delete"
+        >
+          Delete
+        </button>
 
-function navHTML(){
-  return `
-    <div class="bottomNav">
-      <button class="navBtn ${screen==="vault"?"active":""}" onclick="setScreen('vault')"><span class="navIcon">▦</span>Vault</button>
-      <button class="navBtn ${screen==="wishlist"?"active":""}" onclick="setScreen('wishlist')"><span class="navIcon">♡</span>Wishlist</button>
-      <button class="navBtn ${screen==="analytics"?"active":""}" onclick="setScreen('analytics')"><span class="navIcon">▤</span>Analytics</button>
-      <button class="navBtn ${screen==="sold"?"active":""}" onclick="setScreen('sold')"><span class="navIcon">◉</span>Sold</button>
-      <button class="navBtn" onclick="setScreen('vault')"><span class="navIcon">⌕</span>Search</button>
-    </div>
-  `;
-}
-
-function modalHTML(){
-  return `
-    <div class="backdrop" onclick="closeModal()">
-      <div class="sheet" onclick="event.stopPropagation()">
-        <h2>Add Card</h2>
-
-        <input id="name" class="input" placeholder="Card name" />
-        <input id="image" class="input" placeholder="Image URL optional" />
-        <input id="value" class="input" type="number" placeholder="Cost" />
-
-        <select id="bucket">
-          <option value="H">Hold</option>
-          <option value="G">Grade</option>
-          <option value="T">Trade</option>
-          <option value="S">Sell</option>
-          <option value="W">Wishlist</option>
-        </select>
-
-        <select id="type">
-          <option>Raw</option>
-          <option>Slab</option>
-        </select>
-
-        <button class="primary" onclick="addCard()">Save Card</button>
-        <button class="secondary" onclick="closeModal()">Cancel</button>
       </div>
+
     </div>
-  `;
-}
 
-function editHTML(){
-  const c=cards.find(x=>Number(x.id)===Number(selectedId));
-  if(!c)return"";
+  </div>
 
-  return `
-    <div class="backdrop" onclick="closeEdit()">
-      <div class="sheet" onclick="event.stopPropagation()">
-        <h2>Manage Card</h2>
-
-        <input id="editName" class="input" value="${safe(c.name)}" />
-        <input id="editImage" class="input" value="${safe(c.image)}" />
-        <input id="editValue" class="input" type="number" value="${Number(c.value||0)}" />
-
-        <select id="editBucket">
-          ${Object.entries(buckets).map(([k,v])=>`
-            <option value="${k}" ${c.bucket===k?"selected":""}>${v}</option>
-          `).join("")}
-        </select>
-
-        <select id="editType">
-          <option ${c.type==="Raw"?"selected":""}>Raw</option>
-          <option ${c.type==="Slab"?"selected":""}>Slab</option>
-        </select>
-
-        <button class="primary" onclick="saveEdit()">Save Changes</button>
-        <button class="secondary" onclick="markSold()">Mark Sold</button>
-        <button class="danger" onclick="deleteCard()">Delete Card</button>
-        <button class="secondary" onclick="closeEdit()">Cancel</button>
-      </div>
-    </div>
-  `;
-}
-
-function addCard(){
-  const name=document.getElementById("name").value.trim();
-
-  if(!name){
-    alert("Enter card name");
-    return;
-  }
-
-  cards.unshift({
-    id:Date.now(),
-    name,
-    image:document.getElementById("image").value.trim(),
-    value:Number(document.getElementById("value").value||0),
-    bucket:document.getElementById("bucket").value,
-    type:document.getElementById("type").value,
-    anchor:getAnchor(name),
-    status:"active",
-    salePrice:0
-  });
-
-  modalOpen=false;
-  save();
-}
-
-function saveEdit(){
-  const c=cards.find(x=>Number(x.id)===Number(selectedId));
-  if(!c)return;
-
-  c.name=document.getElementById("editName").value.trim()||"Untitled";
-  c.image=document.getElementById("editImage").value.trim();
-  c.value=Number(document.getElementById("editValue").value||0);
-  c.bucket=document.getElementById("editBucket").value;
-  c.type=document.getElementById("editType").value;
-  c.anchor=getAnchor(c.name);
-
-  if(c.bucket==="W") c.status="active";
-
-  editOpen=false;
-  save();
-}
-
-function markSold(){
-  const c=cards.find(x=>Number(x.id)===Number(selectedId));
-  if(!c)return;
-
-  const sale=Number(prompt("Sale price?")||0);
-
-  c.status="sold";
-  c.salePrice=sale;
-
-  editOpen=false;
-  screen="sold";
-  save();
-}
-
-function deleteCard(){
-  if(prompt("Type DELETE to confirm")!=="DELETE")return;
-
-  cards=cards.filter(x=>Number(x.id)!==Number(selectedId));
-  selectedId=null;
-  editOpen=false;
-  screen="vault";
-  save();
-}
-
-function openDetail(id){
-  selectedId=id;
-  screen="detail";
-  render();
-}
-
-function openEdit(){
-  editOpen=true;
-  render();
-}
-
-function closeEdit(){
-  editOpen=false;
-  render();
-}
-
-function openModal(){
-  modalOpen=true;
-  render();
-}
-
-function closeModal(){
-  modalOpen=false;
-  render();
-}
-
-function setScreen(s){
-  screen=s;
-  selectedId=null;
-  modalOpen=false;
-  editOpen=false;
-
-  if(s==="analytics"){
-    alert("Analytics will be rebuilt after the card system is stable.");
-    screen="vault";
-  }
-
-  render();
-}
-
-function setSearch(v){
-  search=v;
-  render();
-}
-
-render();
-</script>
+  <script src="script.js"></script>
 
 </body>
 </html>
