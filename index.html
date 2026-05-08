@@ -2,658 +2,421 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover"
-/>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
 <title>PokéVault</title>
 
 <style>
-
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --bg:#090b10;
-  --surface:#151922;
-  --line:rgba(255,255,255,.08);
-
+  --bg:#080a0f;
+  --card:#151922;
+  --card2:#1f2633;
+  --line:rgba(255,255,255,.09);
   --text:#f8fafc;
-  --muted:#9aa3b7;
-
+  --muted:#9aa3b8;
   --gold:#f6c343;
   --green:#4ade80;
   --blue:#7ea6ff;
   --red:#fb7185;
   --purple:#a78bfa;
 }
-
-html,
-body{
-  margin:0;
+html,body{
   min-height:100%;
   background:var(--bg);
   color:var(--text);
   font-family:Arial,sans-serif;
 }
-
 body{
-  background:
-    radial-gradient(
-      circle at 50% -10%,
-      #2c3445 0%,
-      #151922 38%,
-      #080a0f 100%
-    );
-
+  background:radial-gradient(circle at top,#263044 0%,#10141d 42%,#05060a 100%);
   overflow-x:hidden;
 }
-
-button,
-input,
-select{
-  font-family:inherit;
-}
-
-button{
-  cursor:pointer;
-}
-
+button,input,select{font-family:inherit}
+button{cursor:pointer}
 #app{
   width:100%;
   max-width:480px;
-  margin:auto;
-
   min-height:100vh;
-
-  padding:
-    12px
-    14px
-    calc(120px + env(safe-area-inset-bottom));
+  margin:auto;
+  padding:14px 14px calc(124px + env(safe-area-inset-bottom));
 }
-
-/* ====================================================== */
-/* HEADER */
-/* ====================================================== */
-
-.header{
+.top{
   display:flex;
   align-items:center;
   justify-content:space-between;
-
-  margin-bottom:12px;
+  margin-bottom:14px;
 }
-
-.title{
-  font-size:30px;
+h1{
+  font-size:31px;
   font-weight:900;
   letter-spacing:-1px;
 }
-
 .iconBtn{
-  width:50px;
-  height:50px;
-
-  border:none;
-  border-radius:18px;
-
-  background:rgba(255,255,255,.07);
-
+  width:52px;
+  height:52px;
   border:1px solid var(--line);
-
+  border-radius:20px;
+  background:rgba(255,255,255,.07);
   color:white;
-
-  font-size:20px;
-
+  font-size:21px;
   backdrop-filter:blur(16px);
-
-  box-shadow:
-    0 10px 24px rgba(0,0,0,.24);
 }
-
-/* ====================================================== */
-/* SEARCH */
-/* ====================================================== */
-
 .searchRow{
   display:flex;
   gap:10px;
-
   margin-bottom:10px;
 }
-
 .search{
   flex:1;
-
-  height:54px;
-
-  border:none;
-  outline:none;
-
-  border-radius:20px;
-
-  padding:0 16px;
-
-  background:rgba(255,255,255,.07);
-
+  height:56px;
   border:1px solid var(--line);
-
+  outline:none;
+  border-radius:22px;
+  background:rgba(255,255,255,.07);
   color:white;
-
+  padding:0 18px;
   font-size:16px;
 }
-
-.search::placeholder{
-  color:#9aa3b7;
-}
-
+.search::placeholder{color:#9aa3b8}
 .filterBtn{
-  width:54px;
-  height:54px;
-
-  border:none;
-  border-radius:20px;
-
-  background:rgba(255,255,255,.08);
-
+  width:56px;
+  height:56px;
   border:1px solid var(--line);
-
+  border-radius:22px;
+  background:rgba(255,255,255,.07);
   color:white;
-
-  font-size:22px;
+  font-size:23px;
 }
-
-/* ====================================================== */
-/* SUMMARY */
-/* ====================================================== */
-
 .summary{
-  border-radius:18px;
-
-  background:rgba(255,255,255,.05);
-
+  background:rgba(255,255,255,.055);
   border:1px solid var(--line);
-
-  padding:12px 14px;
-
+  border-radius:18px;
+  padding:13px 15px;
+  margin-bottom:12px;
   font-size:12px;
   font-weight:900;
-
   color:#b8c0d0;
-
-  margin-bottom:12px;
 }
-
-/* ====================================================== */
-/* STATS */
-/* ====================================================== */
-
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-
-  gap:8px;
-
-  margin-bottom:14px;
+  gap:10px;
+  margin-bottom:16px;
 }
-
 .stat{
   background:rgba(255,255,255,.06);
-
   border:1px solid var(--line);
-
-  border-radius:18px;
-
-  padding:12px 6px;
-
+  border-radius:20px;
+  padding:13px 8px;
   text-align:center;
 }
-
 .stat strong{
   display:block;
-
   font-size:15px;
   font-weight:900;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
 }
-
 .stat span{
   display:block;
-
-  margin-top:5px;
-
+  margin-top:6px;
   font-size:9px;
   font-weight:900;
-
-  color:#9aa3b7;
-
+  color:#9aa3b8;
   text-transform:uppercase;
 }
-
-/* ====================================================== */
-/* GRID */
-/* ====================================================== */
-
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-
   gap:14px;
 }
-
-/* ====================================================== */
-/* CARD */
-/* ====================================================== */
-
+.grid.one{
+  grid-template-columns:1fr;
+}
+.grid.one .card{
+  max-width:280px;
+}
 .card{
   display:flex;
   flex-direction:column;
-
   overflow:hidden;
-
-  border-radius:26px;
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(255,255,255,.07),
-      rgba(255,255,255,.03)
-    );
-
-  border:1px solid var(--line);
-
-  box-shadow:
-    0 20px 40px rgba(0,0,0,.34),
-    inset 0 1px 0 rgba(255,255,255,.05);
-
   min-height:320px;
+  border-radius:28px;
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
+  border:1px solid var(--line);
+  box-shadow:0 20px 40px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.05);
+  transition:.16s ease;
 }
-
+.card:active{transform:scale(.985)}
 .cardImage{
   width:100%;
-
   aspect-ratio:3/4;
-
-  overflow:hidden;
-
   background:#10141d;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  color:#3f4a5f;
+  font-size:42px;
+  font-weight:900;
 }
-
 .cardImage img{
   width:100%;
   height:100%;
-
   object-fit:cover;
-
   display:block;
 }
-
 .cardBody{
   flex:1;
-
   display:flex;
   flex-direction:column;
-
-  padding:13px;
+  padding:14px;
 }
-
 .name{
   font-size:16px;
   font-weight:900;
-
   line-height:1.12;
-
   margin-bottom:6px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
 }
-
 .meta{
   font-size:11px;
-  color:#aab4c7;
-
+  color:#aeb8ca;
   margin-bottom:12px;
 }
-
 .cardBottom{
   margin-top:auto;
-
   display:flex;
   align-items:flex-end;
   justify-content:space-between;
-
-  gap:8px;
+  gap:10px;
 }
-
-/* ====================================================== */
-/* BADGES */
-/* ====================================================== */
-
 .badges{
   display:flex;
   flex-wrap:wrap;
-
   gap:6px;
 }
-
 .badge{
-  min-height:28px;
-
+  min-height:29px;
   display:inline-flex;
   align-items:center;
   justify-content:center;
-
-  padding:0 10px;
-
+  padding:0 11px;
   border-radius:999px;
-
   font-size:10px;
   font-weight:900;
-
-  border:1px solid rgba(255,255,255,.08);
-
   color:white;
+  border:1px solid rgba(255,255,255,.08);
 }
-
-.H{
-  background:#6f936a;
+.H{background:#6f936a}
+.G{background:#6687c2}
+.T{background:#e28a55}
+.S{background:#c76565}
+.W{background:#8b5cf6}
+.signal{background:rgba(255,255,255,.09);color:#9fe8b5}
+.valueWrap{text-align:right;flex-shrink:0}
+.value{font-size:17px;font-weight:900}
+.small{margin-top:4px;font-size:10px;font-weight:900;color:#9aa3b8}
+.empty{
+  grid-column:1/-1;
+  text-align:center;
+  padding:48px 20px;
+  border-radius:28px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.05);
 }
-
-.G{
-  background:#6687c2;
-}
-
-.T{
-  background:#e28a55;
-}
-
-.S{
-  background:#c76565;
-}
-
-.W{
-  background:#8b5cf6;
-}
-
-.signal{
-  background:rgba(255,255,255,.09);
-  color:#9fe8b5;
-}
-
-/* ====================================================== */
-/* VALUE */
-/* ====================================================== */
-
-.valueWrap{
-  text-align:right;
-}
-
-.value{
-  font-size:17px;
-  font-weight:900;
-}
-
-.small{
-  margin-top:4px;
-
-  font-size:10px;
-  font-weight:800;
-
-  color:#9aa3b7;
-}
-
-/* ====================================================== */
-/* FAB */
-/* ====================================================== */
-
+.emptyTitle{font-size:22px;font-weight:900;margin-bottom:8px}
+.emptyText{color:#9aa3b8}
 .fab{
   position:fixed;
-
   right:max(20px,calc(50vw - 218px));
-
-  bottom:calc(95px + env(safe-area-inset-bottom));
-
-  width:64px;
-  height:64px;
-
+  bottom:calc(98px + env(safe-area-inset-bottom));
+  width:70px;
+  height:70px;
   border:none;
-  border-radius:24px;
-
+  border-radius:27px;
   background:var(--gold);
-
   color:#111;
-
-  font-size:34px;
-
-  box-shadow:
-    0 18px 34px rgba(0,0,0,.36),
-    0 0 28px rgba(246,195,67,.25);
-
+  font-size:38px;
+  box-shadow:0 18px 36px rgba(0,0,0,.34);
   z-index:50;
 }
-
-/* ====================================================== */
-/* BOTTOM NAV */
-/* ====================================================== */
-
 .bottomNav{
   position:fixed;
-
   left:50%;
   transform:translateX(-50%);
-
-  bottom:calc(14px + env(safe-area-inset-bottom));
-
-  width:calc(100% - 32px);
-  max-width:432px;
-
+  bottom:calc(16px + env(safe-area-inset-bottom));
+  width:calc(100% - 28px);
+  max-width:440px;
   display:grid;
   grid-template-columns:repeat(5,1fr);
-
-  gap:2px;
-
-  padding:7px;
-
-  border-radius:30px;
-
-  background:rgba(11,14,20,.82);
-
+  padding:8px;
+  border-radius:32px;
+  background:rgba(10,12,18,.86);
   border:1px solid var(--line);
-
-  backdrop-filter:blur(22px);
-
-  box-shadow:
-    0 22px 46px rgba(0,0,0,.45);
-
+  backdrop-filter:blur(20px);
   z-index:40;
 }
-
 .navBtn{
   border:none;
-
   background:transparent;
-
-  color:#aab4c7;
-
-  border-radius:22px;
-
-  padding:10px 4px;
-
-  font-size:10px;
+  color:#b7bfd1;
+  border-radius:20px;
+  padding:11px 4px;
+  font-size:11px;
   font-weight:900;
 }
-
 .navBtn.active{
-  background:rgba(255,255,255,.09);
-
+  background:rgba(255,255,255,.08);
   color:white;
 }
-
 .navIcon{
   display:block;
-
   font-size:20px;
-
   margin-bottom:4px;
 }
-
-/* ====================================================== */
-/* SHEET */
-/* ====================================================== */
-
 .backdrop{
   position:fixed;
   inset:0;
-
-  background:rgba(0,0,0,.76);
-
+  background:rgba(0,0,0,.74);
   display:flex;
   align-items:flex-end;
-
   backdrop-filter:blur(10px);
-
   z-index:100;
 }
-
 .sheet{
   width:100%;
   max-width:480px;
-
   margin:auto;
-
   background:#151922;
-
   border-radius:30px 30px 0 0;
-
-  border:1px solid var(--line);
-
   padding:22px;
-
-  box-shadow:
-    0 -20px 46px rgba(0,0,0,.45);
+  border:1px solid var(--line);
+  max-height:92vh;
+  overflow:auto;
 }
-
 .handle{
   width:58px;
   height:6px;
-
   border-radius:999px;
-
   background:#343b4b;
-
   margin:0 auto 18px;
 }
-
 .sheet h2{
-  margin:0 0 16px;
-
-  font-size:25px;
+  margin-bottom:16px;
+  font-size:26px;
 }
-
-.input,
-select{
+.input,select{
   width:100%;
-
   border:none;
   outline:none;
-
   background:#222836;
-
   border:1px solid var(--line);
-
   color:white;
-
   border-radius:16px;
-
-  padding:15px;
-
-  font-size:16px;
-
+  padding:16px;
   margin-bottom:10px;
+  font-size:16px;
 }
-
-.input::placeholder{
-  color:#8d96aa;
-}
-
+.input::placeholder{color:#8d96aa}
 .formGrid{
   display:grid;
   grid-template-columns:1fr 1fr;
-
   gap:10px;
 }
-
-.primary,
-.secondary{
+.primary,.secondary,.danger{
   width:100%;
-
   border:none;
-
-  border-radius:17px;
-
-  padding:15px;
-
+  border-radius:18px;
+  padding:16px;
   font-size:16px;
   font-weight:900;
-
   margin-top:8px;
 }
-
-.primary{
-  background:var(--gold);
-  color:#111;
-}
-
-.secondary{
-  background:#242b3a;
-  color:white;
-
+.primary{background:var(--gold);color:#111}
+.secondary{background:#242b3a;color:white;border:1px solid var(--line)}
+.danger{background:#3b1620;color:#fecdd3}
+.detailHero{
+  overflow:hidden;
+  border-radius:30px;
   border:1px solid var(--line);
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
+  box-shadow:0 20px 40px rgba(0,0,0,.34);
+  margin-bottom:14px;
 }
-
-/* ====================================================== */
-/* MOBILE */
-/* ====================================================== */
-
+.detailImage{
+  width:100%;
+  aspect-ratio:4/5;
+  background:#10141d;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#3f4a5f;
+  font-size:52px;
+  font-weight:900;
+}
+.detailImage img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.detailBody{padding:20px}
+.detailTitle{
+  font-size:31px;
+  font-weight:900;
+  line-height:1.04;
+  margin-bottom:8px;
+}
+.detailValue{
+  font-size:42px;
+  font-weight:900;
+  margin-top:18px;
+}
+.detailGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-bottom:14px;
+}
+.detailMini{
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:rgba(255,255,255,.06);
+  padding:15px;
+}
+.detailMini strong{display:block;font-size:18px}
+.detailMini span{
+  display:block;
+  margin-top:4px;
+  font-size:10px;
+  color:#9aa3b8;
+  font-weight:900;
+  text-transform:uppercase;
+}
+.green{color:var(--green)!important}
+.red{color:var(--red)!important}
+.gold{color:var(--gold)!important}
 @media(max-width:390px){
-
-  .grid{
-    gap:10px;
-  }
-
-  .card{
-    min-height:300px;
-  }
-
-  .cardBody{
-    padding:11px;
-  }
-
-  .name{
-    font-size:14px;
-  }
-
-  .meta{
-    font-size:10px;
-  }
-
-  .badge{
-    font-size:9px;
-    min-height:26px;
-  }
-
+  #app{padding-left:12px;padding-right:12px}
+  .grid{gap:10px}
+  .card{min-height:300px;border-radius:24px}
+  .cardBody{padding:12px}
+  .name{font-size:15px}
+  .badge{font-size:9px;min-height:27px;padding:0 9px}
+  .value{font-size:15px}
 }
-
 </style>
 </head>
 
 <body>
-
 <div id="app"></div>
 
 <script>
-
-const STORAGE_KEY="pokevault_clean_rebuild"
+const STORAGE_KEY="pokevault_clean_fixed_v2";
 
 const buckets={
   H:"HOLD",
@@ -661,196 +424,131 @@ const buckets={
   T:"TRADE",
   S:"SELL",
   W:"WISHLIST"
-}
+};
 
-let cards=loadCards()
-
-let search=""
-let modalOpen=false
+let cards=loadCards();
+let screen="vault";
+let modalOpen=false;
+let editOpen=false;
+let selectedId=null;
+let search="";
 
 function loadCards(){
-
   try{
+    const old=
+      localStorage.getItem(STORAGE_KEY)||
+      localStorage.getItem("pokevault_clean_v1")||
+      localStorage.getItem("pokevault_clean_rebuild")||
+      "[]";
 
-    return JSON.parse(
-      localStorage.getItem(STORAGE_KEY)||"[]"
-    )
+    const parsed=JSON.parse(old);
 
+    if(!Array.isArray(parsed)) return [];
+
+    return parsed.map(c=>({
+      id:c.id||Date.now()+Math.random(),
+      name:c.name||"Untitled",
+      image:c.image||c.imageUrl||"",
+      value:Number(c.value||0),
+      bucket:c.bucket||"H",
+      type:c.type||"Raw",
+      anchor:c.anchor||getAnchor(c.name||""),
+      status:c.status||"active",
+      salePrice:Number(c.salePrice||0)
+    }));
   }catch(e){
-
-    return[]
-
+    return [];
   }
-
 }
 
-function saveCards(){
-
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(cards)
-  )
-
-  render()
-
+function save(){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(cards));
+  render();
 }
 
 function money(v){
-
-  return "$"+Number(v||0).toLocaleString()
-
+  return "$"+Number(v||0).toLocaleString();
 }
 
-function render(){
+function safe(v){
+  return String(v??"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;");
+}
 
-  const app=document.getElementById("app")
+function getAnchor(name){
+  const n=String(name||"").toLowerCase();
+  if(n.includes("pikachu")) return "Pikachu";
+  if(n.includes("charizard")) return "Charizard";
+  if(n.includes("umbreon")) return "Umbreon";
+  if(n.includes("mew")) return "Mew";
+  return name ? String(name).split(" ")[0] : "Card";
+}
 
-  const inventory=
-    cards.reduce((a,b)=>a+Number(b.value||0),0)
-
-  app.innerHTML=`
-
-    <header class="header">
-
-      <button class="iconBtn">☁</button>
-
-      <div class="title">PokéVault</div>
-
-      <button class="iconBtn">♡</button>
-
-    </header>
-
-    <div class="searchRow">
-
-      <input
-        class="search"
-        placeholder="Search collection"
-        value="${search}"
-        oninput="setSearch(this.value)"
-      />
-
-      <button class="filterBtn">☰</button>
-
-    </div>
-
-    <div class="summary">
-      View: GRID · Stable Rebuild · Cards: ${cards.length}
-    </div>
-
-    <section class="stats">
-
-      <div class="stat">
-        <strong>${money(inventory)}</strong>
-        <span>Inventory</span>
-      </div>
-
-      <div class="stat">
-        <strong>${cards.length}</strong>
-        <span>Owned</span>
-      </div>
-
-      <div class="stat">
-        <strong class="green">$0</strong>
-        <span>Returned</span>
-      </div>
-
-      <div class="stat">
-        <strong class="green">+$0</strong>
-        <span>Realized</span>
-      </div>
-
-    </section>
-
-    <section class="grid">
-
-      ${
-        filteredCards().length
-        ? filteredCards().map(cardHTML).join("")
-        : emptyHTML()
-      }
-
-    </section>
-
-    <button class="fab" onclick="openModal()">
-      +
-    </button>
-
-    ${bottomNav()}
-
-    ${
-      modalOpen
-      ? modalHTML()
-      : ""
-    }
-
-  `
-
+function activeCards(){
+  if(screen==="wishlist") return cards.filter(c=>c.bucket==="W");
+  if(screen==="sold") return cards.filter(c=>c.status==="sold");
+  return cards.filter(c=>c.status!=="sold" && c.bucket!=="W");
 }
 
 function filteredCards(){
+  return activeCards().filter(c=>
+    String(c.name||"").toLowerCase().includes(search.toLowerCase())
+  );
+}
 
-  return cards.filter(c=>
-    c.name.toLowerCase().includes(
-      search.toLowerCase()
-    )
-  )
+function stats(){
+  const owned=cards.filter(c=>c.status!=="sold" && c.bucket!=="W");
+  const sold=cards.filter(c=>c.status==="sold");
+  const inventory=owned.reduce((a,b)=>a+Number(b.value||0),0);
+  const returned=sold.reduce((a,b)=>a+Number(b.salePrice||0),0);
+  const realized=sold.reduce((a,b)=>a+(Number(b.salePrice||0)-Number(b.value||0)),0);
+  return{owned,sold,inventory,returned,realized};
+}
 
+function imageHTML(c,cls="cardImage"){
+  if(c.image && String(c.image).trim()){
+    return `
+      <div class="${cls}">
+        <img
+          src="${safe(c.image)}"
+          alt="${safe(c.name)}"
+          onerror="this.remove();this.parentElement.innerHTML='▧';"
+        />
+      </div>
+    `;
+  }
+
+  return `<div class="${cls}">▧</div>`;
 }
 
 function cardHTML(c){
+  const bucket=c.bucket||"H";
 
-  return`
+  return `
+    <div class="card" onclick="openDetail(${Number(c.id)})">
 
-    <div class="card">
-
-      <div class="cardImage">
-
-        ${
-          c.image
-          ? `<img src="${c.image}" />`
-          : ""
-        }
-
-      </div>
+      ${imageHTML(c)}
 
       <div class="cardBody">
 
         <div>
-
-          <div class="name">
-            ${c.name}
-          </div>
-
-          <div class="meta">
-            ${c.type} · ${c.anchor}
-          </div>
-
+          <div class="name">${safe(c.name)}</div>
+          <div class="meta">${safe(c.type)} · ${safe(c.anchor||getAnchor(c.name))}</div>
         </div>
 
         <div class="cardBottom">
 
           <div class="badges">
-
-            <span class="badge ${c.bucket}">
-              ${buckets[c.bucket]}
-            </span>
-
-            <span class="badge signal">
-              STRONG
-            </span>
-
+            <span class="badge ${bucket}">${buckets[bucket]||"HOLD"}</span>
+            <span class="badge signal">ACTIVE</span>
           </div>
 
           <div class="valueWrap">
-
-            <div class="value">
-              ${money(c.value)}
-            </div>
-
-            <div class="small">
-              Cost
-            </div>
-
+            <div class="value">${money(c.value)}</div>
+            <div class="small">Cost</div>
           </div>
 
         </div>
@@ -858,239 +556,305 @@ function cardHTML(c){
       </div>
 
     </div>
+  `;
+}
 
-  `
+function render(){
+  const app=document.getElementById("app");
+  const s=stats();
 
+  if(screen==="detail"){
+    app.innerHTML=detailHTML();
+    return;
+  }
+
+  const list=filteredCards();
+
+  app.innerHTML=`
+
+    <div class="top">
+      <button class="iconBtn" onclick="setScreen('vault')">☁</button>
+      <h1>PokéVault</h1>
+      <button class="iconBtn" onclick="setScreen('wishlist')">♡</button>
+    </div>
+
+    <div class="searchRow">
+      <input
+        class="search"
+        placeholder="Search collection"
+        value="${safe(search)}"
+        oninput="setSearch(this.value)"
+      />
+      <button class="filterBtn">☰</button>
+    </div>
+
+    <div class="summary">
+      View: GRID · Screen: ${screen.toUpperCase()} · Cards: ${list.length}
+    </div>
+
+    ${screen==="vault"?`
+      <div class="stats">
+        <div class="stat"><strong>${money(s.inventory)}</strong><span>Inventory</span></div>
+        <div class="stat"><strong>${s.owned.length}</strong><span>Owned</span></div>
+        <div class="stat"><strong class="green">${money(s.returned)}</strong><span>Returned</span></div>
+        <div class="stat"><strong class="${s.realized>=0?"green":"red"}">${s.realized>=0?"+":""}${money(s.realized)}</strong><span>Realized</span></div>
+      </div>
+    `:""}
+
+    <div class="grid ${list.length===1?"one":""}">
+      ${list.length?list.map(cardHTML).join(""):emptyHTML()}
+    </div>
+
+    <button class="fab" onclick="openModal()">+</button>
+
+    ${navHTML()}
+
+    ${modalOpen?modalHTML():""}
+    ${editOpen?editHTML():""}
+  `;
+}
+
+function detailHTML(){
+  const c=cards.find(x=>Number(x.id)===Number(selectedId));
+
+  if(!c){
+    screen="vault";
+    return "";
+  }
+
+  return `
+    <div class="top">
+      <button class="iconBtn" onclick="setScreen('vault')">‹</button>
+      <h1>Card</h1>
+      <button class="iconBtn">☆</button>
+    </div>
+
+    <div class="detailHero">
+      ${imageHTML(c,"detailImage")}
+
+      <div class="detailBody">
+        <div class="detailTitle">${safe(c.name)}</div>
+        <div class="meta">${safe(c.type)} · ${safe(c.anchor||getAnchor(c.name))}</div>
+
+        <div class="badges" style="margin-top:12px">
+          <span class="badge ${c.bucket||"H"}">${buckets[c.bucket||"H"]}</span>
+          <span class="badge signal">${c.status==="sold"?"SOLD":"ACTIVE"}</span>
+        </div>
+
+        <div class="detailValue">${money(c.value)}</div>
+        <div class="small">Current Cost</div>
+
+        <button class="primary" onclick="openEdit()">Manage Card</button>
+      </div>
+    </div>
+
+    <div class="detailGrid">
+      <div class="detailMini"><strong>${money(c.value)}</strong><span>Cost</span></div>
+      <div class="detailMini"><strong>${c.bucket||"H"}</strong><span>Bucket</span></div>
+      <div class="detailMini"><strong>${safe(c.type)}</strong><span>Type</span></div>
+      <div class="detailMini"><strong>${safe(c.status||"active")}</strong><span>Status</span></div>
+    </div>
+
+    ${navHTML()}
+    ${editOpen?editHTML():""}
+  `;
 }
 
 function emptyHTML(){
-
-  return`
-
-    <div
-      style="
-        grid-column:1/-1;
-        text-align:center;
-        padding:40px 20px;
-        border-radius:26px;
-        border:1px solid rgba(255,255,255,.08);
-        background:rgba(255,255,255,.05);
-      "
-    >
-
-      <div
-        style="
-          font-size:22px;
-          font-weight:900;
-          margin-bottom:8px;
-        "
-      >
-        No cards yet
-      </div>
-
-      <div
-        style="
-          color:#9aa3b7;
-        "
-      >
-        Tap + to add your first card
-      </div>
-
+  return `
+    <div class="empty">
+      <div class="emptyTitle">No cards here</div>
+      <div class="emptyText">Tap + to add a card.</div>
     </div>
-
-  `
-
+  `;
 }
 
-function bottomNav(){
-
-  return`
-
-    <nav class="bottomNav">
-
-      <button class="navBtn active">
-        <span class="navIcon">▦</span>
-        Vault
-      </button>
-
-      <button class="navBtn">
-        <span class="navIcon">♡</span>
-        Wishlist
-      </button>
-
-      <button class="navBtn">
-        <span class="navIcon">▤</span>
-        Analytics
-      </button>
-
-      <button class="navBtn">
-        <span class="navIcon">◉</span>
-        Sold
-      </button>
-
-      <button class="navBtn">
-        <span class="navIcon">⌕</span>
-        Search
-      </button>
-
-    </nav>
-
-  `
-
+function navHTML(){
+  return `
+    <div class="bottomNav">
+      <button class="navBtn ${screen==="vault"?"active":""}" onclick="setScreen('vault')"><span class="navIcon">▦</span>Vault</button>
+      <button class="navBtn ${screen==="wishlist"?"active":""}" onclick="setScreen('wishlist')"><span class="navIcon">♡</span>Wishlist</button>
+      <button class="navBtn ${screen==="analytics"?"active":""}" onclick="setScreen('analytics')"><span class="navIcon">▤</span>Analytics</button>
+      <button class="navBtn ${screen==="sold"?"active":""}" onclick="setScreen('sold')"><span class="navIcon">◉</span>Sold</button>
+      <button class="navBtn" onclick="setScreen('vault')"><span class="navIcon">⌕</span>Search</button>
+    </div>
+  `;
 }
 
 function modalHTML(){
-
-  return`
-
-    <div
-      class="backdrop"
-      onclick="closeModal()"
-    >
-
-      <div
-        class="sheet"
-        onclick="event.stopPropagation()"
-      >
-
-        <div class="handle"></div>
-
+  return `
+    <div class="backdrop" onclick="closeModal()">
+      <div class="sheet" onclick="event.stopPropagation()">
         <h2>Add Card</h2>
 
-        <input
-          id="name"
-          class="input"
-          placeholder="Card name"
-        />
+        <input id="name" class="input" placeholder="Card name" />
+        <input id="image" class="input" placeholder="Image URL optional" />
+        <input id="value" class="input" type="number" placeholder="Cost" />
 
-        <div class="formGrid">
+        <select id="bucket">
+          <option value="H">Hold</option>
+          <option value="G">Grade</option>
+          <option value="T">Trade</option>
+          <option value="S">Sell</option>
+          <option value="W">Wishlist</option>
+        </select>
 
-          <input
-            id="value"
-            class="input"
-            type="number"
-            placeholder="Cost $"
-          />
+        <select id="type">
+          <option>Raw</option>
+          <option>Slab</option>
+        </select>
 
-          <input
-            id="image"
-            class="input"
-            placeholder="Image URL"
-          />
-
-        </div>
-
-        <div class="formGrid">
-
-          <select id="type">
-
-            <option>Raw</option>
-            <option>Slab</option>
-
-          </select>
-
-          <select id="bucket">
-
-            <option value="H">Hold</option>
-            <option value="G">Grade</option>
-            <option value="T">Trade</option>
-            <option value="S">Sell</option>
-            <option value="W">Wishlist</option>
-
-          </select>
-
-        </div>
-
-        <button
-          class="primary"
-          onclick="addCard()"
-        >
-          Save Card
-        </button>
-
-        <button
-          class="secondary"
-          onclick="closeModal()"
-        >
-          Cancel
-        </button>
-
+        <button class="primary" onclick="addCard()">Save Card</button>
+        <button class="secondary" onclick="closeModal()">Cancel</button>
       </div>
-
     </div>
+  `;
+}
 
-  `
+function editHTML(){
+  const c=cards.find(x=>Number(x.id)===Number(selectedId));
+  if(!c)return"";
 
+  return `
+    <div class="backdrop" onclick="closeEdit()">
+      <div class="sheet" onclick="event.stopPropagation()">
+        <h2>Manage Card</h2>
+
+        <input id="editName" class="input" value="${safe(c.name)}" />
+        <input id="editImage" class="input" value="${safe(c.image)}" />
+        <input id="editValue" class="input" type="number" value="${Number(c.value||0)}" />
+
+        <select id="editBucket">
+          ${Object.entries(buckets).map(([k,v])=>`
+            <option value="${k}" ${c.bucket===k?"selected":""}>${v}</option>
+          `).join("")}
+        </select>
+
+        <select id="editType">
+          <option ${c.type==="Raw"?"selected":""}>Raw</option>
+          <option ${c.type==="Slab"?"selected":""}>Slab</option>
+        </select>
+
+        <button class="primary" onclick="saveEdit()">Save Changes</button>
+        <button class="secondary" onclick="markSold()">Mark Sold</button>
+        <button class="danger" onclick="deleteCard()">Delete Card</button>
+        <button class="secondary" onclick="closeEdit()">Cancel</button>
+      </div>
+    </div>
+  `;
 }
 
 function addCard(){
-
-  const name=
-    document.getElementById("name").value.trim()
+  const name=document.getElementById("name").value.trim();
 
   if(!name){
-
-    alert("Enter card name")
-
-    return
-
+    alert("Enter card name");
+    return;
   }
 
   cards.unshift({
-
     id:Date.now(),
-
     name,
+    image:document.getElementById("image").value.trim(),
+    value:Number(document.getElementById("value").value||0),
+    bucket:document.getElementById("bucket").value,
+    type:document.getElementById("type").value,
+    anchor:getAnchor(name),
+    status:"active",
+    salePrice:0
+  });
 
-    value:Number(
-      document.getElementById("value").value||0
-    ),
+  modalOpen=false;
+  save();
+}
 
-    image:
-      document.getElementById("image").value,
+function saveEdit(){
+  const c=cards.find(x=>Number(x.id)===Number(selectedId));
+  if(!c)return;
 
-    type:
-      document.getElementById("type").value,
+  c.name=document.getElementById("editName").value.trim()||"Untitled";
+  c.image=document.getElementById("editImage").value.trim();
+  c.value=Number(document.getElementById("editValue").value||0);
+  c.bucket=document.getElementById("editBucket").value;
+  c.type=document.getElementById("editType").value;
+  c.anchor=getAnchor(c.name);
 
-    bucket:
-      document.getElementById("bucket").value,
+  if(c.bucket==="W") c.status="active";
 
-    anchor:name.split(" ")[0]
+  editOpen=false;
+  save();
+}
 
-  })
+function markSold(){
+  const c=cards.find(x=>Number(x.id)===Number(selectedId));
+  if(!c)return;
 
-  modalOpen=false
+  const sale=Number(prompt("Sale price?")||0);
 
-  saveCards()
+  c.status="sold";
+  c.salePrice=sale;
 
+  editOpen=false;
+  screen="sold";
+  save();
+}
+
+function deleteCard(){
+  if(prompt("Type DELETE to confirm")!=="DELETE")return;
+
+  cards=cards.filter(x=>Number(x.id)!==Number(selectedId));
+  selectedId=null;
+  editOpen=false;
+  screen="vault";
+  save();
+}
+
+function openDetail(id){
+  selectedId=id;
+  screen="detail";
+  render();
+}
+
+function openEdit(){
+  editOpen=true;
+  render();
+}
+
+function closeEdit(){
+  editOpen=false;
+  render();
 }
 
 function openModal(){
-
-  modalOpen=true
-
-  render()
-
+  modalOpen=true;
+  render();
 }
 
 function closeModal(){
+  modalOpen=false;
+  render();
+}
 
-  modalOpen=false
+function setScreen(s){
+  screen=s;
+  selectedId=null;
+  modalOpen=false;
+  editOpen=false;
 
-  render()
+  if(s==="analytics"){
+    alert("Analytics will be rebuilt after the card system is stable.");
+    screen="vault";
+  }
 
+  render();
 }
 
 function setSearch(v){
-
-  search=v
-
-  render()
-
+  search=v;
+  render();
 }
 
-render()
-
+render();
 </script>
 
 </body>
