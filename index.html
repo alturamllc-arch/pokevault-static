@@ -1,1 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover"
+/>
 
+<title>PokéVault</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+:root{
+  --bg:#090b10;
+  --surface:#151922;
+  --line:rgba(255,255,255,.08);
+
+  --text:#f8fafc;
+  --muted:#9aa3b7;
+
+  --gold:#f6c343;
+  --green:#4ade80;
+  --blue:#7ea6ff;
+  --red:#fb7185;
+  --purple:#a78bfa;
+}
+
+html,
+body{
+  margin:0;
+  min-height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      #2c3445 0%,
+      #151922 38%,
+      #080a0f 100%
+    );
+
+  overflow-x:hidden;
+}
+
+button,
+input,
+select{
+  font-family:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+#app{
+  width:100%;
+  max-width:480px;
+  margin:auto;
+
+  min-height:100vh;
+
+  padding:
+    12px
+    14px
+    calc(120px + env(safe-area-inset-bottom));
+}
+
+/* ====================================================== */
+/* HEADER */
+/* ====================================================== */
+
+.header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  margin-bottom:12px;
+}
+
+.title{
+  font-size:30px;
+  font-weight:900;
+  letter-spacing:-1px;
+}
+
+.iconBtn{
+  width:50px;
+  height:50px;
+
+  border:none;
+  border-radius:18px;
+
+  background:rgba(255,255,255,.07);
+
+  border:1px solid var(--line);
+
+  color:white;
+
+  font-size:20px;
+
+  backdrop-filter:blur(16px);
+
+  box-shadow:
+    0 10px 24px rgba(0,0,0,.24);
+}
+
+/* ====================================================== */
+/* SEARCH */
+/* ====================================================== */
+
+.searchRow{
+  display:flex;
+  gap:10px;
+
+  margin-bottom:10px;
+}
+
+.search{
+  flex:1;
+
+  height:54px;
+
+  border:none;
+  outline:none;
+
+  border-radius:20px;
+
+  padding:0 16px;
+
+  background:rgba(255,255,255,.07);
+
+  border:1px solid var(--line);
+
+  color:white;
+
+  font-size:16px;
+}
+
+.search::placeholder{
+  color:#9aa3b7;
+}
+
+.filterBtn{
+  width:54px;
+  height:54px;
+
+  border:none;
+  border-radius:20px;
+
+  background:rgba(255,255,255,.08);
+
+  border:1px solid var(--line);
+
+  color:white;
+
+  font-size:22px;
+}
+
+/* ====================================================== */
+/* SUMMARY */
+/* ====================================================== */
+
+.summary{
+  border-radius:18px;
+
+  background:rgba(255,255,255,.05);
+
+  border:1px solid var(--line);
+
+  padding:12px 14px;
+
+  font-size:12px;
+  font-weight:900;
+
+  color:#b8c0d0;
+
+  margin-bottom:12px;
+}
+
+/* ====================================================== */
+/* STATS */
+/* ====================================================== */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+
+  gap:8px;
+
+  margin-bottom:14px;
+}
+
+.stat{
+  background:rgba(255,255,255,.06);
+
+  border:1px solid var(--line);
+
+  border-radius:18px;
+
+  padding:12px 6px;
+
+  text-align:center;
+}
+
+.stat strong{
+  display:block;
+
+  font-size:15px;
+  font-weight:900;
+}
+
+.stat span{
+  display:block;
+
+  margin-top:5px;
+
+  font-size:9px;
+  font-weight:900;
+
+  color:#9aa3b7;
+
+  text-transform:uppercase;
+}
+
+/* ====================================================== */
+/* GRID */
+/* ====================================================== */
+
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+
+  gap:14px;
+}
+
+/* ====================================================== */
+/* CARD */
+/* ====================================================== */
+
+.card{
+  display:flex;
+  flex-direction:column;
+
+  overflow:hidden;
+
+  border-radius:26px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.07),
+      rgba(255,255,255,.03)
+    );
+
+  border:1px solid var(--line);
+
+  box-shadow:
+    0 20px 40px rgba(0,0,0,.34),
+    inset 0 1px 0 rgba(255,255,255,.05);
+
+  min-height:320px;
+}
+
+.cardImage{
+  width:100%;
+
+  aspect-ratio:3/4;
+
+  overflow:hidden;
+
+  background:#10141d;
+}
+
+.cardImage img{
+  width:100%;
+  height:100%;
+
+  object-fit:cover;
+
+  display:block;
+}
+
+.cardBody{
+  flex:1;
+
+  display:flex;
+  flex-direction:column;
+
+  padding:13px;
+}
+
+.name{
+  font-size:16px;
+  font-weight:900;
+
+  line-height:1.12;
+
+  margin-bottom:6px;
+}
+
+.meta{
+  font-size:11px;
+  color:#aab4c7;
+
+  margin-bottom:12px;
+}
+
+.cardBottom{
+  margin-top:auto;
+
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+
+  gap:8px;
+}
+
+/* ====================================================== */
+/* BADGES */
+/* ====================================================== */
+
+.badges{
+  display:flex;
+  flex-wrap:wrap;
+
+  gap:6px;
+}
+
+.badge{
+  min-height:28px;
+
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:0 10px;
+
+  border-radius:999px;
+
+  font-size:10px;
+  font-weight:900;
+
+  border:1px solid rgba(255,255,255,.08);
+
+  color:white;
+}
+
+.H{
+  background:#6f936a;
+}
+
+.G{
+  background:#6687c2;
+}
+
+.T{
+  background:#e28a55;
+}
+
+.S{
+  background:#c76565;
+}
+
+.W{
+  background:#8b5cf6;
+}
+
+.signal{
+  background:rgba(255,255,255,.09);
+  color:#9fe8b5;
+}
+
+/* ====================================================== */
+/* VALUE */
+/* ====================================================== */
+
+.valueWrap{
+  text-align:right;
+}
+
+.value{
+  font-size:17px;
+  font-weight:900;
+}
+
+.small{
+  margin-top:4px;
+
+  font-size:10px;
+  font-weight:800;
+
+  color:#9aa3b7;
+}
+
+/* ====================================================== */
+/* FAB */
+/* ====================================================== */
+
+.fab{
+  position:fixed;
+
+  right:max(20px,calc(50vw - 218px));
+
+  bottom:calc(95px + env(safe-area-inset-bottom));
+
+  width:64px;
+  height:64px;
+
+  border:none;
+  border-radius:24px;
+
+  background:var(--gold);
+
+  color:#111;
+
+  font-size:34px;
+
+  box-shadow:
+    0 18px 34px rgba(0,0,0,.36),
+    0 0 28px rgba(246,195,67,.25);
+
+  z-index:50;
+}
+
+/* ====================================================== */
+/* BOTTOM NAV */
+/* ====================================================== */
+
+.bottomNav{
+  position:fixed;
+
+  left:50%;
+  transform:translateX(-50%);
+
+  bottom:calc(14px + env(safe-area-inset-bottom));
+
+  width:calc(100% - 32px);
+  max-width:432px;
+
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+
+  gap:2px;
+
+  padding:7px;
+
+  border-radius:30px;
+
+  background:rgba(11,14,20,.82);
+
+  border:1px solid var(--line);
+
+  backdrop-filter:blur(22px);
+
+  box-shadow:
+    0 22px 46px rgba(0,0,0,.45);
+
+  z-index:40;
+}
+
+.navBtn{
+  border:none;
+
+  background:transparent;
+
+  color:#aab4c7;
+
+  border-radius:22px;
+
+  padding:10px 4px;
+
+  font-size:10px;
+  font-weight:900;
+}
+
+.navBtn.active{
+  background:rgba(255,255,255,.09);
+
+  color:white;
+}
+
+.navIcon{
+  display:block;
+
+  font-size:20px;
+
+  margin-bottom:4px;
+}
+
+/* ====================================================== */
+/* SHEET */
+/* ====================================================== */
+
+.backdrop{
+  position:fixed;
+  inset:0;
+
+  background:rgba(0,0,0,.76);
+
+  display:flex;
+  align-items:flex-end;
+
+  backdrop-filter:blur(10px);
+
+  z-index:100;
+}
+
+.sheet{
+  width:100%;
+  max-width:480px;
+
+  margin:auto;
+
+  background:#151922;
+
+  border-radius:30px 30px 0 0;
+
+  border:1px solid var(--line);
+
+  padding:22px;
+
+  box-shadow:
+    0 -20px 46px rgba(0,0,0,.45);
+}
+
+.handle{
+  width:58px;
+  height:6px;
+
+  border-radius:999px;
+
+  background:#343b4b;
+
+  margin:0 auto 18px;
+}
+
+.sheet h2{
+  margin:0 0 16px;
+
+  font-size:25px;
+}
+
+.input,
+select{
+  width:100%;
+
+  border:none;
+  outline:none;
+
+  background:#222836;
+
+  border:1px solid var(--line);
+
+  color:white;
+
+  border-radius:16px;
+
+  padding:15px;
+
+  font-size:16px;
+
+  margin-bottom:10px;
+}
+
+.input::placeholder{
+  color:#8d96aa;
+}
+
+.formGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+
+  gap:10px;
+}
+
+.primary,
+.secondary{
+  width:100%;
+
+  border:none;
+
+  border-radius:17px;
+
+  padding:15px;
+
+  font-size:16px;
+  font-weight:900;
+
+  margin-top:8px;
+}
+
+.primary{
+  background:var(--gold);
+  color:#111;
+}
+
+.secondary{
+  background:#242b3a;
+  color:white;
+
+  border:1px solid var(--line);
+}
+
+/* ====================================================== */
+/* MOBILE */
+/* ====================================================== */
+
+@media(max-width:390px){
+
+  .grid{
+    gap:10px;
+  }
+
+  .card{
+    min-height:300px;
+  }
+
+  .cardBody{
+    padding:11px;
+  }
+
+  .name{
+    font-size:14px;
+  }
+
+  .meta{
+    font-size:10px;
+  }
+
+  .badge{
+    font-size:9px;
+    min-height:26px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="app"></div>
+
+<script>
+
+const STORAGE_KEY="pokevault_clean_rebuild"
+
+const buckets={
+  H:"HOLD",
+  G:"GRADE",
+  T:"TRADE",
+  S:"SELL",
+  W:"WISHLIST"
+}
+
+let cards=loadCards()
+
+let search=""
+let modalOpen=false
+
+function loadCards(){
+
+  try{
+
+    return JSON.parse(
+      localStorage.getItem(STORAGE_KEY)||"[]"
+    )
+
+  }catch(e){
+
+    return[]
+
+  }
+
+}
+
+function saveCards(){
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(cards)
+  )
+
+  render()
+
+}
+
+function money(v){
+
+  return "$"+Number(v||0).toLocaleString()
+
+}
+
+function render(){
+
+  const app=document.getElementById("app")
+
+  const inventory=
+    cards.reduce((a,b)=>a+Number(b.value||0),0)
+
+  app.innerHTML=`
+
+    <header class="header">
+
+      <button class="iconBtn">☁</button>
+
+      <div class="title">PokéVault</div>
+
+      <button class="iconBtn">♡</button>
+
+    </header>
+
+    <div class="searchRow">
+
+      <input
+        class="search"
+        placeholder="Search collection"
+        value="${search}"
+        oninput="setSearch(this.value)"
+      />
+
+      <button class="filterBtn">☰</button>
+
+    </div>
+
+    <div class="summary">
+      View: GRID · Stable Rebuild · Cards: ${cards.length}
+    </div>
+
+    <section class="stats">
+
+      <div class="stat">
+        <strong>${money(inventory)}</strong>
+        <span>Inventory</span>
+      </div>
+
+      <div class="stat">
+        <strong>${cards.length}</strong>
+        <span>Owned</span>
+      </div>
+
+      <div class="stat">
+        <strong class="green">$0</strong>
+        <span>Returned</span>
+      </div>
+
+      <div class="stat">
+        <strong class="green">+$0</strong>
+        <span>Realized</span>
+      </div>
+
+    </section>
+
+    <section class="grid">
+
+      ${
+        filteredCards().length
+        ? filteredCards().map(cardHTML).join("")
+        : emptyHTML()
+      }
+
+    </section>
+
+    <button class="fab" onclick="openModal()">
+      +
+    </button>
+
+    ${bottomNav()}
+
+    ${
+      modalOpen
+      ? modalHTML()
+      : ""
+    }
+
+  `
+
+}
+
+function filteredCards(){
+
+  return cards.filter(c=>
+    c.name.toLowerCase().includes(
+      search.toLowerCase()
+    )
+  )
+
+}
+
+function cardHTML(c){
+
+  return`
+
+    <div class="card">
+
+      <div class="cardImage">
+
+        ${
+          c.image
+          ? `<img src="${c.image}" />`
+          : ""
+        }
+
+      </div>
+
+      <div class="cardBody">
+
+        <div>
+
+          <div class="name">
+            ${c.name}
+          </div>
+
+          <div class="meta">
+            ${c.type} · ${c.anchor}
+          </div>
+
+        </div>
+
+        <div class="cardBottom">
+
+          <div class="badges">
+
+            <span class="badge ${c.bucket}">
+              ${buckets[c.bucket]}
+            </span>
+
+            <span class="badge signal">
+              STRONG
+            </span>
+
+          </div>
+
+          <div class="valueWrap">
+
+            <div class="value">
+              ${money(c.value)}
+            </div>
+
+            <div class="small">
+              Cost
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `
+
+}
+
+function emptyHTML(){
+
+  return`
+
+    <div
+      style="
+        grid-column:1/-1;
+        text-align:center;
+        padding:40px 20px;
+        border-radius:26px;
+        border:1px solid rgba(255,255,255,.08);
+        background:rgba(255,255,255,.05);
+      "
+    >
+
+      <div
+        style="
+          font-size:22px;
+          font-weight:900;
+          margin-bottom:8px;
+        "
+      >
+        No cards yet
+      </div>
+
+      <div
+        style="
+          color:#9aa3b7;
+        "
+      >
+        Tap + to add your first card
+      </div>
+
+    </div>
+
+  `
+
+}
+
+function bottomNav(){
+
+  return`
+
+    <nav class="bottomNav">
+
+      <button class="navBtn active">
+        <span class="navIcon">▦</span>
+        Vault
+      </button>
+
+      <button class="navBtn">
+        <span class="navIcon">♡</span>
+        Wishlist
+      </button>
+
+      <button class="navBtn">
+        <span class="navIcon">▤</span>
+        Analytics
+      </button>
+
+      <button class="navBtn">
+        <span class="navIcon">◉</span>
+        Sold
+      </button>
+
+      <button class="navBtn">
+        <span class="navIcon">⌕</span>
+        Search
+      </button>
+
+    </nav>
+
+  `
+
+}
+
+function modalHTML(){
+
+  return`
+
+    <div
+      class="backdrop"
+      onclick="closeModal()"
+    >
+
+      <div
+        class="sheet"
+        onclick="event.stopPropagation()"
+      >
+
+        <div class="handle"></div>
+
+        <h2>Add Card</h2>
+
+        <input
+          id="name"
+          class="input"
+          placeholder="Card name"
+        />
+
+        <div class="formGrid">
+
+          <input
+            id="value"
+            class="input"
+            type="number"
+            placeholder="Cost $"
+          />
+
+          <input
+            id="image"
+            class="input"
+            placeholder="Image URL"
+          />
+
+        </div>
+
+        <div class="formGrid">
+
+          <select id="type">
+
+            <option>Raw</option>
+            <option>Slab</option>
+
+          </select>
+
+          <select id="bucket">
+
+            <option value="H">Hold</option>
+            <option value="G">Grade</option>
+            <option value="T">Trade</option>
+            <option value="S">Sell</option>
+            <option value="W">Wishlist</option>
+
+          </select>
+
+        </div>
+
+        <button
+          class="primary"
+          onclick="addCard()"
+        >
+          Save Card
+        </button>
+
+        <button
+          class="secondary"
+          onclick="closeModal()"
+        >
+          Cancel
+        </button>
+
+      </div>
+
+    </div>
+
+  `
+
+}
+
+function addCard(){
+
+  const name=
+    document.getElementById("name").value.trim()
+
+  if(!name){
+
+    alert("Enter card name")
+
+    return
+
+  }
+
+  cards.unshift({
+
+    id:Date.now(),
+
+    name,
+
+    value:Number(
+      document.getElementById("value").value||0
+    ),
+
+    image:
+      document.getElementById("image").value,
+
+    type:
+      document.getElementById("type").value,
+
+    bucket:
+      document.getElementById("bucket").value,
+
+    anchor:name.split(" ")[0]
+
+  })
+
+  modalOpen=false
+
+  saveCards()
+
+}
+
+function openModal(){
+
+  modalOpen=true
+
+  render()
+
+}
+
+function closeModal(){
+
+  modalOpen=false
+
+  render()
+
+}
+
+function setSearch(v){
+
+  search=v
+
+  render()
+
+}
+
+render()
+
+</script>
+
+</body>
+</html>
