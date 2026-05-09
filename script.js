@@ -575,3 +575,5 @@ function init() {
   initEvents();
   render();
 }
+
+document.addEventListener('DOMContentLoaded', init);
