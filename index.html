@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+  <title>PokéVault</title>
+  <meta name="description" content="Your personal Pokémon card collection vault." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+
+  <div id="app">
+
+    <header class="app-header">
+      <div class="header-top">
+        <div class="header-brand">
+          <span class="brand-icon">⚡</span>
+          <h1 class="app-title">PokéVault</h1>
+        </div>
+        <div class="header-stats" id="header-stats"></div>
+        <button class="header-backup-btn" id="btn-backup" aria-label="Backup & Export">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span class="backup-reminder-dot" id="backup-reminder-dot" hidden></span>
+        </button>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/><path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </span>
+        <input class="search-input" type="search" id="search-input" placeholder="Search cards…" autocomplete="off" spellcheck="false" />
+        <button class="search-clear" id="search-clear" aria-label="Clear search" hidden>✕</button>
+      </div>
+    </header>
+
+    <main class="main-content" id="main-content">
+      <div class="section-header">
+        <h2 class="section-title" id="section-title">My Collection</h2>
+        <span class="section-count" id="section-count">0 cards</span>
+      </div>
+      <div class="card-grid" id="card-grid"></div>
+      <div class="empty-state" id="empty-state" hidden>
+        <div class="empty-icon">🃏</div>
+        <p class="empty-title">No cards here</p>
+        <p class="empty-sub">Tap <strong>+</strong> to add your first card</p>
+      </div>
+    </main>
+
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="nav-btn active" data-view="home" aria-label="Vault">
+        <svg class="nav-icon" width="22" height="22" fill="none" viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="2" stroke="currentColor" stroke-width="2"/><rect x="13" y="3" width="8" height="8" rx="2" stroke="currentColor" stroke-width="2"/><rect x="3" y="13" width="8" height="8" rx="2" stroke="currentColor" stroke-width="2"/><rect x="13" y="13" width="8" height="8" rx="2" stroke="currentColor" stroke-width="2"/></svg>
+        <span class="nav-label">Vault</span>
+      </button>
+      <button class="nav-btn" data-view="wishlist" aria-label="Wishlist">
+        <svg class="nav-icon" width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span class="nav-label">Wishlist</span>
+      </button>
+      <button class="nav-btn" data-view="sold" aria-label="Sold">
+        <svg class="nav-icon" width="22" height="22" fill="none" viewBox="0 0 24 24"><path d="M12 2 2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span class="nav-label">Sold</span>
+      </button>
+    </nav>
+
+    <button class="fab" id="fab" aria-label="Add card">
+      <svg width="24" height="24" fill="none" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+    </button>
+
+  </div>
+
+  <!-- Detail overlay -->
+  <div class="overlay" id="detail-overlay" hidden>
+    <div class="detail-panel" id="detail-panel">
+      <button class="overlay-close" id="detail-close" aria-label="Close">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <div class="detail-content" id="detail-content"></div>
+    </div>
+  </div>
+
+  <!-- Add/Edit modal -->
+  <div class="overlay" id="modal-overlay" hidden>
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Add Card</h2>
+        <button class="overlay-close" id="modal-close" aria-label="Close">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="card-form" novalidate>
+          <input type="hidden" id="field-id" />
+
+          <div class="form-group">
+            <label class="form-label" for="field-name">Card Name <span class="required">*</span></label>
+            <input class="form-input" type="text" id="field-name" placeholder="e.g. Charizard" autocomplete="off" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="field-type">Type</label>
+              <select class="form-input" id="field-type">
+                <option value="Normal">Normal</option>
+                <option value="Fire">🔥 Fire</option>
+                <option value="Water">💧 Water</option>
+                <option value="Grass">🌿 Grass</option>
+                <option value="Electric">⚡ Electric</option>
+                <option value="Psychic">🔮 Psychic</option>
+                <option value="Dark">🌑 Dark</option>
+                <option value="Steel">⚙️ Steel</option>
+                <option value="Dragon">🐉 Dragon</option>
+                <option value="Fairy">🧚 Fairy</option>
+                <option value="Fighting">🥊 Fighting</option>
+                <option value="Flying">🦅 Flying</option>
+                <option value="Poison">☠️ Poison</option>
+                <option value="Ground">🪨 Ground</option>
+                <option value="Rock">🪵 Rock</option>
+                <option value="Bug">🐛 Bug</option>
+                <option value="Ghost">👻 Ghost</option>
+                <option value="Ice">❄️ Ice</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="field-value">Value ($)</label>
+              <input class="form-input" type="number" id="field-value" placeholder="0.00" min="0" step="0.01" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="field-status">Status</label>
+            <select class="form-input" id="field-status">
+              <option value="owned">Owned</option>
+              <option value="listed">Listed</option>
+              <option value="trade-pending">Trade Pending</option>
+              <option value="wishlist">Wishlist</option>
+              <option value="sold">Sold</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="field-acquisition-date">Acquisition Date <span class="optional">(optional)</span></label>
+            <input class="form-input" type="date" id="field-acquisition-date" />
+          </div>
+
+          <div id="sold-fields-wrap" hidden>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="field-sold-price">Sold Price ($)</label>
+                <input class="form-input" type="number" id="field-sold-price" placeholder="0.00" min="0" step="0.01" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="field-sold-date">Sold Date</label>
+                <input class="form-input" type="date" id="field-sold-date" />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" id="image-field-group">
+            <label class="form-label">Image <span class="optional">(optional)</span></label>
+            <div class="img-source-tabs">
+              <button type="button" class="img-tab is-active" id="img-tab-url">URL</button>
+              <button type="button" class="img-tab" id="img-tab-upload">📷 Upload Photo</button>
+            </div>
+            <div id="img-panel-url">
+              <input class="form-input" type="url" id="field-image" placeholder="https://…" />
+            </div>
+            <div id="img-panel-upload" hidden>
+              <div class="img-upload-area" id="img-upload-area">
+                <input type="file" id="img-file-input" accept="image/*" style="display:none" />
+                <div class="img-upload-preview" id="img-upload-preview" hidden>
+                  <img id="img-preview-img" src="" alt="Preview" />
+                  <button type="button" class="img-upload-clear" id="img-upload-clear" aria-label="Remove image">✕</button>
+                </div>
+                <div class="img-upload-prompt" id="img-upload-prompt">
+                  <span class="img-upload-icon">📷</span>
+                  <span class="img-upload-label">Tap to choose a photo</span>
+                  <span class="img-upload-hint">Compressed to ~800px · WebP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="field-condition">Condition</label>
+              <select class="form-input" id="field-condition">
+                <option value="Raw">Raw</option>
+                <option value="PSA">PSA</option>
+                <option value="CGC">CGC</option>
+                <option value="Beckett">Beckett</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="field-grade">Grade</label>
+              <select class="form-input" id="field-grade">
+                <option value="">—</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="field-collection">Collection</label>
+              <select class="form-input" id="field-collection">
+                <option value="Personal">Personal</option>
+                <option value="Business Inventory">Business Inv.</option>
+                <option value="Pikachu">Pikachu</option>
+                <option value="Charizard">Charizard</option>
+                <option value="Umbreon">Umbreon</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="field-intent">Intent</label>
+              <select class="form-input" id="field-intent">
+                <option value="Hold">Hold</option>
+                <option value="Sell">Sell</option>
+                <option value="Trade">Trade</option>
+                <option value="Grade">Grade</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="field-purchase-cost">Purchase Cost ($)</label>
+              <input class="form-input" type="number" id="field-purchase-cost" placeholder="0.00" min="0" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="field-market-value">Market Value ($)</label>
+              <input class="form-input" type="number" id="field-market-value" placeholder="0.00" min="0" step="0.01" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="field-notes">Notes <span class="optional">(optional)</span></label>
+            <input class="form-input" type="text" id="field-notes" placeholder="Any notes…" maxlength="200" autocomplete="off" />
+          </div>
+
+          <div class="form-group form-toggle">
+            <label class="form-label" for="field-favorite">Mark as Favorite</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="field-favorite" />
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-danger" id="btn-delete" hidden>Delete</button>
+        <div class="modal-footer-right">
+          <button class="btn btn-ghost" id="btn-cancel">Cancel</button>
+          <button class="btn btn-primary" id="btn-save">Save Card</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm dialog -->
+  <div class="overlay" id="confirm-overlay" hidden>
+    <div class="modal modal-sm" id="confirm-modal">
+      <div class="modal-header">
+        <h2 class="modal-title">Delete Card?</h2>
+      </div>
+      <div class="modal-body">
+        <p class="confirm-text">This will permanently remove the card from your vault.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="btn-confirm-cancel">Cancel</button>
+        <button class="btn btn-danger" id="btn-confirm-delete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Backup / Export sheet -->
+  <div class="overlay" id="backup-overlay" hidden>
+    <div class="backup-sheet" id="backup-sheet">
+      <div class="backup-sheet-header">
+        <span class="backup-sheet-title">Backup &amp; Data</span>
+        <button class="overlay-close" id="backup-close" aria-label="Close">
+          <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="backup-last-backup" id="backup-last-backup">Last backup: Never</div>
+      <div class="backup-opts">
+        <button class="backup-opt" id="btn-export">
+          <span class="backup-opt-icon">📤</span>
+          <div class="backup-opt-text">
+            <div class="backup-opt-label">Export JSON</div>
+            <div class="backup-opt-desc">Download all cards as a backup file</div>
+          </div>
+        </button>
+        <button class="backup-opt" id="btn-import-trigger">
+          <span class="backup-opt-icon">📥</span>
+          <div class="backup-opt-text">
+            <div class="backup-opt-label">Import JSON</div>
+            <div class="backup-opt-desc">Restore vault from a backup file</div>
+          </div>
+        </button>
+        <button class="backup-opt backup-opt-danger" id="btn-clear-trigger">
+          <span class="backup-opt-icon">🗑</span>
+          <div class="backup-opt-text">
+            <div class="backup-opt-label">Clear All Data</div>
+            <div class="backup-opt-desc">Permanently delete every card</div>
+          </div>
+        </button>
+      </div>
+      <div class="backup-toast" id="backup-toast" hidden></div>
+      <input type="file" id="import-file-input" accept=".json" style="display:none" />
+    </div>
+  </div>
+
+  <!-- Confirm clear dialog -->
+  <div class="overlay" id="confirm-clear-overlay" hidden>
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2 class="modal-title">Clear All Data?</h2>
+      </div>
+      <div class="modal-body">
+        <div class="confirm-no-backup-warn" id="confirm-no-backup-warn" hidden>
+          ⚠️ You have never exported a backup. Deleted data cannot be recovered.
+        </div>
+        <p class="confirm-text">This will permanently delete <strong>every card</strong> in your vault. This cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="btn-confirm-clear-cancel">Cancel</button>
+        <button class="btn btn-danger" id="btn-confirm-clear-ok">Clear All</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/script.js"></script>
+</body>
+</html>
