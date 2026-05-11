@@ -117,7 +117,7 @@ function getFilteredCards() {
 
   let filtered = state.cards.filter(card => {
     if (state.view === 'home')     return card.status === 'owned' || card.status === 'listed' || card.status === 'trade-pending';
-    if (state.if (state.view === 'wishlist') return card.status === 'wishlist';
+    if (state.view === 'wishlist') return card.status === 'wishlist';
     if (state.view === 'sold')     return card.status === 'sold';
     return false;
   });
