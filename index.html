@@ -36,6 +36,22 @@
         <input class="search-input" type="search" id="search-input" placeholder="Search cards…" autocomplete="off" spellcheck="false" />
         <button class="search-clear" id="search-clear" aria-label="Clear search" hidden>✕</button>
       </div>
+      <div class="filter-sort-bar">
+  <div class="filter-pills" id="filter-pills">
+    <button class="filter-pill active" data-filter="all">All</button>
+    <button class="filter-pill" data-filter="hold">Hold</button>
+    <button class="filter-pill" data-filter="sell">Sell</button>
+    <button class="filter-pill" data-filter="trade">Trade</button>
+    <button class="filter-pill" data-filter="favorite">Favorite</button>
+  </div>
+
+  <select class="sort-select" id="sort-select">
+    <option value="recent">Recent</option>
+    <option value="highValue">High Value</option>
+    <option value="lowValue">Low Value</option>
+    <option value="profit">Profit</option>
+  </select>
+</div>
     </header>
 
     <main class="main-content" id="main-content">
