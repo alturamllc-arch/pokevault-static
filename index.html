@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <link rel="icon" type="image/png" href="icon-512.png">
-<link rel="apple-touch-icon" href="icon-512.png">
 <meta name="theme-color" content="#080010">
 <head>
   <meta charset="UTF-8" />
+  <link rel="apple-touch-icon" href="icon-512.png">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
   <title>PokéVault</title>
   <meta name="description" content="Your personal Pokémon card collection vault." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" onload="this.rel='stylesheet'">
+  <noscript>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  </noscript>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
 
@@ -37,6 +40,7 @@
         <button class="search-clear" id="search-clear" aria-label="Clear search" hidden>✕</button>
       </div>
       <div class="filter-sort-bar">
+
   <div class="filter-pills" id="filter-pills">
     <button class="filter-pill active" data-filter="all">All</button>
     <button class="filter-pill" data-filter="hold">Hold</button>
@@ -51,10 +55,13 @@
     <option value="lowValue">Low Value</option>
     <option value="profit">Profit</option>
   </select>
+
 </div>
-    </header>
+    
+</header>
 
     <main class="main-content" id="main-content">
+      
       <div class="section-header">
         <h2 class="section-title" id="section-title">My Collection</h2>
         <span class="section-count" id="section-count">0 cards</span>
@@ -134,7 +141,7 @@
                 <option value="Flying">🦅 Flying</option>
                 <option value="Poison">☠️ Poison</option>
                 <option value="Ground">🪨 Ground</option>
-                <option value="Rock">🪵 Rock</option>
+                <option value="Rock">🪨 Rock</option>
                 <option value="Bug">🐛 Bug</option>
                 <option value="Ghost">👻 Ghost</option>
                 <option value="Ice">❄️ Ice</option>
@@ -350,7 +357,7 @@
         <button class="btn btn-ghost" id="btn-confirm-clear-cancel">Cancel</button>
         <button class="btn btn-danger" id="btn-confirm-clear-ok">Clear All</button>
       </div>
-    </div>
+  <script src="./script.js" defer></script>
   </div>
 
   <script src="./script.js"></script>
